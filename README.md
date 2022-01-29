@@ -1,8 +1,8 @@
 # LTCGI
 
-Optimized plug-and-play realtime area lighting using the linearly transformed cosine algorithm for Unity/VRChat. Free to use with [attribution](#Attribution).
+Optimized plug-and-play realtime area lighting using the [linearly transformed cosine algorithm](#LTC) for Unity/VRChat. Free to use with [attribution](#Attribution).
 
-[Download UnityPackage](https://github.com/PiMaker/ltcgi/raw/main/ltcgi.unitypackage)
+Check the [Releases](https://github.com/PiMaker/ltcgi/releases) tab for downloads.
 
 If you like this prefab, consider [supporting me on KoFi](https://ko-fi.com/pimaker)!
 
@@ -52,6 +52,15 @@ This project/world uses LTCGI by _pi_, see 'github.com/pimaker/ltcgi'.
 (various surfaces)
 ![Screenshot](./Screenshots/collage1.jpg)
 (static textures, shadows and glass)
+
+## LTC
+
+Based on this paper:
+```
+Real-Time Polygonal-Light Shading with Linearly Transformed Cosines
+by Eric Heitz, Jonathan Dupuy, Stephen Hill, David Neubelt
+```
+[Read more](https://eheitzresearch.wordpress.com/415-2/)
 
 ## License
 
