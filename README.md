@@ -38,14 +38,14 @@ This project/world uses LTCGI by _pi_, see 'github.com/pimaker/ltcgi'.
 
 ## Screenshots
 
-![Screenshot](./Screenshots/screenshot (4).png)
-![Screenshot](./Screenshots/screenshot (2).png)
-![Screenshot](./Screenshots/screenshot (3).png)
-![Screenshot](./Screenshots/screenshot (5).png)
-![Screenshot](./Screenshots/screenshot (7).png)
-![Screenshot](./Screenshots/screenshot (8).png)
-![Screenshot](./Screenshots/screenshot (1).png)
-![Screenshot](./Screenshots/screenshot (6).png)
+![Screenshot](./Screenshots/screenshot(4).png)
+![Screenshot](./Screenshots/screenshot(2).png)
+![Screenshot](./Screenshots/screenshot(3).png)
+![Screenshot](./Screenshots/screenshot(5).png)
+![Screenshot](./Screenshots/screenshot(7).png)
+![Screenshot](./Screenshots/screenshot(8).png)
+![Screenshot](./Screenshots/screenshot(1).png)
+![Screenshot](./Screenshots/screenshot(6).png)
 
 ## License
 
