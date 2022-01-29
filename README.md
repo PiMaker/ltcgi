@@ -50,3 +50,8 @@ This project/world uses LTCGI by _pi_, see 'github.com/pimaker/ltcgi'.
 ## License
 
 This project is made available under the terms of the MIT license, unless explicitly marked otherwise in the source files. See `LICENSE` for more.
+
+The following files are licensed explicitly, and may not be modified or used in commercial projects, but can be redistributed and displayed otherwise, provided this license is kept:
+
+* Propaganda/pi_graffiti.png
+* Propaganda/ltcgi_graffiti.png
