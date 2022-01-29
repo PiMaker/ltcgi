@@ -30,7 +30,11 @@ In written form:
 
 According to the [License](#License) you are free to use this in your world, but you need to give credit. You are free to do so in whichever way, but you must provide a link to this GitHub repository, such as to fulfill the imported license of the LTC example code used as a base for this project.
 
-For your convenience, a prefab called `LTCGI Attribution` is provided in the package. If you don't want to use it, instead display text similar to the following:
+For your convenience, a prefab called `LTCGI Attribution` is provided in the package.
+
+![LTCGI Attribution Prefab](Screenshots/attribution.jpg)
+
+If you don't want to use it, instead display text similar to the following:
 
 ```
 This project/world uses LTCGI by _pi_, see 'github.com/pimaker/ltcgi'.
