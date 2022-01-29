@@ -1,0 +1,81 @@
+#ifndef LTCGI_UNIFORM_INCLUDED
+#define LTCGI_UNIFORM_INCLUDED
+
+// LUTs
+uniform sampler2D _LTCGI_lut2;
+uniform sampler2D _LTCGI_lut1;
+
+// vertices in object space; w component is UV
+uniform float4 _LTCGI_Vertices_0[MAX_SOURCES];
+uniform float4 _LTCGI_Vertices_1[MAX_SOURCES];
+uniform float4 _LTCGI_Vertices_2[MAX_SOURCES];
+uniform float4 _LTCGI_Vertices_3[MAX_SOURCES];
+
+// light source count, maximum is MAX_SOURCES
+uniform uint _LTCGI_ScreenCount;
+
+// per-renderer mask to select sources,
+// for max perf update _LTCGI_ScreenCount too
+uniform bool _LTCGI_Mask[MAX_SOURCES];
+
+// extra data per light source, layout:
+//  color.r   color.g   color.b   flags*
+// * b0=double-sided, b1=diffuse-from-lightmap, b2=specular, b3=diffuse,
+//   b4-b7=texture index (0=video, (n>0)=n-1)
+//   b8-b9=color mode
+//   b10-b11=lightmap channel (0=disabled, 1=r, 2=g, 3=b)
+// (color black = fully disabled)
+uniform float4 _LTCGI_ExtraData[MAX_SOURCES];
+struct ltcgi_flags
+{
+    bool doublesided;
+    bool diffFromLm;
+    bool specular;
+    bool diffuse;
+    uint texindex;
+    uint colormode;
+    uint lmch, lmidx;
+    bool cylinder;
+};
+
+#define LTCGI_COLORMODE_STATIC 0
+#define LTCGI_COLORMODE_TEXTURE 1
+#define LTCGI_COLORMODE_SINGLEUV 2
+
+ltcgi_flags ltcgi_parse_flags(uint val)
+{
+    ltcgi_flags ret = (ltcgi_flags)0;
+    ret.doublesided = (val & 1) == 1;
+    ret.diffFromLm  = (val & 2) == 2;
+    ret.specular    = (val & 4) == 4;
+    ret.diffuse     = (val & 8) == 8;
+    ret.texindex    = (val & 0xf0) >> 4;
+    ret.colormode   = (val & 0x300) >> 8;
+    ret.lmch        = (val & 0xC00) >> 10;
+    ret.cylinder    = (val & (1 << 12)) == (1 << 12);
+    return ret;
+}
+
+// LOD0 sampler (trilinear)
+uniform SamplerState sampler_LTCGI_trilinear_clamp_sampler;
+// LOD1 sampler (bilinear)
+uniform SamplerState sampler_LTCGI_bilinear_clamp_sampler;
+
+// video input
+uniform Texture2D<float4> _LTCGI_Texture_LOD0;
+uniform Texture2D<float4> _LTCGI_Texture_LOD1;
+uniform Texture2D<float4> _LTCGI_Texture_LOD2;
+uniform Texture2D<float4> _LTCGI_Texture_LOD3;
+
+// static textures
+UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_LTCGI_Texture_LOD0_arr);
+UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_LTCGI_Texture_LOD1_arr);
+UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_LTCGI_Texture_LOD2_arr);
+UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_LTCGI_Texture_LOD3_arr);
+
+// lightmap
+uniform Texture2D<float4> _LTCGI_Lightmap;
+uniform float3 _LTCGI_LightmapMult;
+uniform float4 _LTCGI_LightmapST;
+
+#endif
