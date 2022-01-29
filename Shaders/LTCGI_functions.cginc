@@ -156,7 +156,11 @@ float3 LTCGI_sample(float2 uv, uint lod, uint idx, float blend)
             [branch]
             if (idx == 0)
             {
+                #ifndef SHADER_TARGET_SURFACE_ANALYSIS
                 return _LTCGI_Texture_LOD0.SampleLevel(sampler_LTCGI_trilinear_clamp_sampler, uv, lod).rgb;
+                #else
+                return 0;
+                #endif
             }
             else
             {
@@ -175,6 +179,7 @@ float3 LTCGI_sample(float2 uv, uint lod, uint idx, float blend)
     [branch]
     if (idx == 0)
     {
+        #ifndef SHADER_TARGET_SURFACE_ANALYSIS
         switch (lod)
         {
             case 1:
@@ -184,6 +189,9 @@ float3 LTCGI_sample(float2 uv, uint lod, uint idx, float blend)
             default:
                 return _LTCGI_Texture_LOD3.SampleLevel(sampler_LTCGI_trilinear_clamp_sampler, ruv, blend*0.72).rgb;
         }
+        #else
+        return 0;
+        #endif
     }
     else
     {

@@ -62,10 +62,12 @@ uniform SamplerState sampler_LTCGI_trilinear_clamp_sampler;
 uniform SamplerState sampler_LTCGI_bilinear_clamp_sampler;
 
 // video input
+#ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
 uniform Texture2D<float4> _LTCGI_Texture_LOD0;
 uniform Texture2D<float4> _LTCGI_Texture_LOD1;
 uniform Texture2D<float4> _LTCGI_Texture_LOD2;
 uniform Texture2D<float4> _LTCGI_Texture_LOD3;
+#endif
 
 // static textures
 UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_LTCGI_Texture_LOD0_arr);
@@ -74,7 +76,9 @@ UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_LTCGI_Texture_LOD2_arr);
 UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_LTCGI_Texture_LOD3_arr);
 
 // lightmap
+#ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
 uniform Texture2D<float4> _LTCGI_Lightmap;
+#endif
 uniform float3 _LTCGI_LightmapMult;
 uniform float4 _LTCGI_LightmapST;
 

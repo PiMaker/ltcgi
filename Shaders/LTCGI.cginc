@@ -5,6 +5,10 @@
 #include "LTCGI_uniform.cginc"
 #include "LTCGI_functions.cginc"
 
+#ifdef SHADER_TARGET_SURFACE_ANALYSIS
+#define const  
+#endif
+
 // Main function - this calculates the approximated model for one pixel and one light
 /* private */ float LTCGI_Evaluate(
     float3 Lw[4], float3 worldNorm, float3 viewDir, float3x3 Minv, uint i, float roughness,
@@ -195,7 +199,11 @@
 
     // calculate LTCGI custom lightmap UV and sample
     lmuv = lmuv * _LTCGI_LightmapST.xy + _LTCGI_LightmapST.zw;
+    #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
     float3 lms = _LTCGI_Lightmap.Sample(sampler_LTCGI_trilinear_clamp_sampler, lmuv);
+    #else
+    float3 lms = 1;
+    #endif
 
     #ifdef LTCGI_SHOW_SHADOWMAP
         diffuse = lms;
