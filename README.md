@@ -2,7 +2,7 @@
 
 Optimized plug-and-play realtime area lighting using the linearly transformed cosine algorithm for Unity/VRChat. Free to use with [attribution](#Attribution).
 
-[Download UnityPackage](./ltcgi.unitypackage)
+[Download UnityPackage](https://github.com/PiMaker/ltcgi/raw/main/ltcgi.unitypackage)
 
 If you like this prefab, consider [supporting me on KoFi](https://ko-fi.com/pimaker)!
 
@@ -16,7 +16,7 @@ To use LTCGI, all objects that should receive lighting must use a compatible sha
 
 ## How to use
 
-![Instructional Poster](./Propaganda/Poster1.png)
+![Instructional Poster](./Propaganda/Poster1_rotated.jpg)
 
 In written form:
 
@@ -38,14 +38,14 @@ This project/world uses LTCGI by _pi_, see 'github.com/pimaker/ltcgi'.
 
 ## Screenshots
 
-![](./Screenshots/screenshot (4).png)
-![](./Screenshots/screenshot (2).png)
-![](./Screenshots/screenshot (3).png)
-![](./Screenshots/screenshot (5).png)
-![](./Screenshots/screenshot (7).png)
-![](./Screenshots/screenshot (8).png)
-![](./Screenshots/screenshot (1).png)
-![](./Screenshots/screenshot (6).png)
+![Screenshot](./Screenshots/screenshot (4).png)
+![Screenshot](./Screenshots/screenshot (2).png)
+![Screenshot](./Screenshots/screenshot (3).png)
+![Screenshot](./Screenshots/screenshot (5).png)
+![Screenshot](./Screenshots/screenshot (7).png)
+![Screenshot](./Screenshots/screenshot (8).png)
+![Screenshot](./Screenshots/screenshot (1).png)
+![Screenshot](./Screenshots/screenshot (6).png)
 
 ## License
 
