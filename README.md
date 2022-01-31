@@ -8,6 +8,9 @@ If you like this prefab, consider [supporting me on KoFi](https://ko-fi.com/pima
 
 ![Header Image](./Screenshots/header.jpg)
 
+![Demo Video](./Screenshots/ltcgi.gif)  
+(demo video by [@orels1](https://github.com/orels1))
+
 ## Supported shaders
 
 To use LTCGI, all objects that should receive lighting must use a compatible shader. Currently compatible ones are listed below. If you implement LTCGI into your shader, feel free to send a PR to be included.
@@ -44,13 +47,16 @@ This project/world uses LTCGI by _pi_, see 'github.com/pimaker/ltcgi'.
 
 ## Screenshots
 
-![Screenshot](./Screenshots/collage4.jpg)
+![Screenshot](./Screenshots/collage4.jpg)  
 ([LTCGI demo hall](https://vrchat.com/home/launch?worldId=wrld_aa2627ec-c63a-4db2-aa3e-9078d41c6d9c))
-![Screenshot](./Screenshots/collage2.jpg)
+
+![Screenshot](./Screenshots/collage2.jpg)  
 (venue designed by BananaBread)
-![Screenshot](./Screenshots/collage3.jpg)
+
+![Screenshot](./Screenshots/collage3.jpg)  
 (various surfaces)
-![Screenshot](./Screenshots/collage1.jpg)
+
+![Screenshot](./Screenshots/collage1.jpg)  
 (static textures, shadows and glass)
 
 ## LTC
