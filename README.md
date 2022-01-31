@@ -57,8 +57,10 @@ This project/world uses LTCGI by _pi_, see 'github.com/pimaker/ltcgi'.
 
 Based on this paper:
 ```
-Real-Time Polygonal-Light Shading with Linearly Transformed Cosines
-by Eric Heitz, Jonathan Dupuy, Stephen Hill, David Neubelt
+Real-Time Polygonal-Light Shading with Linearly Transformed Cosines.
+Eric Heitz, Jonathan Dupuy, Stephen Hill and David Neubelt.
+ACM Transactions on Graphics (Proceedings of ACM SIGGRAPH 2016) 35(4), 2016.
+Project page: https://eheitzresearch.wordpress.com/415-2/
 ```
 [Read more](https://eheitzresearch.wordpress.com/415-2/)
 
