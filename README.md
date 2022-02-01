@@ -21,15 +21,7 @@ To use LTCGI, all objects that should receive lighting must use a compatible sha
 
 ## How to use
 
-![Instructional Poster](./Propaganda/Poster1_rotated.jpg)
-
-In written form:
-
-* Put prefab into scene
-* Optional: Set video render texture on the controller object (use [lox9973's VideoRT](https://drive.google.com/file/d/1XQBybXg2D87AueLI87UuujA3jDN4fU33/view) or similar for AVPro)
-* Add LTCGI_Screen component to a quad or other MeshRenderer with 4 vertices
-* Hit CTRL-S or use `Tools/LTCGI/Force Update` to update the editor representation
-* Use GUI settings to configure your light, upload, enjoy :)
+See the [Wiki](https://github.com/PiMaker/ltcgi/wiki) for instructions. Please check them out before using the prefab in your world!
 
 ## Attribution
 
@@ -45,6 +37,17 @@ If you don't want to use it, instead display text similar to the following:
 This project/world uses LTCGI by _pi_, see 'github.com/pimaker/ltcgi'.
 ```
 
+## LTC
+
+Based on this paper:
+```
+Real-Time Polygonal-Light Shading with Linearly Transformed Cosines.
+Eric Heitz, Jonathan Dupuy, Stephen Hill and David Neubelt.
+ACM Transactions on Graphics (Proceedings of ACM SIGGRAPH 2016) 35(4), 2016.
+Project page: https://eheitzresearch.wordpress.com/415-2/
+```
+[Read more](https://eheitzresearch.wordpress.com/415-2/)
+
 ## Screenshots
 
 ![Screenshot](./Screenshots/collage4.jpg)  
@@ -58,17 +61,6 @@ This project/world uses LTCGI by _pi_, see 'github.com/pimaker/ltcgi'.
 
 ![Screenshot](./Screenshots/collage1.jpg)  
 (static textures, shadows and glass)
-
-## LTC
-
-Based on this paper:
-```
-Real-Time Polygonal-Light Shading with Linearly Transformed Cosines.
-Eric Heitz, Jonathan Dupuy, Stephen Hill and David Neubelt.
-ACM Transactions on Graphics (Proceedings of ACM SIGGRAPH 2016) 35(4), 2016.
-Project page: https://eheitzresearch.wordpress.com/415-2/
-```
-[Read more](https://eheitzresearch.wordpress.com/415-2/)
 
 ## License
 
