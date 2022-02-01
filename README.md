@@ -2,8 +2,6 @@
 
 Optimized plug-and-play realtime area lighting using the [linearly transformed cosine algorithm](#LTC) for Unity/VRChat. Free to use with [attribution](#Attribution).
 
-Check the [Releases](https://github.com/PiMaker/ltcgi/releases) tab for downloads.
-
 If you like this prefab, consider [supporting me on KoFi](https://ko-fi.com/pimaker)!
 
 ![Header Image](./Screenshots/header.jpg)
@@ -19,9 +17,12 @@ To use LTCGI, all objects that should receive lighting must use a compatible sha
 * Unity Standard Surface Shader (included)
 * [z3y's Simple Lit](https://github.com/z3y/shaders)
 
-## How to use
+## How to use / Download
 
-See the [Wiki](https://github.com/PiMaker/ltcgi/wiki) for instructions. Please check them out before using the prefab in your world!
+See the [Wiki](https://github.com/PiMaker/ltcgi/wiki) for instructions. Please check them out before using the prefab in your world!  
+Also consider the [attribution requirements](#Attribution).
+
+Check the [Releases](https://github.com/PiMaker/ltcgi/releases) tab for downloads.
 
 ## Attribution
 
