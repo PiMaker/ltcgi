@@ -15,7 +15,6 @@ To use LTCGI, all objects that should receive lighting must use a compatible sha
 
 * Basic "Unlit" Test Shader (included)
 * Unity Standard Surface Shader (included)
-* [z3y's Simple Lit](https://github.com/z3y/shaders)
 
 ## How to use / Download
 
