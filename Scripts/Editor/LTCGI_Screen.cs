@@ -39,8 +39,9 @@ namespace pi.LTCGI
         [Tooltip("Workaround for some Blender imports. Try to enable it if you notice your reflection is sideways.")]
         public bool FlipUV;
 
-        public RendererMode RendererMode;
+        public RendererMode RendererMode = RendererMode.Distance;
         public MeshRenderer[] RendererList;
+        [Min(0.0f)] public float RendererDistance = 15.0f;
 
         public bool Cylinder;
         public Vector3 CylinderBase;
@@ -74,6 +75,21 @@ namespace pi.LTCGI
                 update = false;
             }
         }
+
+        void OnDrawGizmos()
+        {
+            Gizmos.color = Color.white;
+            Gizmos.DrawIcon(transform.position, "LTCGI_Screen_Gizmo.png", true);
+        }
+
+        void OnDrawGizmosSelected()
+        {
+            if (RendererMode == RendererMode.Distance)
+            {
+                Gizmos.color = Color.cyan;
+                Gizmos.DrawWireSphere(transform.position, RendererDistance);
+            }
+        }
     }
 
     public enum ColorMode
@@ -88,13 +104,14 @@ namespace pi.LTCGI
         All = 0,
         ExcludeListed = 1,
         OnlyListed = 2,
+        Distance = 3,
     }
 
     [CustomEditor(typeof(LTCGI_Screen))]
     [CanEditMultipleObjects]
     public class LTCGI_ScreenEditor : Editor
     {
-        SerializedProperty colorProp, sidedProp, dynamicProp, indexProp, colormodeProp, specProp, diffProp, lmProp, singleUVProp, rendererModeProp, rendererListProp, diffModeProp, diffuseFromLmProp, flipProp, lmIntensProp;
+        SerializedProperty colorProp, sidedProp, dynamicProp, indexProp, colormodeProp, specProp, diffProp, lmProp, singleUVProp, rendererModeProp, rendererListProp, rendererDistProp, diffModeProp, diffuseFromLmProp, flipProp, lmIntensProp;
 
         LTCGI_Screen screen;
 
@@ -128,6 +145,7 @@ namespace pi.LTCGI
             singleUVProp = serializedObject.FindProperty("SingleUV");
             rendererModeProp = serializedObject.FindProperty("RendererMode");
             rendererListProp = serializedObject.FindProperty("RendererList");
+            rendererDistProp = serializedObject.FindProperty("RendererDistance");
             diffModeProp = serializedObject.FindProperty("diffMode");
             diffuseFromLmProp = serializedObject.FindProperty("DiffuseFromLm");
             lmIntensProp = serializedObject.FindProperty("LightmapIntensity");
@@ -222,9 +240,13 @@ namespace pi.LTCGI
 
             var rendererMode = (RendererMode)EditorGUILayout.EnumPopup("Affected Renderers", (RendererMode)rendererModeProp.intValue);
             rendererModeProp.intValue = (int)rendererMode;
-            if (rendererMode != RendererMode.All)
+            if (rendererMode != RendererMode.All && rendererMode != RendererMode.Distance)
             {
                 EditorGUILayout.PropertyField(rendererListProp, new GUIContent("Renderer List"), true);
+            }
+            else if (rendererMode == RendererMode.Distance)
+            {
+                EditorGUILayout.PropertyField(rendererDistProp);
             }
 
             EditorGUILayout.Separator();

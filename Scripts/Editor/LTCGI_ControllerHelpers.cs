@@ -23,6 +23,11 @@ namespace pi.LTCGI
                             return b(!screens[si].RendererList.Contains(r));
                         case RendererMode.ExcludeListed:
                             return b(screens[si].RendererList.Contains(r));
+                        case RendererMode.Distance:
+                            var screenPos = screens[si].transform.position;
+                            var point = r.bounds.ClosestPoint(screenPos);
+                            var dist = Vector3.Distance(point, screenPos);
+                            return b(dist > screens[si].RendererDistance);
                         default: // RendererMode.All
                             return b(false);
                     }
