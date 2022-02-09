@@ -198,11 +198,12 @@
     #endif
 
     // calculate LTCGI custom lightmap UV and sample
+    float3 lms = 1;
+    #ifndef LTCGI_ALWAYS_LTC_DIFFUSE
     lmuv = lmuv * _LTCGI_LightmapST.xy + _LTCGI_LightmapST.zw;
     #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
-    float3 lms = _LTCGI_Lightmap.Sample(sampler_LTCGI_trilinear_clamp_sampler, lmuv);
-    #else
-    float3 lms = 1;
+    lms = _LTCGI_Lightmap.Sample(sampler_LTCGI_trilinear_clamp_sampler, lmuv);
+    #endif
     #endif
 
     #ifdef LTCGI_SHOW_SHADOWMAP

@@ -30,6 +30,7 @@ public class LTCGI_UdonAdapter : UdonSharpBehaviour
     public int _LTCGI_ScreenCount;
     public int[] _LTCGI_ScreenCountMasked;
     public int _LTCGI_ScreenCountDynamic;
+    public Material ProjectorMaterial;
     private Material[] mats;
     private int mi;
 
@@ -73,15 +74,10 @@ public class LTCGI_UdonAdapter : UdonSharpBehaviour
             }
             block.SetTexture("_LTCGI_lut1", _LTCGI_lut1);
             block.SetTexture("_LTCGI_lut2", _LTCGI_lut2);
-            // block.SetVectorArray("_LTCGI_Vertices_0", _LTCGI_Vertices_0t);
-            // block.SetVectorArray("_LTCGI_Vertices_1", _LTCGI_Vertices_1t);
-            // block.SetVectorArray("_LTCGI_Vertices_2", _LTCGI_Vertices_2t);
-            // block.SetVectorArray("_LTCGI_Vertices_3", _LTCGI_Vertices_3t);
-            // block.SetVectorArray("_LTCGI_ExtraData", _LTCGI_ExtraData);
             block.SetFloatArray("_LTCGI_Mask", _LTCGI_Mask[i]);
+            block.SetInt("_LTCGI_ScreenCount", _LTCGI_ScreenCountMasked[i]);
             block.SetTexture("_LTCGI_Lightmap", _LTCGI_Lightmaps[i]);
             block.SetVector("_LTCGI_LightmapMult", _LTCGI_LightmapMult);
-            block.SetInt("_LTCGI_ScreenCount", _LTCGI_ScreenCountMasked[i]);
 
             var lmst = _LTCGI_LightmapST[i];
             if (ReverseUnityLightmapST)
@@ -97,8 +93,37 @@ public class LTCGI_UdonAdapter : UdonSharpBehaviour
             r.SetPropertyBlock(block);
         }
 
-        mats = new Material[_Renderers.Length];
-        mi = 0;
+        if (ProjectorMaterial != null)
+        {
+            for (int j = 0; j < _LTCGI_LODs.Length; j++)
+            {
+                if (_LTCGI_LODs[j] != null)
+                {
+                    ProjectorMaterial.SetTexture("_LTCGI_Texture_LOD" + j, _LTCGI_LODs[j]);
+                }
+            }
+            if (_LTCGI_Static_LODs_0 != null)
+            {
+                ProjectorMaterial.SetTexture("_LTCGI_Texture_LOD0_arr", _LTCGI_Static_LODs_0);
+                ProjectorMaterial.SetTexture("_LTCGI_Texture_LOD1_arr", _LTCGI_Static_LODs_1);
+                ProjectorMaterial.SetTexture("_LTCGI_Texture_LOD2_arr", _LTCGI_Static_LODs_2);
+                ProjectorMaterial.SetTexture("_LTCGI_Texture_LOD3_arr", _LTCGI_Static_LODs_3);
+            }
+            ProjectorMaterial.SetTexture("_LTCGI_lut1", _LTCGI_lut1);
+            ProjectorMaterial.SetTexture("_LTCGI_lut2", _LTCGI_lut2);
+            ProjectorMaterial.SetFloatArray("_LTCGI_Mask", new float[_LTCGI_ScreenCount]);
+            ProjectorMaterial.SetInt("_LTCGI_ScreenCount", _LTCGI_ScreenCount);
+
+            mats = new Material[_Renderers.Length + 1];
+            mats[0] = ProjectorMaterial;
+            mi = 1;
+        }
+        else
+        {
+            mats = new Material[_Renderers.Length];
+            mi = 0;
+        }
+
         foreach (var r in _Renderers)
         {
             foreach (var m in r.sharedMaterials)

@@ -15,6 +15,10 @@
 /// Disable the ability to toggle specular/diffuse on or off per screen.
 //#define LTCGI_TOGGLEABLE_SPEC_DIFF_OFF
 
+/// Always use LTC diffuse mode, never lightmapped diffuse.
+/// This disables lightmaps entirely. Mainly used for Projector components.
+//#define LTCGI_ALWAYS_LTC_DIFFUSE
+
 /// Approximation to ignore diffuse light for far away
 /// lights, increase MULT or disable if you notice artifacting
 #define LTCGI_DISTANCE_FADE_APPROX

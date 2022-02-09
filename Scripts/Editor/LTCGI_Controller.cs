@@ -1,4 +1,4 @@
-// Uncomment for debug messages
+﻿// Uncomment for debug messages
 //#define DEBUG_LOG
 
 #if UNITY_EDITOR
@@ -43,6 +43,7 @@ namespace pi.LTCGI
         public Texture2D DefaultLightmap;
         public CustomRenderTexture LOD1s, LOD1, LOD2s, LOD2, LOD3s, LOD3;
         public Texture2D LUT1, LUT2;
+        public Material ProjectorMaterial;
 
         public static LTCGI_Controller Singleton;
 
@@ -404,6 +405,41 @@ namespace pi.LTCGI
                 }
             }
 
+            if (ProjectorMaterial != null)
+            {
+                // Video and LUTs
+                if (VideoTexture != null)
+                {
+                    ProjectorMaterial.SetTexture("_LTCGI_Texture_LOD0", VideoTexture);
+                    ProjectorMaterial.SetTexture("_LTCGI_Texture_LOD1", LOD1);
+                    ProjectorMaterial.SetTexture("_LTCGI_Texture_LOD2", LOD2);
+                    ProjectorMaterial.SetTexture("_LTCGI_Texture_LOD3", LOD3);
+                }
+                ProjectorMaterial.SetTexture("_LTCGI_lut1", LUT1);
+                ProjectorMaterial.SetTexture("_LTCGI_lut2", LUT2);
+
+                ProjectorMaterial.SetInt("_LTCGI_ScreenCount", screens.Length);
+                if (screens.Length > 0)
+                {
+                    ProjectorMaterial.SetVectorArray("_LTCGI_Vertices_0", _LTCGI_Vertices_0t);
+                    ProjectorMaterial.SetVectorArray("_LTCGI_Vertices_1", _LTCGI_Vertices_1t);
+                    ProjectorMaterial.SetVectorArray("_LTCGI_Vertices_2", _LTCGI_Vertices_2t);
+                    ProjectorMaterial.SetVectorArray("_LTCGI_Vertices_3", _LTCGI_Vertices_3t);
+                    ProjectorMaterial.SetVectorArray("_LTCGI_ExtraData", _LTCGI_ExtraData);
+                    ProjectorMaterial.SetFloatArray("_LTCGI_Mask", new float[screens.Length]);
+                    ProjectorMaterial.SetMatrixArray("_LTCGI_ScreenTransforms",
+                        _LTCGI_ScreenTransforms.Take(screens.Length).Select(x => x == null ? Matrix4x4.identity : x.localToWorldMatrix).ToArray());
+                }
+
+                if (_LTCGI_LOD_arrays != null)
+                {
+                    ProjectorMaterial.SetTexture("_LTCGI_Texture_LOD0_arr", _LTCGI_LOD_arrays[0]);
+                    ProjectorMaterial.SetTexture("_LTCGI_Texture_LOD1_arr", _LTCGI_LOD_arrays[1]);
+                    ProjectorMaterial.SetTexture("_LTCGI_Texture_LOD2_arr", _LTCGI_LOD_arrays[2]);
+                    ProjectorMaterial.SetTexture("_LTCGI_Texture_LOD3_arr", _LTCGI_LOD_arrays[3]);
+                }
+            }
+
             if (!fast && this != null && this.gameObject != null)
             {
                 LTCGI_UdonAdapter adapter = this.gameObject.GetUdonSharpComponent<LTCGI_UdonAdapter>();
@@ -467,6 +503,7 @@ namespace pi.LTCGI
                     adapter._LTCGI_Mask.Select(mask =>
                         Math.Max(adapter._LTCGI_ScreenCountDynamic,
                             Array.FindLastIndex(mask, m => m == 0.0f) + 1)).ToArray();
+                adapter.ProjectorMaterial = ProjectorMaterial;
 
                 // calculate which renderers can use the shared material update method
                 var dynr = DynamicRenderers.ToList();

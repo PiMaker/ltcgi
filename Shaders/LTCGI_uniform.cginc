@@ -46,12 +46,25 @@ ltcgi_flags ltcgi_parse_flags(uint val)
 {
     ltcgi_flags ret = (ltcgi_flags)0;
     ret.doublesided = (val & 1) == 1;
+
+    #ifdef LTCGI_ALWAYS_LTC_DIFFUSE
+    ret.diffFromLm  = false;
+    ret.diffuse     = true;
+    #else
     ret.diffFromLm  = (val & 2) == 2;
-    ret.specular    = (val & 4) == 4;
     ret.diffuse     = (val & 8) == 8;
+    #endif
+
+    ret.specular    = (val & 4) == 4;
     ret.texindex    = (val & 0xf0) >> 4;
     ret.colormode   = (val & 0x300) >> 8;
+
+    #ifdef LTCGI_ALWAYS_LTC_DIFFUSE
+    ret.lmch        = 0;
+    #else
     ret.lmch        = (val & 0xC00) >> 10;
+    #endif
+
     ret.cylinder    = (val & (1 << 12)) == (1 << 12);
     return ret;
 }
