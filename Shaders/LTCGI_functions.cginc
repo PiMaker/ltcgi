@@ -322,7 +322,7 @@ void LTCGI_GetLw(uint i, ltcgi_flags flags, float3 worldPos, float3 viewDir, out
 
         // UV depends on viewing angle (for specular)
         float2 centerTangent = float2(centerForward.y, -centerForward.x);
-        viewDir = normalize(in_base - _WorldSpaceCameraPos);
+        viewDir = normalize(in_base - worldPos);
         float viewAngle = atan2(centerForward.y, centerForward.x) - atan2(viewDir.z, viewDir.x);
         uvStart = float2(-(1 - sin(saturate(viewAngle*0.5))), 0);
         uvEnd = float2(-sin(saturate(-viewAngle*0.5)), 1);
