@@ -185,7 +185,7 @@
 /* public */ void LTCGI_Contribution(
     float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv, inout half3 diffuse
 #ifndef LTCGI_SPECULAR_OFF
-    , inout half3 specular
+    , inout half3 specular, out float totalSpecularIntensity
 #endif
 ) {
     // sample lookup tables
@@ -242,6 +242,10 @@
 
     #ifdef LTCGI_VISUALIZE_SCREEN_COUNT
         uint ccc = 0;
+    #endif
+
+    #ifndef LTCGI_SPECULAR_OFF
+        totalSpecularIntensity = 0;
     #endif
 
     // loop through all lights and add them to the output
@@ -310,7 +314,11 @@
             if (flags.specular)
             {
                 float spec = LTCGI_Evaluate(Lw, worldNorm, viewDir, Minv, i, roughness, uvStart, uvEnd, false, flags, color);
-                specular += spec * color * spec_amp * smoothstep(0.0, 0.25, lm - 0.1);
+                spec *= spec_amp * smoothstep(0.0, 0.25, lm - 0.1);
+                #ifndef LTCGI_SPECULAR_OFF
+                    totalSpecularIntensity += spec;
+                #endif
+                specular += spec * color;
             }
         #endif
     }
@@ -320,12 +328,32 @@
     #endif
 }
 
+// COMPATIBILITY FALLBACKS
+
 #ifdef LTCGI_SPECULAR_OFF
+
 /* public */ void LTCGI_Contribution(
     float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv, inout half3 diffuse, inout half3 specular_UNUSED
 ) {
     LTCGI_Contribution(worldPos, worldNorm, viewDir, roughness, lmuv, diffuse);
 }
+
+/* public */ void LTCGI_Contribution(
+    float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv, inout half3 diffuse, inout half3 specular_UNUSED, out float totalSpecularIntensity
+) {
+    totalSpecularIntensity = 0;
+    LTCGI_Contribution(worldPos, worldNorm, viewDir, roughness, lmuv, diffuse);
+}
+
+#else
+
+/* public */ void LTCGI_Contribution(
+    float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv, inout half3 diffuse, inout half3 specular
+) {
+    float tsi;
+    LTCGI_Contribution(worldPos, worldNorm, viewDir, roughness, lmuv, diffuse, specular, tsi);
+}
+
 #endif
 
 #endif
