@@ -81,6 +81,11 @@ namespace pi.LTCGI
             RenderTexture.active = null;
             return tex;
         }
+
+        private bool IsEditorOnly(GameObject obj)
+        {
+            return obj.tag == "EditorOnly";
+        }
     }
     #endif
 }

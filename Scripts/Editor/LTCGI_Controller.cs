@@ -1,4 +1,4 @@
-﻿// Uncomment for debug messages
+// Uncomment for debug messages
 //#define DEBUG_LOG
 
 #if UNITY_EDITOR
@@ -414,7 +414,7 @@ namespace pi.LTCGI
                 
                 // update LTCGI_UdonAdapter proxy with new data
                 adapter.UpdateProxy();
-                adapter._Renderers = cachedMeshRenderers;
+                adapter._Renderers = cachedMeshRenderers.Where(cm => !IsEditorOnly(cm.gameObject)).ToArray();
                 adapter._LTCGI_Lightmaps = cachedMeshRenderers
                     .Select(r => {
                         if (_LTCGI_Lightmaps == null) return DefaultLightmap;
@@ -474,6 +474,7 @@ namespace pi.LTCGI
                 for (int i = 0; i < cachedMeshRenderers.Length; i++)
                 {
                     MeshRenderer r = cachedMeshRenderers[i];
+                    if (IsEditorOnly(r.gameObject)) continue;
                     foreach (var m in r.sharedMaterials)
                     {
                         var data = (adapter._LTCGI_ScreenCountMasked[i], adapter._LTCGI_Mask[i], r);
