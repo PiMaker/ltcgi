@@ -305,11 +305,11 @@
             }
         #endif
 
-        // reset color
-        color = saturate(extra.rgb);
-
         // specular lighting
         #ifndef LTCGI_SPECULAR_OFF
+            // reset color
+            color = saturate(extra.rgb);
+
             [branch]
             if (flags.specular)
             {
