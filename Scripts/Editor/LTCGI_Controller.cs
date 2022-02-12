@@ -503,6 +503,7 @@ namespace pi.LTCGI
                     adapter._LTCGI_Mask.Select(mask =>
                         Math.Max(adapter._LTCGI_ScreenCountDynamic,
                             Array.FindLastIndex(mask, m => m == 0.0f) + 1)).ToArray();
+                adapter.BlurCRTInput = LOD1s;
                 adapter.ProjectorMaterial = ProjectorMaterial;
 
                 // calculate which renderers can use the shared material update method

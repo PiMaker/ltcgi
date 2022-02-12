@@ -30,6 +30,7 @@ public class LTCGI_UdonAdapter : UdonSharpBehaviour
     public int _LTCGI_ScreenCount;
     public int[] _LTCGI_ScreenCountMasked;
     public int _LTCGI_ScreenCountDynamic;
+    public CustomRenderTexture BlurCRTInput;
     public Material ProjectorMaterial;
     private Material[] mats;
     private int mi;
@@ -193,6 +194,9 @@ public class LTCGI_UdonAdapter : UdonSharpBehaviour
         }
     }
 
+    // See the docs for more info:
+    // https://github.com/PiMaker/ltcgi/wiki#udonsharp-api
+
     public int _GetIndex(GameObject screen)
     {
         var idx = Array.IndexOf(_Screens, screen);
@@ -226,6 +230,23 @@ public class LTCGI_UdonAdapter : UdonSharpBehaviour
         _LTCGI_ExtraData[screen].x = color.r;
         _LTCGI_ExtraData[screen].y = color.g;
         _LTCGI_ExtraData[screen].z = color.b;
+    }
+
+    public void _SetVideoTexture(Texture texture)
+    {
+        BlurCRTInput.material.SetTexture("_MainTex", texture);
+        if (ProjectorMaterial != null)
+        {
+            ProjectorMaterial.SetTexture("_LTCGI_Texture_LOD0", texture);
+        }
+        for (int i = 0; i < _Renderers.Length; i++)
+        {
+            var r = _Renderers[i];
+            var block = new MaterialPropertyBlock();
+            r.GetPropertyBlock(block);
+            block.SetTexture("_LTCGI_Texture_LOD0", texture);
+            r.SetPropertyBlock(block);
+        }
     }
 
     private uint getFlags(int screen)
