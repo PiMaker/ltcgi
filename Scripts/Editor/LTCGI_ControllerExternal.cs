@@ -32,6 +32,14 @@ namespace pi.LTCGI
 
         private static string configPath;
 
+        private static Dictionary<string, object> configChangedValues = new Dictionary<string, object>();
+
+        private enum ConfigType
+        {
+            Boolean,
+            Float,
+        }
+
         public void OnEnable()
         {
             Logo = Resources.Load("LTCGI-LogoController") as Texture;
@@ -105,7 +113,6 @@ namespace pi.LTCGI
             }
 
             var config = File.ReadAllLines(configPath);
-            var changed = false;
             var description = "";
             var resetDesc = false;
             for (int i = 0; i < config.Length; i++)
@@ -129,33 +136,112 @@ namespace pi.LTCGI
                 }
                 else if (description != "" && (line.StartsWith("//#define") || line.StartsWith("#define")))
                 {
-                    var enabled = line.StartsWith("#");
+                    var name = line.Substring(line.IndexOf(' ') + 1);
+                    var nextSpace = name.IndexOf(' ');
+                    if (nextSpace < 0) nextSpace = name.Length;
+                    name = name.Substring(0, nextSpace);
 
-                    var set = GUILayout.Toggle(enabled, line.Substring(line.IndexOf(" ")));
-                    EditorGUILayout.HelpBox(description.Replace(Environment.NewLine, " "), MessageType.None, true);
-                    EditorGUILayout.Space();
+                    object ccvValue;
+                    var existsInCcv = configChangedValues.TryGetValue(name, out ccvValue);
 
-                    if (set != enabled)
+                    var debug = description.StartsWith("[DEBUG]");
+                    description = description.Replace(Environment.NewLine, " ");
+
+                    var type = line.Count(char.IsWhiteSpace) > 1 ? ConfigType.Float : ConfigType.Boolean;
+
+                    if (type == ConfigType.Boolean)
                     {
-                        // config option changed
-                        if (set)
+                        var enabledInConfig = line.StartsWith("#");
+                        var enabled = (existsInCcv && (bool)ccvValue) || (!existsInCcv && enabledInConfig);
+
+                        var toggleStyle = new GUIStyle(GUI.skin.toggle);
+                        if (debug)
                         {
-                            config[i] = config[i].Substring(2);
+                            toggleStyle.normal.textColor = Color.gray;
+                            toggleStyle.hover.textColor = Color.gray;
+                        }
+                        var set = GUILayout.Toggle(enabled, name, toggleStyle);
+
+                        EditorGUILayout.HelpBox(description, MessageType.None, true);
+                        EditorGUILayout.Space();
+
+                        if (set != enabledInConfig)
+                        {
+                            configChangedValues[name] = set;
+                            if (set)
+                            {
+                                config[i] = config[i].Substring(2);
+                            }
+                            else
+                            {
+                                config[i] = "//" + config[i];
+                            }
                         }
                         else
                         {
-                            config[i] = "//" + config[i];
+                            configChangedValues.Remove(name);
                         }
-                        changed = true;
+                    }
+                    else if (type == ConfigType.Float)
+                    {
+                        var valueInConfig = float.Parse(line.Substring(line.LastIndexOf(' ')).Replace('f', ' '));
+                        var value = existsInCcv ? (float)ccvValue : valueInConfig;
+
+                        var labelStyle = new GUIStyle(GUI.skin.label);
+                        if (debug)
+                        {
+                            labelStyle.normal.textColor = Color.gray;
+                            labelStyle.hover.textColor = Color.gray;
+                        }
+                        float set;
+                        using (new GUILayout.HorizontalScope())
+                        {
+                            GUILayout.Label(name, labelStyle);
+                            set = EditorGUILayout.FloatField(value);
+                        }
+
+                        EditorGUILayout.HelpBox(description, MessageType.None, true);
+                        EditorGUILayout.Space();
+
+                        if (set != valueInConfig)
+                        {
+                            configChangedValues[name] = set;
+                            config[i] = $"#define {name} {set}";
+                        }
+                        else
+                        {
+                            configChangedValues.Remove(name);
+                        }
                     }
 
                     resetDesc = true;
                 }
             }
-            if (changed)
+            if (configChangedValues.Count > 0)
             {
-                File.WriteAllLines(configPath, config);
-                AssetDatabase.Refresh();
+                using (new GUILayout.HorizontalScope())
+                {
+                    var bigButton = new GUIStyle(GUI.skin.button);
+                    bigButton.fixedHeight = 40.0f;
+                    bigButton.fontStyle = FontStyle.Bold;
+                    bigButton.fontSize = 18;
+                    bigButton.normal.textColor = Color.white;
+                    bigButton.hover.textColor = Color.white;
+                    var resetCol = GUI.backgroundColor;
+                    GUI.backgroundColor = Color.red;
+                    if (GUILayout.Button("Apply", bigButton))
+                    {
+                        File.WriteAllLines(configPath, config);
+                        AssetDatabase.Refresh();
+                        configChangedValues = new Dictionary<string, object>();
+                    }
+                    GUI.backgroundColor = Color.blue;
+                    if (GUILayout.Button("Revert", bigButton))
+                    {
+                        configChangedValues = new Dictionary<string, object>();
+                    }
+                    GUI.backgroundColor = resetCol;
+                }
             }
 
             EditorGUILayout.Space(); EditorGUILayout.Space(); EditorGUILayout.Space();

@@ -278,7 +278,7 @@
         float lm = 1;
         if (flags.lmch) {
             lm = lms[flags.lmch - 1];
-            if (lm < 0.0001) continue;
+            if (lm < 0.001) continue;
         }
 
         #ifdef LTCGI_VISUALIZE_SCREEN_COUNT
@@ -293,14 +293,13 @@
                 float lmd = lm;
                 if (flags.lmch) {
                     if (!flags.diffFromLm)
-                        lmd = saturate(lm - 0.1);
+                        lmd = saturate(lm - LTCGI_LIGHTMAP_CUTOFF);
                     lmd *= _LTCGI_LightmapMult[flags.lmch - 1];
-                    lmd = pow(lmd*0.25, 0.8)*4;
+                    //lmd = pow(lmd*0.25, 0.8)*4;
                 }
                 float diff = LTCGI_Evaluate(Lw, worldNorm, viewDir, identityBrdf, i, roughness, uvStart, uvEnd, true, flags, color);
-                // honestly just because it looks better to me:
                 if (flags.lmch && !flags.diffFromLm)
-                    diff = pow(diff, 0.5);
+                    diff = pow(diff, LTCGI_LTC_DIFFUSE_POWER);
                 diffuse += (diff * color * lmd);
             }
         #endif
@@ -314,7 +313,7 @@
             if (flags.specular)
             {
                 float spec = LTCGI_Evaluate(Lw, worldNorm, viewDir, Minv, i, roughness, uvStart, uvEnd, false, flags, color);
-                spec *= spec_amp * smoothstep(0.0, 0.25, lm - 0.1);
+                spec *= spec_amp * smoothstep(0.0, LTCGI_SPECULAR_LIGHTMAP_STEP, saturate(lm - LTCGI_LIGHTMAP_CUTOFF));
                 #ifndef LTCGI_SPECULAR_OFF
                     totalSpecularIntensity += spec;
                 #endif
@@ -324,7 +323,7 @@
     }
 
     #ifdef LTCGI_VISUALIZE_SCREEN_COUNT
-        diffuse += float3(ccc == 1, ccc == 2, ccc > 2);
+        diffuse = float3(ccc == 1, ccc == 2, ccc > 2);
     #endif
 }
 

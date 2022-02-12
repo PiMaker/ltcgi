@@ -16,13 +16,20 @@
 //#define LTCGI_TOGGLEABLE_SPEC_DIFF_OFF
 
 /// Always use LTC diffuse mode, never lightmapped diffuse.
-/// This disables lightmaps entirely. Mainly used for Projector components.
+/// This disables lightmaps entirely.
 //#define LTCGI_ALWAYS_LTC_DIFFUSE
+
+/// Lightmap values below this will be treated as black for specular/LTC diffuse.
+#define LTCGI_LIGHTMAP_CUTOFF 0.1
+/// Lightmap values above this (plus cutoff) will be treated as white.
+#define LTCGI_SPECULAR_LIGHTMAP_STEP 0.25
+/// Increase distance of LTC diffuse. Calculates as `diff = pos(diff, <this>)`.
+#define LTCGI_LTC_DIFFUSE_POWER 1
 
 /// Approximation to ignore diffuse light for far away
 /// lights, increase MULT or disable if you notice artifacting
 #define LTCGI_DISTANCE_FADE_APPROX
-///
+/// Distance at which diffuse from screens will be ignored.
 #define LTCGI_DISTANCE_FADE_APPROX_MULT 50
 /// [DEBUG] Visualize distance fade error with red pixels.
 //#define LTCGI_DISTANCE_FADE_APPROX_ERROR_VISUALIZE
