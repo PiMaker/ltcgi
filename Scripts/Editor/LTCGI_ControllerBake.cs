@@ -321,13 +321,13 @@ namespace pi.LTCGI
                             {
                                 // Disable static batching for all objects we double-lightmap, as
                                 // otherwise Unity bakes unity_LightmapST into the UV channels and
-                                // breaks our custom offsets. Use instancing to offset the perf cost.
+                                // breaks our custom offsets.
                                 var flags = GameObjectUtility.GetStaticEditorFlags(r.gameObject);
                                 flags &= ~StaticEditorFlags.BatchingStatic;
                                 GameObjectUtility.SetStaticEditorFlags(r.gameObject, flags);
                                 flagSet = false;
                             }
-                            m.enableInstancing = true;
+                            //m.enableInstancing = true;
                         }
                     }
                 }
