@@ -15,8 +15,9 @@ If you like this prefab, consider [supporting me on KoFi](https://ko-fi.com/pima
 
 To use LTCGI, all objects that should receive lighting must use a compatible shader. Currently compatible ones are listed below. If you implement LTCGI into your shader, feel free to send a PR to be included.
 
+* [ORL Shader Family](https://shaders.orels.sh/) by [@orels1](https://github.com/orels1)
 * Basic "Unlit" Test Shader (included)
-* Unity Standard Surface Shader (included)
+* Surface Shader (included)
 
 ## How to use / Download
 
