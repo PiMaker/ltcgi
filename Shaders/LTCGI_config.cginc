@@ -26,6 +26,10 @@
 /// Increase distance of LTC diffuse. Calculates as `diff = pos(diff, <this>)`.
 #define LTCGI_LTC_DIFFUSE_POWER 1
 
+/// Distance multiplier for calculating blur amount.
+/// Increase to make reflections blurrier faster as distance increases.
+#define LTCGI_UV_BLUR_DISTANCE 333
+
 /// Approximation to ignore diffuse light for far away
 /// lights, increase MULT or disable if you notice artifacting
 #define LTCGI_DISTANCE_FADE_APPROX

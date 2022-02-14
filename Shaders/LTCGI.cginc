@@ -107,7 +107,7 @@
                 #ifdef LTCGI_EXPERIMENTAL_UV_MAP
                     d *= 800.0f;
                 #else
-                    d *= 380.0f;
+                    d *= LTCGI_UV_BLUR_DISTANCE;
                 #endif
                 d = log(d) / log(3.0);
 
