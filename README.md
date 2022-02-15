@@ -26,6 +26,10 @@ Also consider the [attribution requirements](#Attribution).
 
 Check the [Releases](https://github.com/PiMaker/ltcgi/releases) tab for downloads.
 
+### Dependencies
+* [UdonSharp](https://github.com/MerlinVR/UdonSharp)
+* [CyanEmu](https://github.com/CyanLaser/CyanEmu) (optional, but highly recommended)
+
 ## Attribution
 
 According to the [License](#License) you are free to use this in your world, but you need to give credit. You are free to do so in whichever way, but you must provide a link to this GitHub repository, such as to fulfill the imported license of the LTC example code used as a base for this project.
