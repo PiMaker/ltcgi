@@ -6,6 +6,8 @@ Optimized plug-and-play realtime area lighting using the [linearly transformed c
 
 If you like this prefab, consider [supporting me on KoFi](https://ko-fi.com/pimaker)!
 
+Join the Discord for support or other questions: https://discord.gg/r38vJd2DuJ
+
 ![Header Image](./Screenshots/header.jpg)
 
 ![Demo Video](./Screenshots/ltcgi.gif)  
