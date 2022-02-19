@@ -58,3 +58,10 @@ sysinfo.txt
 # Crashlytics generated file
 crashlytics-build.properties
 
+# LTCGI related
+/Debug Stuff/
+Debug Stuff.meta
+/Screenshots/*.meta
+Screenshots.meta
+/Generated/
+Generated.meta
