@@ -184,7 +184,7 @@ namespace pi.LTCGI
                     }
                     else if (type == ConfigType.Float)
                     {
-                        var valueInConfig = float.Parse(line.Substring(line.LastIndexOf(' ')).Replace('f', ' '));
+                        var valueInConfig = float.Parse(line.Substring(line.LastIndexOf(' ')).Replace('f', ' '), System.Globalization.CultureInfo.InvariantCulture);
                         var value = existsInCcv ? (float)ccvValue : valueInConfig;
 
                         var labelStyle = new GUIStyle(GUI.skin.label);
