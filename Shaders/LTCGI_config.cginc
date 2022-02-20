@@ -19,6 +19,9 @@
 /// This disables lightmaps entirely.
 //#define LTCGI_ALWAYS_LTC_DIFFUSE
 
+/// Use bicubic filtering for LTCGI lightmap. Recommended on.
+#define LTCGI_BICUBIC_LIGHTMAP
+
 /// Lightmap values below this will be treated as black for specular/LTC diffuse.
 #define LTCGI_LIGHTMAP_CUTOFF 0.1
 /// Lightmap values above this (plus cutoff) will be treated as white.

@@ -4,6 +4,7 @@
 #include "LTCGI_config.cginc"
 #include "LTCGI_uniform.cginc"
 #include "LTCGI_functions.cginc"
+#include "LTCGI_shadowmap.cginc"
 
 #ifdef SHADER_TARGET_SURFACE_ANALYSIS
 #define const  
@@ -198,13 +199,7 @@
     #endif
 
     // calculate LTCGI custom lightmap UV and sample
-    float3 lms = 1;
-    #ifndef LTCGI_ALWAYS_LTC_DIFFUSE
-    lmuv = lmuv * _LTCGI_LightmapST.xy + _LTCGI_LightmapST.zw;
-    #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
-    lms = _LTCGI_Lightmap.Sample(sampler_LTCGI_trilinear_clamp_sampler, lmuv);
-    #endif
-    #endif
+    float3 lms = LTCGI_SampleShadowmap(lmuv);
 
     #ifdef LTCGI_SHOW_SHADOWMAP
         diffuse += lms;
