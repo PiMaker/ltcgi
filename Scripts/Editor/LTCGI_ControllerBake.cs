@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Rendering;
 #endif
@@ -164,8 +165,9 @@ namespace pi.LTCGI
                 // #endif
             }
 
-            EditorUtility.ClearProgressBar();
             bakeInProgress = true;
+            EditorSceneManager.SaveOpenScenes();
+            EditorUtility.ClearProgressBar();
 
             /*prevLightmapData = Lightmapping.lightingDataAsset;
             Lightmapping.lightingDataAsset = null;
@@ -193,7 +195,7 @@ namespace pi.LTCGI
 
             if (!bakery)
             {
-                Lightmapping.bakeCompleted += BakeComplete;
+                Lightmapping.bakeCompleted += BakeCompleteEvent;
                 Lightmapping.BakeAsync();
             }
 
@@ -352,6 +354,8 @@ namespace pi.LTCGI
             }
 
             bakeInProgress = false;
+            AssetDatabase.SaveAssets();
+            EditorSceneManager.SaveOpenScenes();
 
             /*Lightmapping.lightingDataAsset = prevLightmapData;
             LightmapSettings.lightmapsMode = prevLightmapMode;
