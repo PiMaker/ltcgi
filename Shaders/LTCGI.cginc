@@ -207,12 +207,14 @@
     #endif
 
     #ifdef LTCGI_SHOW_SHADOWMAP
-        diffuse = lms;
+        diffuse += lms;
+        totalSpecularIntensity = 0;
         return;
     #endif
 
     #ifdef LTCGI_SHOW_SHADOWMAP_UV
         diffuse = float3(lmuv.xy, 0);
+        totalSpecularIntensity = 0;
         return;
     #endif
 
