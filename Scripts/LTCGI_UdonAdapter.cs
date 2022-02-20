@@ -7,7 +7,8 @@ using VRC.Udon;
 [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
 public class LTCGI_UdonAdapter : UdonSharpBehaviour
 {
-    public bool ReverseUnityLightmapST = true;
+    // perhaps fixes some lightmap issues with static batching?
+    public bool DEBUG_ReverseUnityLightmapST = false;
 
     [Header("Internal Data (auto-generated, do not edit!)")]
     public MeshRenderer[] _Renderers;
@@ -38,6 +39,11 @@ public class LTCGI_UdonAdapter : UdonSharpBehaviour
     void Start()
     {
         Debug.Log("LTCGI adapter start");
+
+        if (DEBUG_ReverseUnityLightmapST)
+        {
+            Debug.LogWarning("WARNING: LTCGI DEBUG_ReverseUnityLightmapST is active! This is probably not what you want!");
+        }
 
         _LTCGI_Vertices_0t = new Vector4[_LTCGI_Vertices_0.Length];
         _LTCGI_Vertices_1t = new Vector4[_LTCGI_Vertices_1.Length];
@@ -81,7 +87,7 @@ public class LTCGI_UdonAdapter : UdonSharpBehaviour
             block.SetVector("_LTCGI_LightmapMult", _LTCGI_LightmapMult);
 
             var lmst = _LTCGI_LightmapST[i];
-            if (ReverseUnityLightmapST)
+            if (DEBUG_ReverseUnityLightmapST)
             {
                 // workaround?
                 lmst.x /= r.lightmapScaleOffset.x;
