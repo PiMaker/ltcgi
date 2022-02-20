@@ -196,6 +196,7 @@ namespace pi.LTCGI
             if (!bakery)
             {
                 Lightmapping.bakeCompleted += BakeCompleteEvent;
+                EditorUtility.DisplayDialog("LTCGI", "Please don't touch the scene during async bake.", "I promise!");
                 Lightmapping.BakeAsync();
             }
 
@@ -206,9 +207,10 @@ namespace pi.LTCGI
                     var b = ftRenderLightmap.instance;
                     if (b == null)
                     {
-                        EditorUtility.DisplayDialog("LTCGI", "Bakery instance not found, please bake lightmaps manually now.", "OK");
+                        b = ftRenderLightmap.instance = ftRenderLightmap.CreateInstance<ftRenderLightmap>();
+                        //EditorUtility.DisplayDialog("LTCGI", "Bakery instance not found, please bake lightmaps manually now.", "OK");
                     }
-                    else
+                    //else
                     {
                         b.Show();
                         b.SaveRenderSettings();
@@ -250,12 +252,12 @@ namespace pi.LTCGI
                 ftRenderLightmap.OnFinishedFullRender -= BakeCompleteEvent;
             #endif
 
-            obj.BakeComplete();
+            EditorApplication.delayCall += obj.BakeComplete;
         }
         private static void BakeCompleteEvent(object a, EventArgs b) => BakeCompleteEvent();
         internal void BakeComplete()
         {
-            //EditorUtility.DisplayDialog("LTCGI bake", "Lightmap baking appears to have finished, LTCGI will now apply the generated configuration.", "OK");
+            EditorUtility.DisplayDialog("LTCGI bake", "Lightmap baking has finished, LTCGI will now apply the generated configuration.", "OK");
 
             EditorUtility.DisplayProgressBar("Finishing LTCGI bake", "Copying calculated lightmaps", 0.0f);
 
@@ -316,20 +318,15 @@ namespace pi.LTCGI
 
                     foreach (var m in r.sharedMaterials)
                     {
-                        var flagSet = false;
                         if (MatLTCGIenabled(m))
                         {
-                            if (!flagSet)
-                            {
-                                // Disable static batching for all objects we double-lightmap, as
-                                // otherwise Unity bakes unity_LightmapST into the UV channels and
-                                // breaks our custom offsets.
-                                var flags = GameObjectUtility.GetStaticEditorFlags(r.gameObject);
-                                flags &= ~StaticEditorFlags.BatchingStatic;
-                                GameObjectUtility.SetStaticEditorFlags(r.gameObject, flags);
-                                flagSet = false;
-                            }
-                            //m.enableInstancing = true;
+                            // Disable static batching for all objects we double-lightmap, as
+                            // otherwise Unity bakes unity_LightmapST into the UV channels and
+                            // breaks our custom offsets.
+                            var flags = GameObjectUtility.GetStaticEditorFlags(r.gameObject);
+                            flags &= ~StaticEditorFlags.BatchingStatic;
+                            GameObjectUtility.SetStaticEditorFlags(r.gameObject, flags);
+                            break;
                         }
                     }
                 }
