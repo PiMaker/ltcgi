@@ -151,10 +151,11 @@ public class LTCGI_UdonAdapter : UdonSharpBehaviour
 
         Update();
 
-        Debug.Log($"LTCGI adapter running for {_LTCGI_ScreenCount} ({_LTCGI_ScreenCountDynamic} dynamic) screens, {_Renderers.Length} renderers, {mi} materials");
+        Debug.Log($"LTCGI adapter started for {_LTCGI_ScreenCount} ({_LTCGI_ScreenCountDynamic} dynamic) screens, {_Renderers.Length} renderers, {mi} materials");
 
         if (_LTCGI_ScreenCountDynamic == 0 || _Renderers.Length == 0)
         {
+            Debug.Log("LTCGI adapter going to sleep 😴");
             this.enabled = false;
         }
     }
@@ -236,6 +237,8 @@ public class LTCGI_UdonAdapter : UdonSharpBehaviour
         _LTCGI_ExtraData[screen].x = color.r;
         _LTCGI_ExtraData[screen].y = color.g;
         _LTCGI_ExtraData[screen].z = color.b;
+
+        if (!this.enabled) Update();
     }
 
     public void _SetVideoTexture(Texture texture)
@@ -278,6 +281,8 @@ public class LTCGI_UdonAdapter : UdonSharpBehaviour
         flags &= ~(0xfU << 4);
         flags |= (index & 0xf) << 4;
         setFlags(screen, flags);
+
+        if (!this.enabled) Update();
     }
 
 
