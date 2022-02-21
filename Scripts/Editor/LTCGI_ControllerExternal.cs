@@ -118,10 +118,14 @@ LTCGI_Screen Components: {LTCGI_Controller._LTCGI_ScreenTransforms.Count(x => x 
             {
                 // FIXME: make more robust
                 var guids = AssetDatabase.FindAssets("LTCGI_config");
-                if (guids.Length != 1)
+                if (guids.Length < 1)
                 {
                     Debug.LogError($"Could not find LTCGI_config.cginc ({guids.Length})! Please reimport package.");
                     return;
+                }
+                else if (guids.Length > 1)
+                {
+                    Debug.LogWarning("LTCGI_config.cginc found more than once - this is not recommended!");
                 }
                 configPath = AssetDatabase.GUIDToAssetPath(guids[0]);
             }
