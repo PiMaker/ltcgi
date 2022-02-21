@@ -303,12 +303,12 @@
 
         // specular lighting
         #ifndef LTCGI_SPECULAR_OFF
-            // reset color
-            color = saturate(extra.rgb);
-
             [branch]
             if (flags.specular)
             {
+                // reset color
+                color = saturate(extra.rgb);
+
                 float spec = LTCGI_Evaluate(Lw, worldNorm, viewDir, Minv, i, roughness, uvStart, uvEnd, false, flags, color);
                 spec *= spec_amp * smoothstep(0.0, LTCGI_SPECULAR_LIGHTMAP_STEP, saturate(lm - LTCGI_LIGHTMAP_CUTOFF));
                 #ifndef LTCGI_SPECULAR_OFF
