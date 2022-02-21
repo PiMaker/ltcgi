@@ -89,12 +89,15 @@ namespace pi.LTCGI
 
             EditorGUILayout.Space(); EditorGUILayout.Space();
 
-            EditorGUILayout.HelpBox(
+            if (LTCGI_Controller.cachedMeshRenderers != null && LTCGI_Controller._LTCGI_ScreenTransforms != null)
+            {
+                    EditorGUILayout.HelpBox(
 $@"Affected Renderers Total: {LTCGI_Controller.cachedMeshRenderers.Length}
 LTCGI_Screen Components: {LTCGI_Controller._LTCGI_ScreenTransforms.Count(x => x != null)} / 16
 AudioLink: {(LTCGI_Controller.AudioLinkAvailable ? "Available" : "Not Detected")}",
-                MessageType.Info, true
-            );
+                    MessageType.Info, true
+                );
+            }
 
             EditorGUILayout.Space(); EditorGUILayout.Space();
             var header = new GUIStyle(EditorStyles.boldLabel);
