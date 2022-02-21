@@ -249,6 +249,7 @@ namespace pi.LTCGI
                 flags |= ((uint)s.ColorMode & 0x3) << 8;
                 flags |= ((uint)s.LightmapChannel & 0x3) << 10;
                 if (s.Cylinder) flags |= (1<<12);
+                flags |= ((uint)s.AudioLinkBand & 0x3) << 13;
 
                 var col = s.enabled && s.gameObject.activeInHierarchy ? s.Color : Color.black;
                 float fflags = BitConverter.ToSingle(BitConverter.GetBytes(flags), 0);

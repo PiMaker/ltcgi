@@ -36,6 +36,7 @@ struct ltcgi_flags
     uint colormode;
     uint lmch, lmidx;
     bool cylinder;
+    uint alBand;
 };
 
 #define LTCGI_COLORMODE_STATIC 0
@@ -66,6 +67,11 @@ ltcgi_flags ltcgi_parse_flags(uint val)
     #endif
 
     ret.cylinder    = (val & (1 << 12)) == (1 << 12);
+
+    #ifdef LTCGI_AUDIOLINK
+    ret.alBand      = (val & 0x6000) >> 13;
+    #endif
+
     return ret;
 }
 

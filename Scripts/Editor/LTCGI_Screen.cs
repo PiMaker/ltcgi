@@ -37,6 +37,9 @@ namespace pi.LTCGI
 
         public Vector2 SingleUV;
 
+        [Range(0, 3)]
+        public int AudioLinkBand;
+
         [Tooltip("Workaround for some Blender imports. Try to enable it if you notice your reflection is sideways.")]
         public bool FlipUV;
 
@@ -98,6 +101,7 @@ namespace pi.LTCGI
         Static = 0,
         Texture = 1,
         SingleUV = 2,
+        AudioLink = 3,
     }
 
     public enum RendererMode
@@ -112,7 +116,7 @@ namespace pi.LTCGI
     [CanEditMultipleObjects]
     public class LTCGI_ScreenEditor : Editor
     {
-        SerializedProperty colorProp, sidedProp, dynamicProp, indexProp, colormodeProp, specProp, diffProp, lmProp, singleUVProp, rendererModeProp, rendererListProp, rendererDistProp, diffModeProp, diffuseFromLmProp, flipProp, lmIntensProp;
+        SerializedProperty colorProp, sidedProp, dynamicProp, indexProp, colormodeProp, specProp, diffProp, lmProp, singleUVProp, rendererModeProp, rendererListProp, rendererDistProp, diffModeProp, diffuseFromLmProp, flipProp, lmIntensProp, alBandProp;
 
         LTCGI_Screen screen;
 
@@ -151,6 +155,7 @@ namespace pi.LTCGI
             diffuseFromLmProp = serializedObject.FindProperty("DiffuseFromLm");
             lmIntensProp = serializedObject.FindProperty("LightmapIntensity");
             flipProp = serializedObject.FindProperty("FlipUV");
+            alBandProp = serializedObject.FindProperty("AudioLinkBand");
 
             screen = (LTCGI_Screen)target;
             Logo = Resources.Load("LTCGI-Logo") as Texture;
@@ -227,11 +232,11 @@ namespace pi.LTCGI
                     {
                         if (indexProp.intValue == 0)
                         {
-                            GUILayout.Label("Texture: [Live Video]");
+                            EditorGUILayout.HelpBox("Texture: [Live Video]", MessageType.None, false);
                         }
                         else
                         {
-                            GUILayout.Label("Texture: " + LTCGI_Controller.Singleton.StaticTextures[indexProp.intValue - 1].name);
+                            EditorGUILayout.HelpBox("Texture: " + LTCGI_Controller.Singleton.StaticTextures[indexProp.intValue - 1].name, MessageType.None, false);
                         }
                     }
                 };
@@ -247,7 +252,16 @@ namespace pi.LTCGI
                         texSelect();
                         singleUVProp.vector2Value = EditorGUILayout.Vector2Field("Texture UV", singleUVProp.vector2Value);
                         break;
+                    case ColorMode.AudioLink:
+                        EditorGUILayout.PropertyField(alBandProp);
+                        string[] bandNames = new[] {"Bass", "Low Mids", "High Mids", "Treble"};
+                        EditorGUILayout.HelpBox($"Selected Band: {bandNames[alBandProp.intValue]}", MessageType.None, false);
+                        break;
                 }
+            }
+            else
+            {
+                EditorGUILayout.HelpBox("(cannot multi-edit 'Color Mode' settings)", MessageType.None, false);
             }
 
             EditorGUILayout.Separator();
