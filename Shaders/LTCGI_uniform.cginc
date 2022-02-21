@@ -42,6 +42,7 @@ struct ltcgi_flags
 #define LTCGI_COLORMODE_STATIC 0
 #define LTCGI_COLORMODE_TEXTURE 1
 #define LTCGI_COLORMODE_SINGLEUV 2
+#define LTCGI_COLORMODE_AUDIOLINK 3
 
 ltcgi_flags ltcgi_parse_flags(uint val)
 {

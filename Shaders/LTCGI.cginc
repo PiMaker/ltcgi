@@ -6,6 +6,10 @@
 #include "LTCGI_functions.cginc"
 #include "LTCGI_shadowmap.cginc"
 
+#ifdef LTCGI_AUDIOLINK
+#include "Assets/AudioLink/Shaders/AudioLink.cginc"
+#endif
+
 #ifdef SHADER_TARGET_SURFACE_ANALYSIS
 #define const  
 #endif
@@ -36,6 +40,8 @@
         }
     #endif
 
+    #define RET1_IF_LMDIFF [branch] if (/*const*/ diffuse && flags.diffFromLm) return 1;
+
     if (flags.colormode == LTCGI_COLORMODE_SINGLEUV) {
         float2 uv = uvStart;
         if (uv.x < 0) uv.xy = uv.yx;
@@ -46,11 +52,17 @@
             color *= LTCGI_sample(LTCGI_inset_uv(uv), 1, flags.texindex, 0);
         #endif
 
-        [branch]
-        if (diffuse && flags.diffFromLm) {
-            return 1;
-        }
+        RET1_IF_LMDIFF
     }
+
+    #ifdef LTCGI_AUDIOLINK
+        if (flags.colormode == LTCGI_COLORMODE_AUDIOLINK) {
+            float al = AudioLinkData(ALPASS_AUDIOLINK + uint2(0, flags.alBand)).r;
+            color *= al;
+
+            RET1_IF_LMDIFF
+        }
+    #endif
 
     // create LTC polygon array
     // note the order of source verts (keyword: winding order)
@@ -145,11 +157,10 @@
         // colorize output
         color *= sampled;
 
-        [branch]
-        if (diffuse && flags.diffFromLm) {
-            return 1;
-        }
+        RET1_IF_LMDIFF
     }
+
+    #undef RET1_IF_LMDIFF
 
     int n;
     LTCGI_ClipQuadToHorizon(L, n);
