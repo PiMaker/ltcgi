@@ -165,7 +165,11 @@ namespace pi.LTCGI
 
             serializedObject.Update();
 
-            colorProp.colorValue = EditorGUILayout.ColorField(new GUIContent("Color"), colorProp.colorValue, true, false, true);
+            var newCol = EditorGUILayout.ColorField(new GUIContent("Color"), colorProp.colorValue, true, false, true);
+            if (colorProp.colorValue != newCol)
+            {
+                colorProp.colorValue = newCol;
+            }
 
             if (colorProp.colorValue.maxColorComponent == 0.0f)
             {
@@ -192,9 +196,12 @@ namespace pi.LTCGI
             EditorGUILayout.Separator();
 
             var dm = (DiffMode)EditorGUILayout.EnumPopup("Diffuse Mode", (DiffMode)diffModeProp.intValue);
-            diffModeProp.intValue = (int)dm;
-            diffProp.boolValue = dm != DiffMode.NoDiffuse;
-            diffuseFromLmProp.boolValue = dm == DiffMode.LightmapDiffuse;
+            if (diffModeProp.intValue != (int)dm)
+            {
+                diffModeProp.intValue = (int)dm;
+                diffProp.boolValue = dm != DiffMode.NoDiffuse;
+                diffuseFromLmProp.boolValue = dm == DiffMode.LightmapDiffuse;
+            }
 
             EditorGUILayout.PropertyField(specProp);
             EditorGUILayout.PropertyField(dynamicProp);
@@ -204,43 +211,52 @@ namespace pi.LTCGI
             EditorGUILayout.Separator();
 
             var texmode = (ColorMode)EditorGUILayout.EnumPopup("Color Mode", (ColorMode)colormodeProp.intValue);
-            colormodeProp.intValue = (int)texmode;
-            Action texSelect = () =>
+            if (colormodeProp.intValue != (int)texmode)
             {
-                EditorGUILayout.IntSlider(indexProp, 0,
-                    LTCGI_Controller.Singleton == null && LTCGI_Controller.Singleton.StaticTextures != null ? 2 :
-                        LTCGI_Controller.Singleton.StaticTextures.Length);
-
-                if (LTCGI_Controller.Singleton != null)
+                colormodeProp.intValue = (int)texmode;
+            }
+            if (targets.Length == 1)
+            {
+                Action texSelect = () =>
                 {
-                    if (indexProp.intValue == 0)
+                    EditorGUILayout.IntSlider(indexProp, 0,
+                        LTCGI_Controller.Singleton == null && LTCGI_Controller.Singleton.StaticTextures != null ? 2 :
+                            LTCGI_Controller.Singleton.StaticTextures.Length);
+
+                    if (LTCGI_Controller.Singleton != null)
                     {
-                        GUILayout.Label("Texture: [Live Video]");
+                        if (indexProp.intValue == 0)
+                        {
+                            GUILayout.Label("Texture: [Live Video]");
+                        }
+                        else
+                        {
+                            GUILayout.Label("Texture: " + LTCGI_Controller.Singleton.StaticTextures[indexProp.intValue - 1].name);
+                        }
                     }
-                    else
-                    {
-                        GUILayout.Label("Texture: " + LTCGI_Controller.Singleton.StaticTextures[indexProp.intValue - 1].name);
-                    }
+                };
+                switch (texmode)
+                {
+                    case ColorMode.Static:
+                        indexProp.intValue = 0;
+                        break;
+                    case ColorMode.Texture:
+                        texSelect();
+                        break;
+                    case ColorMode.SingleUV:
+                        texSelect();
+                        singleUVProp.vector2Value = EditorGUILayout.Vector2Field("Texture UV", singleUVProp.vector2Value);
+                        break;
                 }
-            };
-            switch (texmode)
-            {
-                case ColorMode.Static:
-                    indexProp.intValue = 0;
-                    break;
-                case ColorMode.Texture:
-                    texSelect();
-                    break;
-                case ColorMode.SingleUV:
-                    texSelect();
-                    singleUVProp.vector2Value = EditorGUILayout.Vector2Field("Texture UV", singleUVProp.vector2Value);
-                    break;
             }
 
             EditorGUILayout.Separator();
 
             var rendererMode = (RendererMode)EditorGUILayout.EnumPopup("Affected Renderers", (RendererMode)rendererModeProp.intValue);
-            rendererModeProp.intValue = (int)rendererMode;
+            if (rendererModeProp.intValue != (int)rendererMode)
+            {
+                rendererModeProp.intValue = (int)rendererMode;
+            }
             if (rendererMode != RendererMode.All && rendererMode != RendererMode.Distance)
             {
                 EditorGUILayout.PropertyField(rendererListProp, new GUIContent("Renderer List"), true);
@@ -253,7 +269,10 @@ namespace pi.LTCGI
             EditorGUILayout.Separator();
 
             var lmch = (LMChannel)EditorGUILayout.EnumPopup("Lightmap Channel", (LMChannel)lmProp.intValue);
-            lmProp.intValue = (int)lmch;
+            if (lmProp.intValue != (int)lmch)
+            {
+                lmProp.intValue = (int)lmch;
+            }
 
             if (lmch != LMChannel.Off)
             {
