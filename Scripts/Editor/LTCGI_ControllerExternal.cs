@@ -17,6 +17,8 @@ namespace pi.LTCGI
     [CustomEditor(typeof(LTCGI_Controller))]
     public class LTCGI_ControllerEditor : Editor
     {
+        const string VERSION = "v0.9.3.99";
+
         private static readonly string[] CONFIGURATION_PROPS = new[] {
             "VideoTexture",
             "StaticTextures",
@@ -51,6 +53,10 @@ namespace pi.LTCGI
             style.alignment = TextAnchor.MiddleCenter;
             style.fixedHeight = 150;
             GUI.Box(GUILayoutUtility.GetRect(300, 150, style), Logo, style);
+
+            var rightAlignedLabel = new GUIStyle(EditorStyles.label);
+            rightAlignedLabel.alignment = TextAnchor.MiddleRight;
+            GUILayout.Label(VERSION, rightAlignedLabel);
 
             if (PrefabUtility.IsPartOfPrefabAsset(target))
             {
