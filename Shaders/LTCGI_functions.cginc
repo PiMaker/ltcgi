@@ -5,17 +5,30 @@
     LTC HELPERS
 */
 
-float3 LTCGI_IntegrateEdge(float3 v1, float3 v2)
-{
-    float x = dot(v1, v2);
-    float y = abs(x);
+// Adapted from: https://github.com/Paul180297/BezierLightLTC/blob/master/shaders/floorLTC.frag
+// by Takahiro Kuge and Tatsuya Yatagawa
+// Available under the terms of the CreativeCommons BY-NC-SA license, see here for full text:
+// https://github.com/Paul180297/BezierLightLTC/blob/master/LICENSE
+float3 LTCGI_IntegrateEdge(float3 v0, float3 v1) {
+    // project onto sphere
+    float l0 = length(v0);
+    float l1 = length(v1);
+    float inv_l0l1 = 1.0 / (l0 * l1);
 
-    float a = 0.8543985 + (0.4965155 + 0.0145206*y)*y;
-    float b = 3.4175940 + (4.1616724 + y)*y;
-    float v = a / b;
-    float theta_sintheta = (x > 0.0) ? v : 0.5*rsqrt(max(1.0 - x*x, 1e-7)) - v;
+    // clamp to avoid numerical instability on light-object intersection
+    const float DOT_CLAMP = 0.9999999;
+    float cosTheta = clamp(dot(v0, v1) * inv_l0l1, -DOT_CLAMP, DOT_CLAMP);
+    float absCosTheta = abs(cosTheta);
 
-    return cross(v1, v2) * theta_sintheta;
+    float a = 5.42031 + (3.12829 + 0.0902326 * absCosTheta) * absCosTheta;
+    float b = 3.45068 + (4.18814 + absCosTheta) * absCosTheta;
+    float thetaOverSinTheta = a / b;
+
+    if(cosTheta < 0.0) {
+        thetaOverSinTheta = UNITY_PI * rsqrt(1.0 - cosTheta * cosTheta) - thetaOverSinTheta;
+    }
+
+    return thetaOverSinTheta * cross(v0, v1) * inv_l0l1;
 }
 
 void LTCGI_ClipQuadToHorizon(inout float3 L[5], out int n)
@@ -78,7 +91,7 @@ void LTCGI_ClipQuadToHorizon(inout float3 L[5], out int n)
             L[1] = -L[1].z * L[2] + L[2].z * L[1];
             L[3] =  L[0];
             break;
-        case 5: // V1 V3 clip V2 V4) impossible
+        case 5: // V1 V3 clip V2 V4 impossible
             break;
         case 6: // V2 V3 clip V1 V4
             n = 4;
@@ -96,7 +109,7 @@ void LTCGI_ClipQuadToHorizon(inout float3 L[5], out int n)
             L[1] = -L[2].z * L[3] + L[3].z * L[2];
             L[2] =  L[3];
             break;
-        case 10: // V2 V4 clip V1 V3) impossible
+        case 10: // V2 V4 clip V1 V3 impossible
             break;
         case 11: // V1 V2 V4 clip V3
             n = 5;

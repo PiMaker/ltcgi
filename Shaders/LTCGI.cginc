@@ -64,12 +64,14 @@
     // get texture coords (before clipping!)
     [branch]
     if (flags.colormode == LTCGI_COLORMODE_TEXTURE) {
+        //// LICENSE
         // orthonormal projection to transformed rectangle
         float3 V1 = L[1] - L[0];
         float3 V2 = L[3] - L[0];
         float3 RN = cross(V1, V2);
         float planeAreaSquared = dot(RN, RN);
         float planeDistxPlaneArea = dot(RN, L[0]);
+        //// LICENSE END
 
         float2 uv;
         #ifdef LTCGI_EXPERIMENTAL_UV_MAP
@@ -94,6 +96,7 @@
             float3 bary3 = float3(bary, 1 - bary.x - bary.y);
             uv = uvs[2 - hit0] * bary3.x + uvs[3 - hit0] * bary3.y + uvs[0] * bary3.z;
         #else
+            //// LICENSE
             // orthonormal projection of (0,0,0) in area light space
             float3 P = planeDistxPlaneArea * RN / planeAreaSquared - L[0];
 
@@ -103,6 +106,7 @@
             float3 V3 = V2 - V1 * dot_V1_V2 * inv_dot_V1_V1;
             uv.y = dot(V3, P) / dot(V3, V3);
             uv.x = dot(V1, P) * inv_dot_V1_V1 - dot_V1_V2 * inv_dot_V1_V1 * uv.y;
+            //// LICENSE END
 
             // remap onto object UVs
             if (uvStart.x < 0 || uvEnd.x < 0) uv.xy = uv.yx; // workaround
@@ -158,18 +162,13 @@
     if (n == 0)
         return float3(0, 0, 0);
 
-    L[0] = normalize(L[0]);
-    L[1] = normalize(L[1]);
-    L[2] = normalize(L[2]);
-    L[3] = normalize(L[3]);
-    L[4] = normalize(L[4]);
-
     // integrate
     float sum = 0;
     [unroll(5)]
     for (uint v = 0; v < max(3, (uint)n); v++) {
         sum += LTCGI_IntegrateEdge(L[v], L[(v + 1) % 5]).z;
     }
+    sum *= UNITY_INV_TWO_PI;
 
     #ifdef LTCGI_DISTANCE_FADE_APPROX
     #ifdef LTCGI_DISTANCE_FADE_APPROX_ERROR_VISUALIZE
