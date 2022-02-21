@@ -12,6 +12,17 @@ namespace pi.LTCGI
     #if UNITY_EDITOR
     public partial class LTCGI_Controller
     {
+        private static bool? audioLinkAvailable = null;
+        public static bool AudioLinkAvailable {
+            get {
+                if (!audioLinkAvailable.HasValue)
+                {
+                    audioLinkAvailable = AssetDatabase.FindAssets("Assets/AudioLink/Shaders/AudioLink.cginc") != null;
+                }
+                return audioLinkAvailable.Value;
+            }
+        }
+
         private float[] GetMaskForRenderer(LTCGI_Screen[] screens, MeshRenderer r)
         {
             Func<bool, float> b = cond => cond ? 1.0f : 0.0f;

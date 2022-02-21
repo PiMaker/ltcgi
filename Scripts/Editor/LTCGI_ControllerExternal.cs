@@ -91,7 +91,8 @@ namespace pi.LTCGI
 
             EditorGUILayout.HelpBox(
 $@"Affected Renderers Total: {LTCGI_Controller.cachedMeshRenderers.Length}
-LTCGI_Screen Components: {LTCGI_Controller._LTCGI_ScreenTransforms.Count(x => x != null)} / 16",
+LTCGI_Screen Components: {LTCGI_Controller._LTCGI_ScreenTransforms.Count(x => x != null)} / 16
+AudioLink: {(LTCGI_Controller.AudioLinkAvailable ? "Available" : "Not Detected")}",
                 MessageType.Info, true
             );
 
@@ -138,6 +139,23 @@ LTCGI_Screen Components: {LTCGI_Controller._LTCGI_ScreenTransforms.Count(x => x 
                 string lineRaw = config[i];
                 var line = lineRaw.Trim();
                 if (string.IsNullOrEmpty(line)) continue;
+
+                if (line.EndsWith("#define LTCGI_AUDIOLINK"))
+                {
+                    var enabledInConfig = !line.StartsWith("//");
+                    var available = LTCGI_Controller.AudioLinkAvailable;
+                    if (enabledInConfig != available)
+                    {
+                        config[i] = (available ? "" : "//") + "#define LTCGI_AUDIOLINK";
+                        if (configChangedValues.Count == 0)
+                        {
+                            // force apply in case no apply button visible
+                            File.WriteAllLines(configPath, config);
+                            AssetDatabase.Refresh();
+                        }
+                    }
+                    continue;
+                }
 
                 if (line.StartsWith("///"))
                 {
