@@ -36,6 +36,22 @@
         }
     #endif
 
+    if (flags.colormode == LTCGI_COLORMODE_SINGLEUV) {
+        float2 uv = uvStart;
+        if (uv.x < 0) uv.xy = uv.yx;
+        // TODO: make more configurable?
+        #ifdef LTCGI_VISUALIZE_SAMPLE_UV
+            color = float3(uv.xy, 0);
+        #else
+            color *= LTCGI_sample(LTCGI_inset_uv(uv), 1, flags.texindex, 0);
+        #endif
+
+        [branch]
+        if (diffuse && flags.diffFromLm) {
+            return 1;
+        }
+    }
+
     // create LTC polygon array
     // note the order of source verts (keyword: winding order)
     float3 L[5];
@@ -128,20 +144,11 @@
 
         // colorize output
         color *= sampled;
-    } else if (flags.colormode == LTCGI_COLORMODE_SINGLEUV) {
-        float2 uv = uvStart;
-        if (uv.x < 0) uv.xy = uv.yx;
-        // TODO: make more configurable?
-        #ifdef LTCGI_VISUALIZE_SAMPLE_UV
-            color = float3(uv.xy, 0);
-        #else
-            color *= LTCGI_sample(LTCGI_inset_uv(uv), 1, flags.texindex, 0);
-        #endif
-    }
 
-    [branch]
-    if (diffuse && flags.diffFromLm) {
-        return 1;
+        [branch]
+        if (diffuse && flags.diffFromLm) {
+            return 1;
+        }
     }
 
     int n;
@@ -268,9 +275,11 @@
         LTCGI_GetLw(i, flags, worldPos, viewDir, Lw, uvStart, uvEnd);
 
         // skip single-sided lights that face the other way
-        float3 screenNorm = cross(Lw[1] - Lw[0], Lw[3] - Lw[0]);
-        if (!flags.doublesided && dot(screenNorm, Lw[0]) < 0)
-            continue;
+        if (!flags.doublesided) {
+            float3 screenNorm = cross(Lw[1] - Lw[0], Lw[3] - Lw[0]);
+            if (dot(screenNorm, Lw[0]) < 0)
+                continue;
+        }
 
         float lm = 1;
         if (flags.lmch) {
