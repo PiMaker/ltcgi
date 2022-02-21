@@ -13,6 +13,7 @@ namespace pi.LTCGI
 {
     #if UNITY_EDITOR
     [ExecuteInEditMode]
+    [RequireComponent(typeof(MeshRenderer), typeof(MeshFilter))]
     public class LTCGI_Screen : MonoBehaviour
     {
         public Color Color = Color.white;
