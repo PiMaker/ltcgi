@@ -47,10 +47,10 @@ namespace pi.LTCGI
 
         public static LTCGI_Controller Singleton;
 
-        private static MeshRenderer[] cachedMeshRenderers;
+        internal static MeshRenderer[] cachedMeshRenderers;
         private static Vector4[] _LTCGI_Vertices_0, _LTCGI_Vertices_1, _LTCGI_Vertices_2, _LTCGI_Vertices_3;
         private static Vector4[] _LTCGI_Vertices_0t, _LTCGI_Vertices_1t, _LTCGI_Vertices_2t, _LTCGI_Vertices_3t;
-        private static Transform[] _LTCGI_ScreenTransforms;
+        internal static Transform[] _LTCGI_ScreenTransforms;
         private static Vector4[] _LTCGI_ExtraData;
         private static Vector4 _LTCGI_LightmapMult;
 

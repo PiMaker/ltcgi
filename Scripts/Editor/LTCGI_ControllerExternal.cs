@@ -87,7 +87,15 @@ namespace pi.LTCGI
                 LTCGI_Controller.Singleton.BakeComplete();
             }
 
-            EditorGUILayout.Space(); EditorGUILayout.Space(); EditorGUILayout.Space();
+            EditorGUILayout.Space(); EditorGUILayout.Space();
+
+            EditorGUILayout.HelpBox(
+$@"Affected Renderers Total: {LTCGI_Controller.cachedMeshRenderers.Length}
+LTCGI_Screen Components: {LTCGI_Controller._LTCGI_ScreenTransforms.Count(x => x != null)} / 16",
+                MessageType.Info, true
+            );
+
+            EditorGUILayout.Space(); EditorGUILayout.Space();
             var header = new GUIStyle(EditorStyles.boldLabel);
             header.fontSize += 4;
             GUILayout.Label("LTCGI Configuration", header);
