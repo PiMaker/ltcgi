@@ -178,6 +178,7 @@ namespace pi.LTCGI
                 else
                 {
                     var mf = s.GetComponent<MeshFilter>();
+                    if (mf.sharedMesh == null) continue;
                     if (!fast)
                     {
                         SetMeshImporterFormat(mf.sharedMesh, true);
