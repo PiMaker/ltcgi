@@ -65,6 +65,7 @@ namespace pi.LTCGI
                     PrefabUtility.UnpackPrefabInstance(this.gameObject, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
                 Debug.Log("LTCGI Controller Singleton initialized");
                 Singleton = this;
+                Undo.undoRedoPerformed += this.UpdateMaterials;
             }
             else if (Singleton != this)
             {
