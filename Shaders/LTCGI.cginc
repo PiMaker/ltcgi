@@ -156,10 +156,9 @@
 
         // colorize output
         color *= sampled;
-
-        RET1_IF_LMDIFF
     }
 
+    RET1_IF_LMDIFF
     #undef RET1_IF_LMDIFF
 
     int n;
