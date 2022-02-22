@@ -13,7 +13,7 @@
     SubShader
     {
         // The LTCGI tag can either be "ALWAYS" or specify a "Toggle"/"ToggleUI" property.
-        // It is required so that renderes using this material will be updated by the controller.
+        // It is required so that renderers using this material will be updated by the controller.
         Tags { "RenderType"="Opaque" "LTCGI"="_LTCGI" }
         LOD 200
 
