@@ -40,6 +40,9 @@ public class LTCGI_UdonAdapter : UdonSharpBehaviour
     {
         Debug.Log("LTCGI adapter start");
 
+        var stopwatch = new System.Diagnostics.Stopwatch();
+        stopwatch.Start();
+
         if (DEBUG_ReverseUnityLightmapST)
         {
             Debug.LogWarning("WARNING: LTCGI DEBUG_ReverseUnityLightmapST is active! This is probably not what you want!");
@@ -151,7 +154,9 @@ public class LTCGI_UdonAdapter : UdonSharpBehaviour
 
         Update();
 
-        Debug.Log($"LTCGI adapter started for {_LTCGI_ScreenCount} ({_LTCGI_ScreenCountDynamic} dynamic) screens, {_Renderers.Length} renderers, {mi} materials");
+        stopwatch.Stop();
+
+        Debug.Log($"LTCGI adapter started for {_LTCGI_ScreenCount} ({_LTCGI_ScreenCountDynamic} dynamic) screens, {_Renderers.Length} renderers, {mi} materials, took: {stopwatch.ElapsedMilliseconds}ms");
 
         if (_LTCGI_ScreenCountDynamic == 0 || _Renderers.Length == 0)
         {
