@@ -100,6 +100,7 @@ namespace pi.LTCGI
             var allBakeryLights =
                 GameObject.FindObjectsOfType<BakerySkyLight>().Select(x => x.gameObject)
                 .Concat(GameObject.FindObjectsOfType<BakeryPointLight>().Select(x => x.gameObject))
+                .Concat(GameObject.FindObjectsOfType<BakeryLightMesh>().Select(x => x.gameObject))
                 .Concat(GameObject.FindObjectsOfType<BakeryDirectLight>().Select(x => x.gameObject));
             foreach (var light in allBakeryLights)
             {
