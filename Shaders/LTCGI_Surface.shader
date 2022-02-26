@@ -70,7 +70,7 @@
                 spec
             );
             o.Emission += spec;
-            o.Emission += diff * 0.1;
+            o.Emission += diff * c;
         }
         ENDCG
     }

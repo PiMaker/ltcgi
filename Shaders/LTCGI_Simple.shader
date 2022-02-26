@@ -81,7 +81,7 @@
                     diff,
                     spec
                 );
-                col.rgb += diff;
+                col.rgb *= saturate(diff + 0.1);
                 col.rgb += spec;
                 return col;
             }
