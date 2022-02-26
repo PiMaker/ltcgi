@@ -262,6 +262,15 @@
         totalSpecularIntensity = 0;
     #endif
 
+    bool noLm = false;
+    #ifdef LTCGI_LTC_DIFFUSE_FALLBACK
+    #ifndef SHADER_TARGET_SURFACE_ANALYSIS
+        float2 lmSize;
+        _LTCGI_Lightmap.GetDimensions(lmSize.x, lmSize.y);
+        noLm = lmSize.x == 1;
+    #endif
+    #endif
+
     // loop through all lights and add them to the output
     uint count = min(_LTCGI_ScreenCount, MAX_SOURCES);
     [loop]
@@ -272,7 +281,7 @@
         float3 color = extra.rgb;
         if (!any(color)) continue;
 
-        ltcgi_flags flags = ltcgi_parse_flags(asuint(extra.w));
+        ltcgi_flags flags = ltcgi_parse_flags(asuint(extra.w), noLm);
 
         #ifdef LTCGI_TOGGLEABLE_SPEC_DIFF_OFF
             // compile branches below away statically

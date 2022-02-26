@@ -33,6 +33,9 @@
 /// Increase to make reflections blurrier faster as distance increases.
 #define LTCGI_UV_BLUR_DISTANCE 333
 
+/// Fall back to LTC diffuse (from LM diffuse) on objects that are not marked static.
+#define LTCGI_LTC_DIFFUSE_FALLBACK
+
 /// Approximation to ignore diffuse light for far away
 /// lights, increase MULT or disable if you notice artifacting
 #define LTCGI_DISTANCE_FADE_APPROX

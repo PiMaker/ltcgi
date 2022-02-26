@@ -44,7 +44,7 @@ struct ltcgi_flags
 #define LTCGI_COLORMODE_SINGLEUV 2
 #define LTCGI_COLORMODE_AUDIOLINK 3
 
-ltcgi_flags ltcgi_parse_flags(uint val)
+ltcgi_flags ltcgi_parse_flags(uint val, bool noLmDiff)
 {
     ltcgi_flags ret = (ltcgi_flags)0;
     ret.doublesided = (val & 1) == 1;
@@ -53,7 +53,7 @@ ltcgi_flags ltcgi_parse_flags(uint val)
     ret.diffFromLm  = false;
     ret.diffuse     = true;
     #else
-    ret.diffFromLm  = (val & 2) == 2;
+    ret.diffFromLm  = !noLmDiff && (val & 2) == 2;
     ret.diffuse     = (val & 8) == 8;
     #endif
 
