@@ -60,23 +60,23 @@ namespace pi.LTCGI
             }
         }
 
-        private void SetMeshImporterFormat(Mesh texture, bool readable)
+        private void SetMeshImporterFormat(Mesh mesh, bool readable)
         {
-            if (null == texture) return;
-            string assetPath = AssetDatabase.GetAssetPath(texture);
+            if (mesh == null) return;
+            string assetPath = AssetDatabase.GetAssetPath(mesh);
+            if (string.IsNullOrEmpty(assetPath)) return;
             var importer = AssetImporter.GetAtPath(assetPath) as ModelImporter;
             if (importer != null && importer.isReadable != readable)
             {
                 importer.isReadable = readable;
                 Debug.Log("LTCGI: Read/Write set for Model " + assetPath);
                 importer.SaveAndReimport();
-                AssetDatabase.Refresh();
             }
         }
 
         private void SetTextureImporterFormat(Texture2D texture, bool readable)
         {
-            if (null == texture) return;
+            if (texture == null) return;
             string assetPath = AssetDatabase.GetAssetPath(texture);
             var importer = AssetImporter.GetAtPath(assetPath) as TextureImporter;
             if (importer != null && importer.isReadable != readable)
@@ -84,7 +84,6 @@ namespace pi.LTCGI
                 importer.isReadable = readable;
                 Debug.Log("LTCGI: Read/Write set for Texture " + assetPath);
                 importer.SaveAndReimport();
-                AssetDatabase.Refresh();
             }
         }
 
