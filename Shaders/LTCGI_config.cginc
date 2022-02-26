@@ -26,8 +26,6 @@
 #define LTCGI_LIGHTMAP_CUTOFF 0.1
 /// Lightmap values above this (plus cutoff) will be treated as white.
 #define LTCGI_SPECULAR_LIGHTMAP_STEP 0.25
-/// Increase distance of LTC diffuse. Calculates as `diff = pos(diff, <this>)`.
-#define LTCGI_LTC_DIFFUSE_POWER 1
 
 /// Distance multiplier for calculating blur amount.
 /// Increase to make reflections blurrier faster as distance increases.
@@ -35,6 +33,9 @@
 
 /// Fall back to LTC diffuse (from LM diffuse) on objects that are not marked static.
 #define LTCGI_LTC_DIFFUSE_FALLBACK
+
+/// Allow specular intensities greater than 1.
+#define LTCGI_ALLOW_HDR_SPECULAR
 
 /// Approximation to ignore diffuse light for far away
 /// lights, increase MULT or disable if you notice artifacting

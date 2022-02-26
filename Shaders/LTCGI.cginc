@@ -317,14 +317,12 @@
             {
                 float lmd = lm;
                 if (flags.lmch) {
-                    if (!flags.diffFromLm)
-                        lmd = saturate(lm - LTCGI_LIGHTMAP_CUTOFF);
-                    lmd *= _LTCGI_LightmapMult[flags.lmch - 1];
-                    //lmd = pow(lmd*0.25, 0.8)*4;
+                    if (flags.diffFromLm)
+                        lmd *= _LTCGI_LightmapMult[flags.lmch - 1];
+                    else
+                        lmd = smoothstep(0.0, LTCGI_SPECULAR_LIGHTMAP_STEP, saturate(lm - LTCGI_LIGHTMAP_CUTOFF));
                 }
                 float diff = LTCGI_Evaluate(Lw, worldNorm, viewDir, identityBrdf, i, roughness, uvStart, uvEnd, true, flags, color);
-                if (flags.lmch && !flags.diffFromLm)
-                    diff = pow(diff, LTCGI_LTC_DIFFUSE_POWER);
                 diffuse += (diff * color * lmd);
             }
         #endif
@@ -335,7 +333,11 @@
             if (flags.specular)
             {
                 // reset color
-                color = saturate(extra.rgb);
+                #ifdef LTCGI_ALLOW_HDR_SPECULAR
+                    color = extra.rgb;
+                #else
+                    color = saturate(extra.rgb);
+                #endif
 
                 float spec = LTCGI_Evaluate(Lw, worldNorm, viewDir, Minv, i, roughness, uvStart, uvEnd, false, flags, color);
                 spec *= spec_amp * smoothstep(0.0, LTCGI_SPECULAR_LIGHTMAP_STEP, saturate(lm - LTCGI_LIGHTMAP_CUTOFF));
