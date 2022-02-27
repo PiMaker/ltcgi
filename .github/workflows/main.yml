@@ -22,10 +22,11 @@ jobs:
       
       - uses: pCYSl5EDgo/create-unitypackage@master
         with:
-          package-path: "ltcgi-$GITHUB_SHA.unitypackage"
+          package-path: "ltcgi-${{ github.sha }}.unitypackage"
           include-files: unitypackage.list
+          project-folder: Assets/
 
       - uses: actions/upload-artifact@v2
         with:
-          name: "ltcgi-$GITHUB_SHA.unitypackage"
-          path: "ltcgi-$GITHUB_SHA.unitypackage"
+          name: "ltcgi-${{ github.sha }}.unitypackage"
+          path: "ltcgi-${{ github.sha }}.unitypackage"
