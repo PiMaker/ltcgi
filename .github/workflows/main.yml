@@ -19,12 +19,18 @@ jobs:
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
+        path: _pi_/_LTCGI/
+        lfs: true
+
+      - name: "Copy unitypackage.list"
+        run: cp _pi_/_LTCGI/unitypackage.list .
+      - name: "Copy Gizmos"
+        run: mkdir Gizmos && cp _pi_/_LTCGI/Propaganda/LTCGI_Screen_Gizmo.png{,.meta} ./Gizmos
       
       - uses: pCYSl5EDgo/create-unitypackage@master
         with:
           package-path: "ltcgi-${{ github.sha }}.unitypackage"
           include-files: unitypackage.list
-          project-folder: Assets/
 
       - uses: actions/upload-artifact@v2
         with:
