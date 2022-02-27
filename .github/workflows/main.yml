@@ -32,6 +32,9 @@ jobs:
         with:
           package-path: "ltcgi-${{ github.sha }}.unitypackage"
           include-files: unitypackage.list
+      
+      - name: debug
+        run: ls && echo "find" && find . -iname "*.unitypackage"
 
       - uses: actions/upload-artifact@v2
         with:
