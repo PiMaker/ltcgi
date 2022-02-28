@@ -157,7 +157,6 @@ namespace pi.LTCGI
             flipProp = serializedObject.FindProperty("FlipUV");
             alBandProp = serializedObject.FindProperty("AudioLinkBand");
 
-            screen = (LTCGI_Screen)target;
             Logo = Resources.Load("LTCGI-Logo") as Texture;
         }
 
@@ -167,6 +166,29 @@ namespace pi.LTCGI
             style.alignment = TextAnchor.MiddleCenter;
             style.fixedHeight = 150;
             GUI.Box(GUILayoutUtility.GetRect(300, 150, style), Logo, style);
+
+            screen = (LTCGI_Screen)target;
+
+            var mesh = screen.gameObject.GetComponent<MeshFilter>()?.sharedMesh;
+            string error = "";
+            if (mesh == null)
+            {
+                error = "No mesh or mesh filter assigned!";
+            }
+            else if (!mesh.isReadable)
+            {
+                error = "Mesh is not readable!";
+            }
+            else if (mesh.vertexCount != 4)
+            {
+                error = "Mesh does not have exactly 4 vertices!";
+            }
+            if (error != "")
+            {
+                EditorGUILayout.Space();
+                EditorGUILayout.HelpBox(error, MessageType.Error, true);
+                EditorGUILayout.Space();
+            }
 
             serializedObject.Update();
 
