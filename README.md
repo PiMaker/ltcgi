@@ -32,6 +32,12 @@ Check the [Releases](https://github.com/PiMaker/ltcgi/releases) tab for download
 * [UdonSharp](https://github.com/MerlinVR/UdonSharp)
 * [CyanEmu](https://github.com/CyanLaser/CyanEmu) (optional, but highly recommended)
 
+### Debug builds
+
+*NOTE: These are provided as-is with no guarantees. Feel free to report any issues on the [Discord](https://discord.gg/r38vJd2DuJ), but remember that it is explicitly recommended to use the downloads from the [Releases](https://github.com/PiMaker/ltcgi/releases) tab instead!*
+
+Check the latest build from the [Actions tab](https://github.com/PiMaker/ltcgi/actions/workflows/main.yml?query=is%3Asuccess) and download the corresponding *artifact* (comes as a zip you need to extract first).
+
 ## Attribution
 
 According to the [License](#License) you are free to use this in your world, but you need to give credit. You are free to do so in whichever way, but you must provide a link to this GitHub repository, such as to fulfill the imported license of the LTC example code used as a base for this project.
