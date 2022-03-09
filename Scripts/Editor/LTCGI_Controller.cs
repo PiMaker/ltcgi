@@ -89,6 +89,18 @@ namespace pi.LTCGI
             {
                 Debug.LogError("There must only be one LTCGI Controller per scene!");
             }
+
+            var pathToScript = GetCurrentFileName();
+            if (!pathToScript.EndsWith(Path.Combine("Assets", "_pi_", "_LTCGI", "Scripts", "Editor", "LTCGI_Controller.cs")))
+            {
+                Debug.LogError("Invalid script path: " + pathToScript);
+                EditorUtility.DisplayDialog("LTCGI", "ERROR: Wrong path to 'LTCGI_Controller.cs' detected. Please do *not* move the LTCGI folder! Try reimporting the LTCGI package to fix.", "OK");
+            }
+        }
+
+        private string GetCurrentFileName([System.Runtime.CompilerServices.CallerFilePath] string fileName = null)
+        {
+            return fileName;
         }
 
         public static bool MatLTCGIenabled(Material mat)
