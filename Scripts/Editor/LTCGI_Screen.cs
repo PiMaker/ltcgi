@@ -49,9 +49,11 @@ namespace pi.LTCGI
 
         public bool Cylinder;
         public Vector3 CylinderBase;
-        public float CylinderHeight;
-        public float CylinderRadius;
-        public float CylinderSize;
+        public float CylinderHeight = 1.0f;
+        public float CylinderRadius = 1.0f;
+        [Range(0.0f, Mathf.PI*0.5f)]
+        public float CylinderSize = Mathf.PI*0.5f;
+        [Range(0.0f, Mathf.PI*2.0f)]
         public float CylinderAngle;
 
         private Vector3 prevPos, prevScale, prevRot;
@@ -86,12 +88,27 @@ namespace pi.LTCGI
             Gizmos.DrawIcon(transform.position, "LTCGI_Screen_Gizmo.png", true);
         }
 
+        private static Mesh cylMesh = null;
         void OnDrawGizmosSelected()
         {
             if (RendererMode == RendererMode.Distance)
             {
                 Gizmos.color = Color.cyan;
                 Gizmos.DrawWireSphere(transform.position, RendererDistance);
+            }
+
+            if (Cylinder)
+            {
+                if (cylMesh == null)
+                {
+                    cylMesh = Resources.GetBuiltinResource<Mesh>("Cylinder.fbx");
+                }
+
+                Gizmos.color = new Color(0, 1, 1, 0.2f);
+                Gizmos.DrawMesh(cylMesh, 0,
+                    transform.position + CylinderBase - Vector3.up * 0.5f + Vector3.up * CylinderHeight,
+                    Quaternion.AngleAxis(Mathf.Rad2Deg * CylinderAngle, Vector3.up),
+                    new Vector3(CylinderRadius, CylinderHeight, CylinderRadius) * 1.01f);
             }
         }
     }
@@ -117,6 +134,7 @@ namespace pi.LTCGI
     public class LTCGI_ScreenEditor : Editor
     {
         SerializedProperty colorProp, sidedProp, dynamicProp, indexProp, colormodeProp, specProp, diffProp, lmProp, singleUVProp, rendererModeProp, rendererListProp, rendererDistProp, diffModeProp, diffuseFromLmProp, flipProp, lmIntensProp, alBandProp;
+        SerializedProperty cylProp, cylBaseProp, cylHeightProp, cylAngleProp, cylRadiusProp, cylSizeProp;
 
         LTCGI_Screen screen;
 
@@ -157,6 +175,13 @@ namespace pi.LTCGI
             flipProp = serializedObject.FindProperty("FlipUV");
             alBandProp = serializedObject.FindProperty("AudioLinkBand");
 
+            cylProp = serializedObject.FindProperty("Cylinder");
+            cylAngleProp = serializedObject.FindProperty("CylinderAngle");
+            cylBaseProp = serializedObject.FindProperty("CylinderBase");
+            cylHeightProp = serializedObject.FindProperty("CylinderHeight");
+            cylRadiusProp = serializedObject.FindProperty("CylinderRadius");
+            cylSizeProp = serializedObject.FindProperty("CylinderSize");
+
             Logo = Resources.Load("LTCGI-Logo") as Texture;
         }
 
@@ -169,28 +194,79 @@ namespace pi.LTCGI
 
             screen = (LTCGI_Screen)target;
 
-            var mesh = screen.gameObject.GetComponent<MeshFilter>()?.sharedMesh;
-            string error = "";
-            if (mesh == null)
+            serializedObject.Update();
+
+            GUILayout.Label("Area light shape:");
+            var isCylinder = cylProp.boolValue;
+            using (var hor = new EditorGUILayout.HorizontalScope())
             {
-                error = "No mesh or mesh filter assigned!";
+                var leftStyle = EditorStyles.miniButtonLeft;
+                var midStyle = EditorStyles.miniButtonMid;
+                var rightStyle = EditorStyles.miniButtonRight;
+                var toggleMesh = GUILayout.Toggle(!isCylinder, "4-point Mesh", leftStyle);
+                var toggleCyl = GUILayout.Toggle(isCylinder, "Cylinder", rightStyle);
+
+                if ((toggleMesh && isCylinder) || (!toggleMesh && !isCylinder))
+                {
+                    isCylinder = cylProp.boolValue = !toggleMesh;
+                }
+                else if ((toggleCyl && !isCylinder) || (!toggleCyl && isCylinder))
+                {
+                    isCylinder = cylProp.boolValue = toggleCyl;
+                }
             }
-            else if (!mesh.isReadable)
+            EditorGUILayout.Space();
+            EditorGUILayout.Space();
+
+            if (!isCylinder)
             {
-                error = "Mesh is not readable!";
-            }
-            else if (mesh.vertexCount != 4)
-            {
-                error = "Mesh does not have exactly 4 vertices!";
-            }
-            if (error != "")
-            {
-                EditorGUILayout.Space();
-                EditorGUILayout.HelpBox(error, MessageType.Error, true);
-                EditorGUILayout.Space();
+                var mesh = screen.gameObject.GetComponent<MeshFilter>()?.sharedMesh;
+                string error = "";
+                if (mesh == null)
+                {
+                    error = "No mesh or mesh filter assigned!";
+                }
+                else if (!mesh.isReadable)
+                {
+                    error = "Mesh is not readable!";
+                }
+                else if (mesh.vertexCount != 4)
+                {
+                    error = "Mesh does not have exactly 4 vertices!";
+                }
+                if (error != "")
+                {
+                    EditorGUILayout.Space();
+                    EditorGUILayout.HelpBox(error, MessageType.Error, true);
+                    EditorGUILayout.Space();
+                }
             }
 
-            serializedObject.Update();
+            if (isCylinder)
+            {
+                EditorGUILayout.PropertyField(cylBaseProp);
+                EditorGUILayout.PropertyField(cylHeightProp);
+                EditorGUILayout.PropertyField(cylRadiusProp);
+                EditorGUILayout.PropertyField(cylAngleProp);
+                EditorGUILayout.PropertyField(cylSizeProp);
+                if (GUILayout.Button("Try cylinder auto-detect"))
+                {
+                    var coll = screen.gameObject.GetComponent<Collider>();
+                    if (coll != null)
+                    {
+                        cylBaseProp.vector3Value = new Vector3(0, -coll.bounds.extents.y / 2.0f, 0);
+                        cylHeightProp.floatValue = coll.bounds.extents.y;
+                        cylRadiusProp.floatValue = Mathf.Max(coll.bounds.extents.x, coll.bounds.extents.z);
+                    }
+                    else
+                    {
+                        cylHeightProp.floatValue = screen.transform.localScale.y;
+                        cylRadiusProp.floatValue = screen.transform.localScale.x / 2.0f;
+                    }
+                }
+
+                EditorGUILayout.Separator();
+            }
 
             var newCol = EditorGUILayout.ColorField(new GUIContent("Color"), colorProp.colorValue, true, false, true);
             if (colorProp.colorValue != newCol)
@@ -220,6 +296,7 @@ namespace pi.LTCGI
                 }
             }
 
+            EditorGUILayout.Space();
             EditorGUILayout.Separator();
 
             var dm = (DiffMode)EditorGUILayout.EnumPopup("Diffuse Mode", (DiffMode)diffModeProp.intValue);
@@ -237,7 +314,14 @@ namespace pi.LTCGI
 
             EditorGUILayout.PropertyField(specProp);
             EditorGUILayout.PropertyField(dynamicProp);
-            EditorGUILayout.PropertyField(sidedProp);
+            if (isCylinder)
+            {
+                sidedProp.boolValue = false;
+            }
+            else
+            {
+                EditorGUILayout.PropertyField(sidedProp);
+            }
             EditorGUILayout.PropertyField(flipProp);
 
             EditorGUILayout.Separator();

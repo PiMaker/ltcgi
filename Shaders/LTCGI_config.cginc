@@ -8,6 +8,9 @@
 /// Bake screen data into texture for better performance. Disables moveable screens.
 //#define LTCGI_STATIC_UNIFORMS
 
+/// Enable support for cylindrical screens.
+#define LTCGI_CYLINDER
+
 /// No specular at all.
 //#define LTCGI_SPECULAR_OFF
 /// No diffuse at all.

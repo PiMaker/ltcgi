@@ -169,25 +169,25 @@ namespace pi.LTCGI
                     // Experimental!
                     _LTCGI_Vertices_0[i] = new Vector4(
                         s.CylinderBase.x,
-                        s.CylinderBase.y,
+                        s.CylinderBase.y * 2,
                         s.CylinderBase.z,
-                        s.CylinderHeight
+                        s.CylinderHeight * 2
                     );
                     _LTCGI_Vertices_1[i] = new Vector4(
                         s.CylinderBase.x,
-                        s.CylinderBase.y,
+                        s.CylinderBase.y * 2,
                         s.CylinderBase.z,
                         s.CylinderRadius
                     );
                     _LTCGI_Vertices_2[i] = new Vector4(
                         s.CylinderBase.x,
-                        s.CylinderBase.y,
+                        s.CylinderBase.y * 2,
                         s.CylinderBase.z,
                         s.CylinderSize
                     );
                     _LTCGI_Vertices_3[i] = new Vector4(
                         s.CylinderBase.x,
-                        s.CylinderBase.y,
+                        s.CylinderBase.y * 2,
                         s.CylinderBase.z,
                         s.CylinderAngle
                     );

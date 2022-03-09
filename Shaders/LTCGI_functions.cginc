@@ -284,7 +284,7 @@ float2 LTCGI_rotateVector(float2 x, float angle)
     EXPERIMENTAL: CYLINDER HELPER
 */
 
-void LTCGI_GetLw(uint i, ltcgi_flags flags, float3 worldPos, float3 viewDir, out float3 Lw[4], out float2 uvStart, out float2 uvEnd) {
+void LTCGI_GetLw(uint i, ltcgi_flags flags, float3 worldPos, out float3 Lw[4], out float2 uvStart, out float2 uvEnd) {
     bool cylinder = false;
     #ifdef LTCGI_CYLINDER
         // statically optimize out branch below in case disabled
@@ -306,30 +306,33 @@ void LTCGI_GetLw(uint i, ltcgi_flags flags, float3 worldPos, float3 viewDir, out
         float in_size = v2.w;
         float in_angle = v3.w;
 
-        float2 centerForward = float2(sin(in_angle), cos(in_angle));
-        float2 towardsCylinder = (in_base - worldPos).xz;
-        float angle = atan2(centerForward.y, centerForward.x) - atan2(towardsCylinder.y, towardsCylinder.x);
-        float angleClamped = clamp(angle, -UNITY_PI/2, UNITY_PI/2);
-        float2 facing = LTCGI_rotateVector(centerForward, angleClamped);
+        // get angle between 2D unit plane and vector pointing from cylinder to shade point
+        float2 towardsCylinder = LTCGI_rotateVector((in_base - worldPos).xz, -in_angle);
+        float angle = atan2(towardsCylinder.x, towardsCylinder.y);
+        // clamp angle to size parameter, i.e. "width" of lit surface area
+        float angleClamped = clamp(angle, -in_size, in_size) + in_angle;
+        // construct vector that *most* faces shade point
+        float2 facing = float2(sin(angleClamped), cos(angleClamped));
+        // tangent of rectangular screen on cylinder surface used for calculating lighting for shade point
         float2 tangent = float2(facing.y, -facing.x);
         float2 onCylinderFacing = facing * in_radius;
 
         // clip ends, approximately
-        float rclip = saturate(lerp(1, 0, angleClamped - (UNITY_PI/2) + in_size*2));
-        float lclip = saturate(lerp(1, 0, -angleClamped - (UNITY_PI/2) + in_size*2));
+        float rclip = saturate(lerp(1, 0, (angleClamped - in_angle) - (in_size - UNITY_HALF_PI*0.5f)));
+        float lclip = saturate(lerp(1, 0, -(angleClamped - in_angle) - (in_size - UNITY_HALF_PI*0.5f)));
 
-        float2 p1 = in_base.xz - onCylinderFacing + tangent * in_size * lclip;
-        float2 p2 = in_base.xz - onCylinderFacing - tangent * in_size * rclip;
+        float2 p1 = in_base.xz - onCylinderFacing + tangent * in_radius * lclip;
+        float2 p2 = in_base.xz - onCylinderFacing - tangent * in_radius * rclip;
 
         Lw[0] = float3(p1.x, in_base.y,             p1.y) - worldPos;
         Lw[1] = float3(p1.x, in_base.y + in_height, p1.y) - worldPos;
         Lw[2] = float3(p2.x, in_base.y,             p2.y) - worldPos;
         Lw[3] = float3(p2.x, in_base.y + in_height, p2.y) - worldPos;
 
-        // UV depends on viewing angle (for specular)
-        float2 centerTangent = float2(centerForward.y, -centerForward.x);
-        viewDir = normalize(in_base - worldPos);
-        float viewAngle = atan2(centerForward.y, centerForward.x) - atan2(viewDir.z, viewDir.x);
+        // UV depends on "viewing" angle (for specular)
+        float2 centerForward = float2(sin(in_angle), cos(in_angle));
+        float2 viewDir = normalize((in_base - worldPos).xz);
+        float viewAngle = atan2(centerForward.y, centerForward.x) - atan2(viewDir.y, viewDir.x);
         uvStart = float2(-(1 - sin(saturate(viewAngle*0.5))), 0);
         uvEnd = float2(-sin(saturate(-viewAngle*0.5)), 1);
 

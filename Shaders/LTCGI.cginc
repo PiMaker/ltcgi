@@ -294,7 +294,7 @@
         // calculate (shifted) world space positions
         float3 Lw[4];
         float2 uvStart, uvEnd;
-        LTCGI_GetLw(i, flags, worldPos, viewDir, Lw, uvStart, uvEnd);
+        LTCGI_GetLw(i, flags, worldPos, Lw, uvStart, uvEnd);
 
         // skip single-sided lights that face the other way
         if (!flags.doublesided) {
