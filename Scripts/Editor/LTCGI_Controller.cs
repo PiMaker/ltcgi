@@ -39,7 +39,7 @@ namespace pi.LTCGI
         public float LightmapIntensity = 4.0f;
 
         [Tooltip("Multiply lightmap with this before applying to diffuse. Useful if you have multiple lights next to each other sharing a channel.")]
-        public Vector3 LightmapMultiplier = Vector3.one;
+        public Vector3 LightmapMultiplier = new Vector4(0.25f, 0.25f, 0.25f, 0.25f);
 
         [Header("Internal Settings")]
         public Texture2D DefaultLightmap;
