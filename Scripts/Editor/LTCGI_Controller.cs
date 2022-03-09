@@ -629,13 +629,20 @@ namespace pi.LTCGI
             if (!AssetDatabase.IsValidFolder("Assets/_pi_/_LTCGI/Generated"))
                 AssetDatabase.CreateFolder("Assets/_pi_/_LTCGI", "Generated");
             var exr = tex.EncodeToEXR(Texture2D.EXRFlags.OutputAsFloat);
+
             var existed = File.Exists(path);
+            byte[] prev = new byte[0];
+            if (existed)
+            {
+                prev = File.ReadAllBytes(path);
+            }
+
             File.WriteAllBytes(path, exr);
             
             var asset = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
             string assetPath = AssetDatabase.GetAssetPath(asset);
             var importer = AssetImporter.GetAtPath(assetPath) as TextureImporter;
-            if (importer != null && !existed)
+            if (importer != null && !prev.SequenceEqual(exr))
             {
                 importer.mipmapEnabled = false;
                 importer.textureCompression = TextureImporterCompression.Uncompressed;
@@ -646,8 +653,6 @@ namespace pi.LTCGI
                 importer.alphaIsTransparency = true;
                 importer.SaveAndReimport();
             }
-
-            AssetDatabase.Refresh();
 
             #if DEBUG_LOG
                 Debug.Log("LTCGI: updated static uniform declarations");
