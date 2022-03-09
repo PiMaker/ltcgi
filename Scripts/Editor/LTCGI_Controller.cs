@@ -11,6 +11,8 @@ using UnityEditor;
 using UnityEngine;
 using UdonSharp;
 using UdonSharpEditor;
+using UnityEditor.SceneManagement;
+using UnityEngine.SceneManagement;
 #endif
 
 namespace pi.LTCGI
@@ -45,14 +47,28 @@ namespace pi.LTCGI
         public Texture2D LUT1, LUT2;
         public Material ProjectorMaterial;
 
-        public static LTCGI_Controller Singleton;
+        private static Dictionary<Scene, LTCGI_Controller> SingletonDict = new Dictionary<Scene, LTCGI_Controller>();
+        public static LTCGI_Controller Singleton
+        {
+            get {
+                var scene = EditorSceneManager.GetActiveScene();
+                if (SingletonDict.TryGetValue(scene, out var ret))
+                {
+                    return ret;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
-        internal static MeshRenderer[] cachedMeshRenderers;
-        private static Vector4[] _LTCGI_Vertices_0, _LTCGI_Vertices_1, _LTCGI_Vertices_2, _LTCGI_Vertices_3;
-        private static Vector4[] _LTCGI_Vertices_0t, _LTCGI_Vertices_1t, _LTCGI_Vertices_2t, _LTCGI_Vertices_3t;
-        internal static Transform[] _LTCGI_ScreenTransforms;
-        private static Vector4[] _LTCGI_ExtraData;
-        private static Vector4 _LTCGI_LightmapMult;
+        [NonSerialized] internal MeshRenderer[] cachedMeshRenderers;
+        [NonSerialized] private Vector4[] _LTCGI_Vertices_0, _LTCGI_Vertices_1, _LTCGI_Vertices_2, _LTCGI_Vertices_3;
+        [NonSerialized] private Vector4[] _LTCGI_Vertices_0t, _LTCGI_Vertices_1t, _LTCGI_Vertices_2t, _LTCGI_Vertices_3t;
+        [NonSerialized] internal Transform[] _LTCGI_ScreenTransforms;
+        [NonSerialized] private Vector4[] _LTCGI_ExtraData;
+        [NonSerialized] private Vector4 _LTCGI_LightmapMult;
 
         private Texture2DArray[] _LTCGI_LOD_arrays;
 
@@ -63,13 +79,15 @@ namespace pi.LTCGI
             {
                 if (PrefabUtility.IsPartOfPrefabInstance(this.gameObject))
                     PrefabUtility.UnpackPrefabInstance(this.gameObject, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
-                Debug.Log("LTCGI Controller Singleton initialized");
-                Singleton = this;
+                var scene = EditorSceneManager.GetActiveScene();
+                SingletonDict.Add(scene, this);
+                Debug.Assert(Singleton == this);
                 Undo.undoRedoPerformed += this.UpdateMaterials;
+                Debug.Log("LTCGI Controller Singleton initialized for " + scene.name);
             }
             else if (Singleton != this)
             {
-                Debug.LogError("There must only be one LTCGI Controller per project!");
+                Debug.LogError("There must only be one LTCGI Controller per scene!");
             }
         }
 

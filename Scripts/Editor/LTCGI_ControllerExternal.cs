@@ -45,6 +45,11 @@ namespace pi.LTCGI
         public void OnEnable()
         {
             Logo = Resources.Load("LTCGI-LogoController") as Texture;
+
+            if (configChangedValues != null)
+            {
+                configChangedValues.Clear();
+            }
         }
 
         public override void OnInspectorGUI()
@@ -89,14 +94,18 @@ namespace pi.LTCGI
 
             EditorGUILayout.Space(); EditorGUILayout.Space();
 
-            if (LTCGI_Controller.cachedMeshRenderers != null && LTCGI_Controller._LTCGI_ScreenTransforms != null)
+            if (LTCGI_Controller.Singleton.cachedMeshRenderers != null && LTCGI_Controller.Singleton._LTCGI_ScreenTransforms != null)
             {
                     EditorGUILayout.HelpBox(
-$@"Affected Renderers Total: {LTCGI_Controller.cachedMeshRenderers.Length}
-LTCGI_Screen Components: {LTCGI_Controller._LTCGI_ScreenTransforms.Count(x => x != null)} / 16
+$@"Affected Renderers Total: {LTCGI_Controller.Singleton.cachedMeshRenderers.Length}
+LTCGI_Screen Components: {LTCGI_Controller.Singleton._LTCGI_ScreenTransforms.Count(x => x != null)} / 16
 AudioLink: {(LTCGI_Controller.AudioLinkAvailable ? "Available" : "Not Detected")}",
                     MessageType.Info, true
                 );
+            }
+            else
+            {
+                EditorGUILayout.HelpBox("Hit \"Force Update\" or CTRL-S to calculate info!", MessageType.Info);
             }
 
             EditorGUILayout.Space(); EditorGUILayout.Space();
