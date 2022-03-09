@@ -22,7 +22,7 @@ namespace pi.LTCGI
     [System.Serializable]
     public partial class LTCGI_Controller : MonoBehaviour
     {
-        const int MAX_SOURCES = 16;
+        internal const int MAX_SOURCES = 16;
 
         [Tooltip("Intensity is set for each screen. Can be a RenderTexture for realtime updates (video players).")]
         public Texture VideoTexture;

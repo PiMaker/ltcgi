@@ -98,7 +98,7 @@ namespace pi.LTCGI
             {
                     EditorGUILayout.HelpBox(
 $@"Affected Renderers Total: {LTCGI_Controller.Singleton.cachedMeshRenderers.Length}
-LTCGI_Screen Components: {LTCGI_Controller.Singleton._LTCGI_ScreenTransforms.Count(x => x != null)} / 16
+LTCGI_Screen Components: {LTCGI_Controller.Singleton._LTCGI_ScreenTransforms.Count(x => x != null)} / {LTCGI_Controller.MAX_SOURCES}
 AudioLink: {(LTCGI_Controller.AudioLinkAvailable ? "Available" : "Not Detected")}",
                     MessageType.Info, true
                 );
