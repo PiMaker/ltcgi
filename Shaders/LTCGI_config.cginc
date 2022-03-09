@@ -6,7 +6,7 @@
 // Most of these can be changed in the LTCGI_Controller editor as well.
 
 /// Bake screen data into texture for better performance. Disables moveable screens.
-#define LTCGI_STATIC_UNIFORMS
+//#define LTCGI_STATIC_UNIFORMS
 
 /// No specular at all.
 //#define LTCGI_SPECULAR_OFF
