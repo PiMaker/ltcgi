@@ -29,7 +29,7 @@ namespace pi.LTCGI
         [Tooltip("Static textures are precomputed and *must* all be the same size. Make sure to click 'Precompute Static Textures' after any changes.")]
         public Texture2D[] StaticTextures;
         [Tooltip("Renderers that may change material during runtime. Otherwise only 'sharedMaterial's are updated for performance reasons.")]
-        public MeshRenderer[] DynamicRenderers;
+        public Renderer[] DynamicRenderers;
 
         [Header("Expert Settings")]
         [Tooltip("Do not automatically set up the blur chain. Use this if you use AVPro to set _MainTex on the LOD1 material for example.")]
@@ -63,7 +63,7 @@ namespace pi.LTCGI
             }
         }
 
-        [NonSerialized] internal MeshRenderer[] cachedMeshRenderers;
+        [NonSerialized] internal Renderer[] cachedMeshRenderers;
         [NonSerialized] private Vector4[] _LTCGI_Vertices_0, _LTCGI_Vertices_1, _LTCGI_Vertices_2, _LTCGI_Vertices_3;
         [NonSerialized] private Vector4[] _LTCGI_Vertices_0t, _LTCGI_Vertices_1t, _LTCGI_Vertices_2t, _LTCGI_Vertices_3t;
         [NonSerialized] internal Transform[] _LTCGI_ScreenTransforms;
@@ -305,8 +305,8 @@ namespace pi.LTCGI
             if (!fast || cachedMeshRenderers == null)
             {
                 // get all affected renderers
-                var allRenderers = Component.FindObjectsOfType<MeshRenderer>();
-                var renderers = new List<MeshRenderer>();
+                var allRenderers = Component.FindObjectsOfType<Renderer>();
+                var renderers = new List<Renderer>();
                 foreach (var r in allRenderers)
                 {
                     foreach (var mat in r.sharedMaterials)
@@ -542,10 +542,10 @@ namespace pi.LTCGI
 
                 // calculate which renderers can use the shared material update method
                 var dynr = DynamicRenderers.ToList();
-                var mats = new Dictionary<Material, (int, float[], MeshRenderer)>();
+                var mats = new Dictionary<Material, (int, float[], Renderer)>();
                 for (int i = 0; i < cachedMeshRenderers.Length; i++)
                 {
-                    MeshRenderer r = cachedMeshRenderers[i];
+                    var r = cachedMeshRenderers[i];
                     if (IsEditorOnly(r.gameObject)) continue;
                     foreach (var m in r.sharedMaterials)
                     {

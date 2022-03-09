@@ -25,7 +25,7 @@ namespace pi.LTCGI
         [SerializeField] private LightmapsMode prevLightmapMode;
 
         [SerializeField] private Texture2D[] _LTCGI_Lightmaps;
-        [SerializeField] private MeshRenderer[] _LTCGI_LightmapData_key;
+        [SerializeField] private Renderer[] _LTCGI_LightmapData_key;
         [SerializeField] private Vector4[] _LTCGI_LightmapOffsets_val;
         [SerializeField] private int[] _LTCGI_LightmapIndex_val;
 
@@ -63,7 +63,7 @@ namespace pi.LTCGI
             bakeMaterialReset_val = new List<MaterialGlobalIlluminationFlags>();
 
             // disable all other contributors
-            var allRenderers = GameObject.FindObjectsOfType<MeshRenderer>();
+            var allRenderers = GameObject.FindObjectsOfType<Renderer>();
             foreach (var renderer in allRenderers)
             {
                 foreach (var m in renderer.sharedMaterials)
@@ -307,8 +307,8 @@ namespace pi.LTCGI
 
             EditorUtility.DisplayProgressBar("Finishing LTCGI bake", "Applying indexed lightmaps to renderers", 0.0f);
 
-            var renderers = GameObject.FindObjectsOfType<MeshRenderer>();
-            var rkey = new List<MeshRenderer>();
+            var renderers = GameObject.FindObjectsOfType<Renderer>();
+            var rkey = new List<Renderer>();
             var rval = new List<Vector4>();
             var rival = new List<int>();
             for (int i = 0; i < renderers.Length; i++)

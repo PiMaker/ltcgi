@@ -11,8 +11,8 @@ public class LTCGI_UdonAdapter : UdonSharpBehaviour
     public bool DEBUG_ReverseUnityLightmapST = false;
 
     [Header("Internal Data (auto-generated, do not edit!)")]
-    public MeshRenderer[] _Renderers;
-    public MeshRenderer[] _DynamicRenderers;
+    public Renderer[] _Renderers;
+    public Renderer[] _DynamicRenderers;
     public Texture2D[] _LTCGI_Lightmaps;
     public Vector4[] _LTCGI_LightmapST;
     public float[][] _LTCGI_Mask;
@@ -195,7 +195,7 @@ public class LTCGI_UdonAdapter : UdonSharpBehaviour
         var block = new MaterialPropertyBlock();
         for (int i = 0; i < _DynamicRenderers.Length; i++)
         {
-            MeshRenderer r = _DynamicRenderers[i];
+            var r = _DynamicRenderers[i];
             r.GetPropertyBlock(block); // we know it has one at this point
             block.SetVectorArray("_LTCGI_ExtraData", _LTCGI_ExtraData);
             block.SetVectorArray("_LTCGI_Vertices_0", _LTCGI_Vertices_0t);

@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c333ccfdd0cbdbc4ca30cef2dd6e6b9b, type: 3}
   m_Name: LTCGI_UdonAdapter
   m_EditorClassIdentifier: 
-  serializedUdonProgramAsset: {fileID: 11400000, guid: 457bd1b7ba48fb547add60bd4c0e2469,
+  serializedUdonProgramAsset: {fileID: 11400000, guid: 5bd39a6c4bb253e4087c7b2b92d17eb3,
     type: 2}
   udonAssembly: 
   assemblyError: 
@@ -124,7 +124,7 @@ MonoBehaviour:
       Data: 8|System.RuntimeType, mscorlib
     - Name: 
       Entry: 1
-      Data: UnityEngine.MeshRenderer[], UnityEngine.CoreModule
+      Data: UnityEngine.Renderer[], UnityEngine.CoreModule
     - Name: 
       Entry: 8
       Data: 
@@ -136,7 +136,7 @@ MonoBehaviour:
       Data: 0
     - Name: symbolResolvedTypeName
       Entry: 1
-      Data: UnityEngineMeshRendererArray
+      Data: UnityEngineRendererArray
     - Name: symbolOriginalName
       Entry: 1
       Data: _Renderers
@@ -202,7 +202,7 @@ MonoBehaviour:
       Data: 0
     - Name: symbolResolvedTypeName
       Entry: 1
-      Data: UnityEngineMeshRendererArray
+      Data: UnityEngineRendererArray
     - Name: symbolOriginalName
       Entry: 1
       Data: _DynamicRenderers
