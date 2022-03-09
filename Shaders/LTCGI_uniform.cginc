@@ -5,11 +5,45 @@
 uniform sampler2D _LTCGI_lut2;
 uniform sampler2D _LTCGI_lut1;
 
+#ifdef LTCGI_STATIC_UNIFORMS
+
+uniform Texture2D<float4> _LTCGI_static_uniforms;
+
+float4 _LTCGI_Vertices_0_get(uint i) {
+    return _LTCGI_static_uniforms[uint2(0, i)];
+}
+float4 _LTCGI_Vertices_1_get(uint i) {
+    return _LTCGI_static_uniforms[uint2(1, i)];
+}
+float4 _LTCGI_Vertices_2_get(uint i) {
+    return _LTCGI_static_uniforms[uint2(2, i)];
+}
+float4 _LTCGI_Vertices_3_get(uint i) {
+    return _LTCGI_static_uniforms[uint2(3, i)];
+}
+
+#else
+
 // vertices in object space; w component is UV
 uniform float4 _LTCGI_Vertices_0[MAX_SOURCES];
 uniform float4 _LTCGI_Vertices_1[MAX_SOURCES];
 uniform float4 _LTCGI_Vertices_2[MAX_SOURCES];
 uniform float4 _LTCGI_Vertices_3[MAX_SOURCES];
+
+float4 _LTCGI_Vertices_0_get(uint i) {
+    return _LTCGI_Vertices_0[i];
+}
+float4 _LTCGI_Vertices_1_get(uint i) {
+    return _LTCGI_Vertices_1[i];
+}
+float4 _LTCGI_Vertices_2_get(uint i) {
+    return _LTCGI_Vertices_2[i];
+}
+float4 _LTCGI_Vertices_3_get(uint i) {
+    return _LTCGI_Vertices_3[i];
+}
+
+#endif
 
 // light source count, maximum is MAX_SOURCES
 uniform uint _LTCGI_ScreenCount;

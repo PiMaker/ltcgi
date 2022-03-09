@@ -352,6 +352,9 @@ namespace pi.LTCGI
                 }
             }
 
+            // write out uniforms into data texture
+            var staticUniformTex = WriteStaticUniform(screens, fast);
+
             for (int i = 0; i < cachedMeshRenderers.Length; i++)
             {
                 var r = cachedMeshRenderers[i];
@@ -421,6 +424,7 @@ namespace pi.LTCGI
                         prop.SetVectorArray("_LTCGI_Vertices_1", _LTCGI_Vertices_1t);
                         prop.SetVectorArray("_LTCGI_Vertices_2", _LTCGI_Vertices_2t);
                         prop.SetVectorArray("_LTCGI_Vertices_3", _LTCGI_Vertices_3t);
+                        prop.SetTexture("_LTCGI_static_uniforms", staticUniformTex);
                         prop.SetVectorArray("_LTCGI_ExtraData", _LTCGI_ExtraData);
                         prop.SetVector("_LTCGI_LightmapMult", _LTCGI_LightmapMult);
                         prop.SetFloatArray("_LTCGI_Mask", GetMaskForRenderer(screens, r));
@@ -531,6 +535,7 @@ namespace pi.LTCGI
                 adapter._LTCGI_Vertices_2 = _LTCGI_Vertices_2;
                 adapter._LTCGI_Vertices_3 = _LTCGI_Vertices_3;
                 adapter._LTCGI_ExtraData = _LTCGI_ExtraData;
+                adapter._LTCGI_static_uniforms = staticUniformTex;
                 adapter._LTCGI_ScreenCount = screens.Length;
                 adapter._LTCGI_ScreenCountDynamic = screens.TakeWhile(x => x.Dynamic).Count();
                 adapter._LTCGI_ScreenCountMasked = 
@@ -587,6 +592,67 @@ namespace pi.LTCGI
             #if DEBUG_LOG
                 Debug.Log("LTCGI: update done!");
             #endif
+        }
+
+        private Texture2D WriteStaticUniform(LTCGI_Screen[] screens, bool fast)
+        {
+            var curscene = EditorSceneManager.GetActiveScene().name;
+            var path = @"Assets\_pi_\_LTCGI\Generated\StaticUniform-" + curscene + ".exr";
+
+            if (fast)
+            {
+                return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            }
+
+            var tex = new Texture2D(4, MAX_SOURCES, UnityEngine.Experimental.Rendering.GraphicsFormat.R16G16B16A16_SFloat, UnityEngine.Experimental.Rendering.TextureCreationFlags.None);
+            for (int i = 0; i < MAX_SOURCES; i++)
+            {
+                if (i >= screens.Length)
+                {
+                    tex.SetPixel(0, i, Color.black);
+                    tex.SetPixel(1, i, Color.black);
+                    tex.SetPixel(2, i, Color.black);
+                    tex.SetPixel(3, i, Color.black);
+                }
+                else
+                {
+                    tex.SetPixel(0, i, (Color)_LTCGI_Vertices_0t[i]);
+                    tex.SetPixel(1, i, (Color)_LTCGI_Vertices_1t[i]);
+                    tex.SetPixel(2, i, (Color)_LTCGI_Vertices_2t[i]);
+                    tex.SetPixel(3, i, (Color)_LTCGI_Vertices_3t[i]);
+                }
+            }
+
+            tex.Apply();
+
+            if (!AssetDatabase.IsValidFolder("Assets/_pi_/_LTCGI/Generated"))
+                AssetDatabase.CreateFolder("Assets/_pi_/_LTCGI", "Generated");
+            var exr = tex.EncodeToEXR(Texture2D.EXRFlags.OutputAsFloat);
+            var existed = File.Exists(path);
+            File.WriteAllBytes(path, exr);
+            
+            var asset = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            string assetPath = AssetDatabase.GetAssetPath(asset);
+            var importer = AssetImporter.GetAtPath(assetPath) as TextureImporter;
+            if (importer != null && !existed)
+            {
+                importer.mipmapEnabled = false;
+                importer.textureCompression = TextureImporterCompression.Uncompressed;
+                importer.crunchedCompression = false;
+                importer.sRGBTexture = false;
+                importer.maxTextureSize = 8192;
+                importer.alphaSource = TextureImporterAlphaSource.FromInput;
+                importer.alphaIsTransparency = true;
+                importer.SaveAndReimport();
+            }
+
+            AssetDatabase.Refresh();
+
+            #if DEBUG_LOG
+                Debug.Log("LTCGI: updated static uniform declarations");
+            #endif
+
+            return asset;
         }
 
 

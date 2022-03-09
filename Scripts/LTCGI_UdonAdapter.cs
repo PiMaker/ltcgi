@@ -27,6 +27,7 @@ public class LTCGI_UdonAdapter : UdonSharpBehaviour
     public Vector4[] _LTCGI_Vertices_0, _LTCGI_Vertices_1, _LTCGI_Vertices_2, _LTCGI_Vertices_3;
     public Vector4[] _LTCGI_Vertices_0t, _LTCGI_Vertices_1t, _LTCGI_Vertices_2t, _LTCGI_Vertices_3t;
     public Vector4[] _LTCGI_ExtraData;
+    public Texture2D _LTCGI_static_uniforms;
     public Transform[] _LTCGI_ScreenTransforms;
     public int _LTCGI_ScreenCount;
     public int[] _LTCGI_ScreenCountMasked;
@@ -88,6 +89,7 @@ public class LTCGI_UdonAdapter : UdonSharpBehaviour
             block.SetInt("_LTCGI_ScreenCount", _LTCGI_ScreenCountMasked[i]);
             block.SetTexture("_LTCGI_Lightmap", _LTCGI_Lightmaps[i]);
             block.SetVector("_LTCGI_LightmapMult", _LTCGI_LightmapMult);
+            block.SetTexture("_LTCGI_static_uniforms", _LTCGI_static_uniforms);
 
             var lmst = _LTCGI_LightmapST[i];
             if (DEBUG_ReverseUnityLightmapST)

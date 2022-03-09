@@ -291,14 +291,20 @@ void LTCGI_GetLw(uint i, ltcgi_flags flags, float3 worldPos, float3 viewDir, out
         cylinder = flags.cylinder;
     #endif
 
+    float4 v0 = _LTCGI_Vertices_0_get(i);
+    float4 v1 = _LTCGI_Vertices_1_get(i);
+    float4 v2 = _LTCGI_Vertices_2_get(i);
+    float4 v3 = _LTCGI_Vertices_3_get(i);
+
     if (cylinder) {
         // construct data according to worldPos to create aligned
         // rectangle tangent to the cylinder
-        float3 in_base = _LTCGI_Vertices_0[i].xyz;
-        float in_height = _LTCGI_Vertices_0[i].w;
-        float in_radius = _LTCGI_Vertices_1[i].w;
-        float in_size = _LTCGI_Vertices_2[i].w;
-        float in_angle = _LTCGI_Vertices_3[i].w;
+        
+        float3 in_base = v0.xyz;
+        float in_height = v0.w;
+        float in_radius = v1.w;
+        float in_size = v2.w;
+        float in_angle = v3.w;
 
         float2 centerForward = float2(sin(in_angle), cos(in_angle));
         float2 towardsCylinder = (in_base - worldPos).xz;
@@ -329,12 +335,12 @@ void LTCGI_GetLw(uint i, ltcgi_flags flags, float3 worldPos, float3 viewDir, out
 
     } else {
         // use passed in data, offset around worldPos
-        Lw[0] = _LTCGI_Vertices_0[i].xyz - worldPos;
-        Lw[1] = _LTCGI_Vertices_1[i].xyz - worldPos;
-        Lw[2] = _LTCGI_Vertices_2[i].xyz - worldPos;
-        Lw[3] = _LTCGI_Vertices_3[i].xyz - worldPos;
-        uvStart = float2(_LTCGI_Vertices_0[i].w, _LTCGI_Vertices_1[i].w);
-        uvEnd = float2(_LTCGI_Vertices_2[i].w, _LTCGI_Vertices_3[i].w);
+        Lw[0] = v0.xyz - worldPos;
+        Lw[1] = v1.xyz - worldPos;
+        Lw[2] = v2.xyz - worldPos;
+        Lw[3] = v3.xyz - worldPos;
+        uvStart = float2(v0.w, v1.w);
+        uvEnd = float2(v2.w, v3.w);
     }
 }
 

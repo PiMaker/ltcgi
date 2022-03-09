@@ -5,8 +5,8 @@
 // They will apply to all LTCGI materials in the project.
 // Most of these can be changed in the LTCGI_Controller editor as well.
 
-/// Allow statically textured lights.
-#define LTCGI_STATIC_TEXTURES
+/// Bake screen data into texture for better performance. Disables moveable screens.
+#define LTCGI_STATIC_UNIFORMS
 
 /// No specular at all.
 //#define LTCGI_SPECULAR_OFF
@@ -63,6 +63,11 @@
 ///
 
 
+// Allow statically textured lights.
+// (deprecated: doesn't really cause any improvement when disabled...)
+#define LTCGI_STATIC_TEXTURES
+
+
 // keep in sync with LTCGI_Controller.cs
 #define MAX_SOURCES 16
 
@@ -80,5 +85,10 @@ const float LUT_BIAS = 0.5/LUT_SIZE;
 // Slightly less artifacting around UV edges, but more
 // in general. Also worse performance (for now).
 //#define LTCGI_EXPERIMENTAL_UV_MAP
+
+
+#ifdef SHADER_TARGET_SURFACE_ANALYSIS
+#undef LTCGI_STATIC_UNIFORMS
+#endif
 
 #endif
