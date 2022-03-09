@@ -25,7 +25,7 @@
 /// Lightmap values below this will be treated as black for specular/LTC diffuse.
 #define LTCGI_LIGHTMAP_CUTOFF 0.1
 /// Lightmap values above this (plus cutoff) will be treated as white.
-#define LTCGI_SPECULAR_LIGHTMAP_STEP 0.25
+#define LTCGI_SPECULAR_LIGHTMAP_STEP 0.3
 
 /// Distance multiplier for calculating blur amount.
 /// Increase to make reflections blurrier faster as distance increases.
