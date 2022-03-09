@@ -47,21 +47,7 @@ namespace pi.LTCGI
         public Texture2D LUT1, LUT2;
         public Material ProjectorMaterial;
 
-        private static Dictionary<Scene, LTCGI_Controller> SingletonDict = new Dictionary<Scene, LTCGI_Controller>();
-        public static LTCGI_Controller Singleton
-        {
-            get {
-                var scene = EditorSceneManager.GetActiveScene();
-                if (SingletonDict.TryGetValue(scene, out var ret))
-                {
-                    return ret;
-                }
-                else
-                {
-                    return null;
-                }
-            }
-        }
+        public static LTCGI_Controller Singleton;
 
         [NonSerialized] internal Renderer[] cachedMeshRenderers;
         [NonSerialized] private Vector4[] _LTCGI_Vertices_0, _LTCGI_Vertices_1, _LTCGI_Vertices_2, _LTCGI_Vertices_3;
@@ -75,19 +61,19 @@ namespace pi.LTCGI
         public void OnEnable()
         {
             if (PrefabUtility.IsPartOfPrefabAsset(this.gameObject)) return;
-            if (Singleton == null)
+            if (Singleton == null || Singleton != this)
             {
                 if (PrefabUtility.IsPartOfPrefabInstance(this.gameObject))
                     PrefabUtility.UnpackPrefabInstance(this.gameObject, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
-                var scene = EditorSceneManager.GetActiveScene();
-                SingletonDict.Add(scene, this);
-                Debug.Assert(Singleton == this);
+                Singleton = this;
                 Undo.undoRedoPerformed += this.UpdateMaterials;
-                Debug.Log("LTCGI Controller Singleton initialized for " + scene.name);
-            }
-            else if (Singleton != this)
-            {
-                Debug.LogError("There must only be one LTCGI Controller per scene!");
+                Debug.Log("LTCGI Controller Singleton initialized");
+
+                var ctrls = GameObject.FindObjectsOfType<LTCGI_Controller>().Length;
+                if (ctrls > 1)
+                {
+                    Debug.LogError("There must only be one LTCGI Controller per scene!");
+                }
             }
 
             var pathToScript = GetCurrentFileName();
