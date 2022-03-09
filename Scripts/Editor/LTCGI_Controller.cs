@@ -518,6 +518,7 @@ namespace pi.LTCGI
                     if (IsEditorOnly(r.gameObject)) continue;
                     foreach (var m in r.sharedMaterials)
                     {
+                        if (m == null) continue;
                         var data = (adapter._LTCGI_ScreenCountMasked[i], adapter._LTCGI_Mask[i], r);
                         if (mats.ContainsKey(m))
                         {

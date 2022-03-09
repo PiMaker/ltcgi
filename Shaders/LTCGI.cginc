@@ -7,7 +7,10 @@
 #include "LTCGI_shadowmap.cginc"
 
 #ifdef LTCGI_AUDIOLINK
+#ifndef AUDIOLINK_WIDTH
 #include "Assets/AudioLink/Shaders/AudioLink.cginc"
+#define AUDIOLINK_CGINC_INCLUDED
+#endif
 #endif
 
 #ifdef SHADER_TARGET_SURFACE_ANALYSIS
