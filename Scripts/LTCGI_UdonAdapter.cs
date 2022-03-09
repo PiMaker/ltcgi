@@ -89,7 +89,9 @@ public class LTCGI_UdonAdapter : UdonSharpBehaviour
             block.SetInt("_LTCGI_ScreenCount", _LTCGI_ScreenCountMasked[i]);
             block.SetTexture("_LTCGI_Lightmap", _LTCGI_Lightmaps[i]);
             block.SetVector("_LTCGI_LightmapMult", _LTCGI_LightmapMult);
-            block.SetTexture("_LTCGI_static_uniforms", _LTCGI_static_uniforms);
+
+            if (_LTCGI_static_uniforms != null)
+                block.SetTexture("_LTCGI_static_uniforms", _LTCGI_static_uniforms);
 
             var lmst = _LTCGI_LightmapST[i];
             if (DEBUG_ReverseUnityLightmapST)

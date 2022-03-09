@@ -424,7 +424,8 @@ namespace pi.LTCGI
                         prop.SetVectorArray("_LTCGI_Vertices_1", _LTCGI_Vertices_1t);
                         prop.SetVectorArray("_LTCGI_Vertices_2", _LTCGI_Vertices_2t);
                         prop.SetVectorArray("_LTCGI_Vertices_3", _LTCGI_Vertices_3t);
-                        prop.SetTexture("_LTCGI_static_uniforms", staticUniformTex);
+                        if (staticUniformTex != null)
+                            prop.SetTexture("_LTCGI_static_uniforms", staticUniformTex);
                         prop.SetVectorArray("_LTCGI_ExtraData", _LTCGI_ExtraData);
                         prop.SetVector("_LTCGI_LightmapMult", _LTCGI_LightmapMult);
                         prop.SetFloatArray("_LTCGI_Mask", GetMaskForRenderer(screens, r));
