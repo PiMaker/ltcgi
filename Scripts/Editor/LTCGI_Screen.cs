@@ -230,6 +230,11 @@ namespace pi.LTCGI
                 diffuseFromLmProp.boolValue = dm == DiffMode.LightmapDiffuse;
             }
 
+            if (diffuseFromLmProp.boolValue && lmProp.intValue == 0)
+            {
+                EditorGUILayout.HelpBox("You have \"Lightmap Diffuse\" enabled but no lightmap channel selected - this is probably not what you want.", MessageType.Warning, true);
+            }
+
             EditorGUILayout.PropertyField(specProp);
             EditorGUILayout.PropertyField(dynamicProp);
             EditorGUILayout.PropertyField(sidedProp);
