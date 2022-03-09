@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.Rendering;
 #endif
@@ -58,13 +59,15 @@ namespace pi.LTCGI
 
         public void CreateLODTextureArrays()
         {
+            var curscene = EditorSceneManager.GetActiveScene().name;
+            
             if (StaticTextures == null || StaticTextures.Length == 0)
             {
                 for (int lod = 0; lod < 4; lod++)
                 {
                     try
                     {
-                        AssetDatabase.DeleteAsset("Assets/_pi_/_LTCGI/Generated/lod" + lod + ".asset");
+                        AssetDatabase.DeleteAsset("Assets/_pi_/_LTCGI/Generated/lod-" + curscene + "-" + lod + ".asset");
                     }
                     catch {}
                 }
@@ -120,7 +123,7 @@ namespace pi.LTCGI
                     // Save as asset
                     if (!AssetDatabase.IsValidFolder("Assets/_pi_/_LTCGI/Generated"))
                         AssetDatabase.CreateFolder("Assets/_pi_/_LTCGI", "Generated");
-                    AssetDatabase.CreateAsset(texture2DArray, "Assets/_pi_/_LTCGI/Generated/lod" + lod + ".asset");
+                    AssetDatabase.CreateAsset(texture2DArray, "Assets/_pi_/_LTCGI/Generated/lod-" + curscene + "-" + lod + ".asset");
 
                     EditorUtility.DisplayProgressBar("LTCGI: Precomputing Static Textures", "Generating Texture Arrays...", 0.5f + 0.5f * (lod / 3.0f));
                 }

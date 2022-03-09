@@ -335,12 +335,13 @@ namespace pi.LTCGI
             // find precomputed static textures
             if (!fast)
             {
+                var curscene = EditorSceneManager.GetActiveScene().name;
                 _LTCGI_LOD_arrays = new Texture2DArray[4];
                 for (int lod = 0; lod < 4; lod++)
                 {
                     try
                     {
-                        _LTCGI_LOD_arrays[lod] = AssetDatabase.LoadAssetAtPath<Texture2DArray>("Assets/_pi_/_LTCGI/Generated/lod" + lod + ".asset");
+                        _LTCGI_LOD_arrays[lod] = AssetDatabase.LoadAssetAtPath<Texture2DArray>("Assets/_pi_/_LTCGI/Generated/lod-" + curscene + "-" + lod + ".asset");
                         if (_LTCGI_LOD_arrays[lod] == null) throw new Exception();
                     }
                     catch
