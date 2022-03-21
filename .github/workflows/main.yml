@@ -27,12 +27,14 @@ jobs:
         run: cp _pi_/_LTCGI/unitypackage.list .
       - name: "Copy Gizmos"
         run: mkdir Gizmos && cp _pi_/_LTCGI/Propaganda/LTCGI_Screen_Gizmo.png{,.meta} ./Gizmos
+
+      - name: "Put into Assets/ folder"
+        run: mkdir Assets && mv Gizmos Assets/ && mv _pi_ Assets/
       
       - uses: pCYSl5EDgo/create-unitypackage@master
         with:
           package-path: "ltcgi-${{ github.sha }}.unitypackage"
           include-files: unitypackage.list
-          project-folder: "./Assets/"
       
       - name: List created unitypackages
         run: find . -iname "*.unitypackage"

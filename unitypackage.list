@@ -1,52 +1,52 @@
-_pi_/_LTCGI/LICENSE.meta
-_pi_/_LTCGI/README.md.meta
-_pi_/_LTCGI/LTCGI Attribution.prefab.meta
-_pi_/_LTCGI/LTCGI Controller.prefab.meta
-_pi_/_LTCGI/Lookup Tables/ltc_mat_hdr_inc.exr.meta
-_pi_/_LTCGI/Lookup Tables/ltc_mag_hdr_inc.exr.meta
-_pi_/_LTCGI/Lookup Tables/white1px.png.meta
-_pi_/_LTCGI/Prefilter Blur/BlurPrefilter.shader.meta
-_pi_/_LTCGI/Prefilter Blur/LOD1_crt.asset.meta
-_pi_/_LTCGI/Prefilter Blur/LOD1_mat.mat.meta
-_pi_/_LTCGI/Prefilter Blur/LOD1s_crt.asset.meta
-_pi_/_LTCGI/Prefilter Blur/LOD1s_mat.mat.meta
-_pi_/_LTCGI/Prefilter Blur/LOD2_crt.asset.meta
-_pi_/_LTCGI/Prefilter Blur/LOD2_mat.mat.meta
-_pi_/_LTCGI/Prefilter Blur/LOD2s_crt.asset.meta
-_pi_/_LTCGI/Prefilter Blur/LOD2s_mat.mat.meta
-_pi_/_LTCGI/Prefilter Blur/LOD3_crt.asset.meta
-_pi_/_LTCGI/Prefilter Blur/LOD3_mat.mat.meta
-_pi_/_LTCGI/Prefilter Blur/LOD3s_crt.asset.meta
-_pi_/_LTCGI/Prefilter Blur/LOD3s_mat.mat.meta
-_pi_/_LTCGI/Propaganda/Attribution Material.mat.meta
-_pi_/_LTCGI/Propaganda/Attribution.png.meta
-_pi_/_LTCGI/Propaganda/AttributionWhite.png.meta
-_pi_/_LTCGI/Propaganda/ltcgi_graffiti.png.meta
-_pi_/_LTCGI/Propaganda/LTCGI_Screen_Gizmo.png.meta
-_pi_/_LTCGI/Propaganda/ltcgi_sign.fbx.meta
-_pi_/_LTCGI/Propaganda/ltcgi_sign_mat.mat.meta
-_pi_/_LTCGI/Propaganda/pi_graffiti.png.meta
-_pi_/_LTCGI/Scripts/LTCGI_UdonAdapter.asset.meta
-_pi_/_LTCGI/Scripts/LTCGI_UdonAdapter.cs.meta
-_pi_/_LTCGI/Scripts/LTCGI_Assembly.asmdef.meta
-_pi_/_LTCGI/Scripts/Editor/LTCGI_BakeReset.cs.meta
-_pi_/_LTCGI/Scripts/Editor/LTCGI_Controller.cs.meta
-_pi_/_LTCGI/Scripts/Editor/LTCGI_ControllerBake.cs.meta
-_pi_/_LTCGI/Scripts/Editor/LTCGI_ControllerExternal.cs.meta
-_pi_/_LTCGI/Scripts/Editor/LTCGI_ControllerHelpers.cs.meta
-_pi_/_LTCGI/Scripts/Editor/LTCGI_ControllerLOD.cs.meta
-_pi_/_LTCGI/Scripts/Editor/LTCGI_Include.cs.meta
-_pi_/_LTCGI/Scripts/Editor/LTCGI_Screen.cs.meta
-_pi_/_LTCGI/Scripts/Editor/Resources/LTCGI-Logo.png.meta
-_pi_/_LTCGI/Scripts/Editor/Resources/LTCGI-LogoController.png.meta
-_pi_/_LTCGI/Shaders/Amplify/AmplifyTest.mat.meta
-_pi_/_LTCGI/Shaders/Amplify/LTCGI_Amplify.shader.meta
-_pi_/_LTCGI/Shaders/Amplify/LTCGI_Contribution.asset.meta
-_pi_/_LTCGI/Shaders/LTCGI.cginc.meta
-_pi_/_LTCGI/Shaders/LTCGI_config.cginc.meta
-_pi_/_LTCGI/Shaders/LTCGI_functions.cginc.meta
-_pi_/_LTCGI/Shaders/LTCGI_shadowmap.cginc.meta
-_pi_/_LTCGI/Shaders/LTCGI_uniform.cginc.meta
-_pi_/_LTCGI/Shaders/LTCGI_Simple.shader.meta
-_pi_/_LTCGI/Shaders/LTCGI_Surface.shader.meta
-Gizmos/LTCGI_Screen_Gizmo.png.meta
+Assets/_pi_/_LTCGI/LICENSE.meta
+Assets/_pi_/_LTCGI/README.md.meta
+Assets/_pi_/_LTCGI/LTCGI Attribution.prefab.meta
+Assets/_pi_/_LTCGI/LTCGI Controller.prefab.meta
+Assets/_pi_/_LTCGI/Lookup Tables/ltc_mat_hdr_inc.exr.meta
+Assets/_pi_/_LTCGI/Lookup Tables/ltc_mag_hdr_inc.exr.meta
+Assets/_pi_/_LTCGI/Lookup Tables/white1px.png.meta
+Assets/_pi_/_LTCGI/Prefilter Blur/BlurPrefilter.shader.meta
+Assets/_pi_/_LTCGI/Prefilter Blur/LOD1_crt.asset.meta
+Assets/_pi_/_LTCGI/Prefilter Blur/LOD1_mat.mat.meta
+Assets/_pi_/_LTCGI/Prefilter Blur/LOD1s_crt.asset.meta
+Assets/_pi_/_LTCGI/Prefilter Blur/LOD1s_mat.mat.meta
+Assets/_pi_/_LTCGI/Prefilter Blur/LOD2_crt.asset.meta
+Assets/_pi_/_LTCGI/Prefilter Blur/LOD2_mat.mat.meta
+Assets/_pi_/_LTCGI/Prefilter Blur/LOD2s_crt.asset.meta
+Assets/_pi_/_LTCGI/Prefilter Blur/LOD2s_mat.mat.meta
+Assets/_pi_/_LTCGI/Prefilter Blur/LOD3_crt.asset.meta
+Assets/_pi_/_LTCGI/Prefilter Blur/LOD3_mat.mat.meta
+Assets/_pi_/_LTCGI/Prefilter Blur/LOD3s_crt.asset.meta
+Assets/_pi_/_LTCGI/Prefilter Blur/LOD3s_mat.mat.meta
+Assets/_pi_/_LTCGI/Propaganda/Attribution Material.mat.meta
+Assets/_pi_/_LTCGI/Propaganda/Attribution.png.meta
+Assets/_pi_/_LTCGI/Propaganda/AttributionWhite.png.meta
+Assets/_pi_/_LTCGI/Propaganda/ltcgi_graffiti.png.meta
+Assets/_pi_/_LTCGI/Propaganda/LTCGI_Screen_Gizmo.png.meta
+Assets/_pi_/_LTCGI/Propaganda/ltcgi_sign.fbx.meta
+Assets/_pi_/_LTCGI/Propaganda/ltcgi_sign_mat.mat.meta
+Assets/_pi_/_LTCGI/Propaganda/pi_graffiti.png.meta
+Assets/_pi_/_LTCGI/Scripts/LTCGI_UdonAdapter.asset.meta
+Assets/_pi_/_LTCGI/Scripts/LTCGI_UdonAdapter.cs.meta
+Assets/_pi_/_LTCGI/Scripts/LTCGI_Assembly.asmdef.meta
+Assets/_pi_/_LTCGI/Scripts/Editor/LTCGI_BakeReset.cs.meta
+Assets/_pi_/_LTCGI/Scripts/Editor/LTCGI_Controller.cs.meta
+Assets/_pi_/_LTCGI/Scripts/Editor/LTCGI_ControllerBake.cs.meta
+Assets/_pi_/_LTCGI/Scripts/Editor/LTCGI_ControllerExternal.cs.meta
+Assets/_pi_/_LTCGI/Scripts/Editor/LTCGI_ControllerHelpers.cs.meta
+Assets/_pi_/_LTCGI/Scripts/Editor/LTCGI_ControllerLOD.cs.meta
+Assets/_pi_/_LTCGI/Scripts/Editor/LTCGI_Include.cs.meta
+Assets/_pi_/_LTCGI/Scripts/Editor/LTCGI_Screen.cs.meta
+Assets/_pi_/_LTCGI/Scripts/Editor/Resources/LTCGI-Logo.png.meta
+Assets/_pi_/_LTCGI/Scripts/Editor/Resources/LTCGI-LogoController.png.meta
+Assets/_pi_/_LTCGI/Shaders/Amplify/AmplifyTest.mat.meta
+Assets/_pi_/_LTCGI/Shaders/Amplify/LTCGI_Amplify.shader.meta
+Assets/_pi_/_LTCGI/Shaders/Amplify/LTCGI_Contribution.asset.meta
+Assets/_pi_/_LTCGI/Shaders/LTCGI.cginc.meta
+Assets/_pi_/_LTCGI/Shaders/LTCGI_config.cginc.meta
+Assets/_pi_/_LTCGI/Shaders/LTCGI_functions.cginc.meta
+Assets/_pi_/_LTCGI/Shaders/LTCGI_shadowmap.cginc.meta
+Assets/_pi_/_LTCGI/Shaders/LTCGI_uniform.cginc.meta
+Assets/_pi_/_LTCGI/Shaders/LTCGI_Simple.shader.meta
+Assets/_pi_/_LTCGI/Shaders/LTCGI_Surface.shader.meta
+Assets/Gizmos/LTCGI_Screen_Gizmo.png.meta
