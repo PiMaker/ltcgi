@@ -18,6 +18,7 @@ Join the Discord for support or other questions: https://discord.gg/r38vJd2DuJ
 To use LTCGI, all objects that should receive lighting must use a compatible shader. Currently compatible ones are listed below. If you implement LTCGI into your shader, feel free to send a PR to be included.
 
 * [ORL Shader Family](https://shaders.orels.sh/) by [@orels1](https://github.com/orels1)
+* [Silent's Filamented](https://gitlab.com/s-ilent/filamented)
 * Basic "Unlit" Test Shader (included)
 * Surface Shader (included)
 
