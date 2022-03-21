@@ -10,8 +10,8 @@ Join the Discord for support or other questions: https://discord.gg/r38vJd2DuJ
 
 ![Header Image](./Screenshots/header.jpg)
 
-![Demo Video](./Screenshots/ltcgi.gif)  
-(demo video by [@orels1](https://github.com/orels1))
+![Demo Video](./Screenshots/demo.gif)  
+[Demo Video](https://www.youtube.com/watch?v=DJXgspErWlU)
 
 ## Supported shaders
 
