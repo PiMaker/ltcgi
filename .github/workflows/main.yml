@@ -32,6 +32,7 @@ jobs:
         with:
           package-path: "ltcgi-${{ github.sha }}.unitypackage"
           include-files: unitypackage.list
+          project-folder: "./Assets/"
       
       - name: List created unitypackages
         run: find . -iname "*.unitypackage"
