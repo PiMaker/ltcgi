@@ -55,6 +55,7 @@ namespace pi.LTCGI
         [NonSerialized] internal Transform[] _LTCGI_ScreenTransforms;
         [NonSerialized] private Vector4[] _LTCGI_ExtraData;
         [NonSerialized] private Vector4 _LTCGI_LightmapMult;
+        [NonSerialized] private Vector2[][] _LTCGI_UVs;
 
         private Texture2DArray[] _LTCGI_LOD_arrays;
 
@@ -143,6 +144,7 @@ namespace pi.LTCGI
                 _LTCGI_Vertices_3t = new Vector4[MAX_SOURCES];
                 _LTCGI_ExtraData = new Vector4[MAX_SOURCES];
                 _LTCGI_ScreenTransforms = new Transform[MAX_SOURCES];
+                _LTCGI_UVs = new Vector2[MAX_SOURCES][];
             }
 
             // construct data
@@ -233,6 +235,38 @@ namespace pi.LTCGI
                         _LTCGI_Vertices_1[i].w = mf.sharedMesh.uv[0].y;
                         _LTCGI_Vertices_2[i].w = mf.sharedMesh.uv[2].x * flip;
                         _LTCGI_Vertices_3[i].w = mf.sharedMesh.uv[2].y;
+
+                        if (s.FlipUV)
+                        {
+                            _LTCGI_UVs[i] = new Vector2[]
+                            {
+                                // TODO: is this required? if so, implement it. for now, no-op.
+                                mf.sharedMesh.uv[0],
+                                mf.sharedMesh.uv[3],
+                                mf.sharedMesh.uv[1],
+                                mf.sharedMesh.uv[2],
+                            };
+                        }
+                        else
+                        {
+                            _LTCGI_UVs[i] = new Vector2[]
+                            {
+                                mf.sharedMesh.uv[0],
+                                mf.sharedMesh.uv[3],
+                                mf.sharedMesh.uv[1],
+                                mf.sharedMesh.uv[2],
+                            };
+                        }
+                    }
+                    else
+                    {
+                        _LTCGI_UVs[i] = new Vector2[]
+                        {
+                            mf.sharedMesh.uv[0],
+                            mf.sharedMesh.uv[1],
+                            mf.sharedMesh.uv[2],
+                            mf.sharedMesh.uv[3],
+                        };
                     }
 
                     if (s.ColorMode == ColorMode.SingleUV)
@@ -591,15 +625,15 @@ namespace pi.LTCGI
                 return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
             }
 
-            var tex = new Texture2D(4, MAX_SOURCES, UnityEngine.Experimental.Rendering.GraphicsFormat.R16G16B16A16_SFloat, UnityEngine.Experimental.Rendering.TextureCreationFlags.None);
+            var tex = new Texture2D(6, MAX_SOURCES, UnityEngine.Experimental.Rendering.GraphicsFormat.R16G16B16A16_SFloat, UnityEngine.Experimental.Rendering.TextureCreationFlags.None);
             for (int i = 0; i < MAX_SOURCES; i++)
             {
                 if (i >= screens.Length)
                 {
-                    tex.SetPixel(0, i, Color.black);
-                    tex.SetPixel(1, i, Color.black);
-                    tex.SetPixel(2, i, Color.black);
-                    tex.SetPixel(3, i, Color.black);
+                    for (int w = 0; w < tex.width; w++)
+                    {
+                        tex.SetPixel(w, i, Color.black);
+                    }
                 }
                 else
                 {
@@ -607,6 +641,13 @@ namespace pi.LTCGI
                     tex.SetPixel(1, i, (Color)_LTCGI_Vertices_1t[i]);
                     tex.SetPixel(2, i, (Color)_LTCGI_Vertices_2t[i]);
                     tex.SetPixel(3, i, (Color)_LTCGI_Vertices_3t[i]);
+                    if (_LTCGI_UVs[i] != null && _LTCGI_UVs[i].Length == 4)
+                    {
+                        tex.SetPixel(4, i, (Color)new Vector4(
+                            _LTCGI_UVs[i][0].x, _LTCGI_UVs[i][0].y, _LTCGI_UVs[i][1].x, _LTCGI_UVs[i][1].y));
+                        tex.SetPixel(5, i, (Color)new Vector4(
+                            _LTCGI_UVs[i][2].x, _LTCGI_UVs[i][2].y, _LTCGI_UVs[i][3].x, _LTCGI_UVs[i][3].y));
+                    }
                 }
             }
 
@@ -624,11 +665,12 @@ namespace pi.LTCGI
             }
 
             File.WriteAllBytes(path, exr);
+            AssetDatabase.Refresh();
             
             var asset = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
             string assetPath = AssetDatabase.GetAssetPath(asset);
             var importer = AssetImporter.GetAtPath(assetPath) as TextureImporter;
-            if (importer != null && !prev.SequenceEqual(exr))
+            if (importer != null && (!prev.SequenceEqual(exr) || importer.npotScale != TextureImporterNPOTScale.None))
             {
                 importer.mipmapEnabled = false;
                 importer.textureCompression = TextureImporterCompression.Uncompressed;
@@ -637,6 +679,7 @@ namespace pi.LTCGI
                 importer.maxTextureSize = 8192;
                 importer.alphaSource = TextureImporterAlphaSource.FromInput;
                 importer.alphaIsTransparency = true;
+                importer.npotScale = TextureImporterNPOTScale.None;
                 importer.SaveAndReimport();
             }
 

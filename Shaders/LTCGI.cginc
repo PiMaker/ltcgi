@@ -79,51 +79,10 @@
     // get texture coords (before clipping!)
     [branch]
     if (flags.colormode == LTCGI_COLORMODE_TEXTURE) {
-        // orthonormal projection to transformed rectangle
-        float3 V1 = L[1] - L[0];
-        float3 V2 = L[3] - L[0];
-        float3 RN = cross(V1, V2);
+        float3 RN;
+        float2 uv = LTCGI_calculateUV(i, L, RN);
         float planeAreaSquared = dot(RN, RN);
         float planeDistxPlaneArea = dot(RN, L[0]);
-
-        float2 uv;
-        #ifdef LTCGI_EXPERIMENTAL_UV_MAP
-            float3 vsum = 0;
-            // LTCGI_EXPERIMENTAL_UV_MAP is experimental, and NOT OPTIMIZED!
-            float3 Ln2[4];
-            Ln2[0] = normalize(L[0]);
-            Ln2[1] = normalize(L[1]);
-            Ln2[2] = normalize(L[2]);
-            Ln2[3] = normalize(L[3]);
-            vsum += LTCGI_IntegrateEdge(Ln2[0], Ln2[1]);
-            vsum += LTCGI_IntegrateEdge(Ln2[1], Ln2[2]);
-            vsum += LTCGI_IntegrateEdge(Ln2[2], Ln2[3]);
-            vsum += LTCGI_IntegrateEdge(Ln2[3], Ln2[0]);
-
-            float2 bary;
-            bool hit0 = LTCGI_tri_ray(0, vsum, L[0], L[1], L[2], bary);
-            if (!hit0) {
-                LTCGI_tri_ray(0, vsum, L[0], L[2], L[3], bary);
-            }
-
-            float3 bary3 = float3(bary, 1 - bary.x - bary.y);
-            uv = uvs[2 - hit0] * bary3.x + uvs[3 - hit0] * bary3.y + uvs[0] * bary3.z;
-        #else
-            // orthonormal projection of (0,0,0) in area light space
-            float3 P = planeDistxPlaneArea * RN / planeAreaSquared - L[0];
-
-            // find tex coords of P
-            float dot_V1_V2 = dot(V1, V2);
-            float inv_dot_V1_V1 = 1 / dot(V1, V1);
-            float3 V3 = V2 - V1 * dot_V1_V2 * inv_dot_V1_V1;
-            uv.y = dot(V3, P) / dot(V3, V3);
-            uv.x = dot(V1, P) * inv_dot_V1_V1 - dot_V1_V2 * inv_dot_V1_V1 * uv.y;
-
-            // remap onto object UVs
-            if (uvStart.x < 0 || uvEnd.x < 0) uv.xy = uv.yx; // workaround
-            uv.x = LTCGI_remap(0, 1, abs(uvStart.x), abs(uvEnd.x), uv.x);
-            uv.y = LTCGI_remap(0, 1, uvStart.y, uvEnd.y, uv.y);
-        #endif
 
         float3 sampled;
         #ifdef LTCGI_VISUALIZE_SAMPLE_UV
@@ -136,16 +95,8 @@
                     LTCGI_sample(uv, 3, flags.texindex, 100) * 0.25;
             } else {
                 float d = abs(planeDistxPlaneArea) / planeAreaSquared;
-                #ifdef LTCGI_EXPERIMENTAL_UV_MAP
-                    d *= 800.0f;
-                #else
-                    d *= LTCGI_UV_BLUR_DISTANCE;
-                #endif
+                d *= LTCGI_UV_BLUR_DISTANCE;
                 d = log(d) / log(3.0);
-
-                // fake brightness makes objects appear sharper
-                if (!diffuse && length(color) > 2.1)
-                    d = d / clamp(length(color)*0.08, 1, 2);
 
                 // a rough material must never show a perfect reflection,
                 // since our LOD0 texture is not prefiltered (and thus cannot

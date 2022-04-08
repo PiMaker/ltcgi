@@ -5,9 +5,11 @@
 uniform sampler2D _LTCGI_lut2;
 uniform sampler2D _LTCGI_lut1;
 
-#ifdef LTCGI_STATIC_UNIFORMS
-
+#ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
 uniform Texture2D<float4> _LTCGI_static_uniforms;
+#endif
+
+#ifdef LTCGI_STATIC_UNIFORMS
 
 float4 _LTCGI_Vertices_0_get(uint i) {
     return _LTCGI_static_uniforms[uint2(0, i)];

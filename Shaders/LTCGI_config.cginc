@@ -83,13 +83,6 @@ const float LUT_BIAS = 0.5/LUT_SIZE;
 #define LTCGI_AUDIOLINK
 
 
-// EXPERIMENTAL! NOT OPTIMIZED!
-//
-// Slightly less artifacting around UV edges, but more
-// in general. Also worse performance (for now).
-//#define LTCGI_EXPERIMENTAL_UV_MAP
-
-
 #ifdef SHADER_TARGET_SURFACE_ANALYSIS
 #undef LTCGI_STATIC_UNIFORMS
 #endif

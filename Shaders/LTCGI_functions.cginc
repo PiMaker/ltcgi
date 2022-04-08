@@ -265,12 +265,13 @@ bool LTCGI_tri_ray(float3 orig, float3 dir, float3 v0, float3 v1, float3 v2, out
 
     float3 tvec = orig - v0;
     bary.x = dot(tvec, pvec) * invDet;
-    if (bary.x < 0 || bary.x > 1) return false;
 
     float3 qvec = cross(tvec, v0v1);
     bary.y = dot(dir, qvec) * invDet;
 
-    return true;
+    // return false when other triangle of quad should be sampled,
+    // i.e. we went over the diagonal line
+    return bary.x >= 0;
 }
 
 float2 LTCGI_rotateVector(float2 x, float angle)
@@ -278,6 +279,33 @@ float2 LTCGI_rotateVector(float2 x, float angle)
     float c = cos(angle);
     float s = sin(angle);
     return mul(float2x2(c,s,-s,c), x);
+}
+
+float2 LTCGI_calculateUV(uint i, float3 L[5], out float3 ray)
+{
+    // calculate perpendicular vector to plane defined by area light
+    float3 E1 = L[1] - L[0];
+    float3 E2 = L[3] - L[0];
+    ray = cross(E1, E2);
+
+    // raycast it against the two triangles formed by the quad
+    float2 bary;
+    bool hit0 = LTCGI_tri_ray(0, ray, L[0], L[1], L[2], bary);
+    if (!hit0) {
+        LTCGI_tri_ray(0, ray, L[0], L[2], L[3], bary);
+    }
+
+    float2 uvs[4];
+    uvs[0] = _LTCGI_static_uniforms[uint2(4, i)].xy;
+    uvs[1] = _LTCGI_static_uniforms[uint2(4, i)].zw;
+    uvs[2] = _LTCGI_static_uniforms[uint2(5, i)].xy;
+    uvs[3] = _LTCGI_static_uniforms[uint2(5, i)].zw;
+
+    // map barycentric triangle coordinates to the according object UVs
+    float3 bary3 = float3(bary, 1 - bary.x - bary.y);
+    float2 uv = uvs[3 - hit0*2] * bary3.x + uvs[2 + hit0] * bary3.y + uvs[0] * bary3.z;
+
+    return uv;
 }
 
 /*
@@ -296,6 +324,7 @@ void LTCGI_GetLw(uint i, ltcgi_flags flags, float3 worldPos, out float3 Lw[4], o
     float4 v2 = _LTCGI_Vertices_2_get(i);
     float4 v3 = _LTCGI_Vertices_3_get(i);
 
+    [branch]
     if (cylinder) {
         // construct data according to worldPos to create aligned
         // rectangle tangent to the cylinder
@@ -342,8 +371,14 @@ void LTCGI_GetLw(uint i, ltcgi_flags flags, float3 worldPos, out float3 Lw[4], o
         Lw[1] = v1.xyz - worldPos;
         Lw[2] = v2.xyz - worldPos;
         Lw[3] = v3.xyz - worldPos;
-        uvStart = float2(v0.w, v1.w);
-        uvEnd = float2(v2.w, v3.w);
+        #ifndef SHADER_TARGET_SURFACE_ANALYSIS
+            // TODO: optimize this away in case of texture color mode?
+            uvStart = _LTCGI_static_uniforms[uint2(4, i)].xy;
+            uvEnd = _LTCGI_static_uniforms[uint2(5, i)].zw;
+        #else
+            uvStart = float2(0, 0);
+            uvEnd = float2(1, 1);
+        #endif
     }
 }
 
