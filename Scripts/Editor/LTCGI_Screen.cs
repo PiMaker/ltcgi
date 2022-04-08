@@ -60,6 +60,14 @@ namespace pi.LTCGI
 
         private bool update = false;
 
+        private static readonly Color[] GIZMO_COLORS = new Color[]
+        {
+            Color.white,
+            Color.red,
+            Color.green,
+            Color.blue,
+        };
+
         public void Update()
         {
             // don't mess with Udon emulation
@@ -84,8 +92,8 @@ namespace pi.LTCGI
 
         void OnDrawGizmos()
         {
-            Gizmos.color = Color.white;
-            Gizmos.DrawIcon(transform.position, "LTCGI_Screen_Gizmo.png", true);
+            Gizmos.color = GIZMO_COLORS[this.LightmapChannel];
+            Gizmos.DrawIcon(transform.position, "LTCGI_Screen_Gizmo.png", true, Gizmos.color);
         }
 
         private static Mesh cylMesh = null;
