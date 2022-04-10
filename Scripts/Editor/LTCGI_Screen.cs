@@ -284,7 +284,7 @@ namespace pi.LTCGI
 
             if (colorProp.colorValue.maxColorComponent == 0.0f)
             {
-                GUILayout.Label("WARNING: Screen is disabled with color black!");
+                EditorGUILayout.HelpBox("Screen is disabled with color black!", MessageType.Warning, true);
             }
             
             if (GUILayout.Button("Try get Color from Material"))
