@@ -30,6 +30,9 @@ jobs:
 
       - name: "Put into Assets/ folder"
         run: mkdir Assets && mv Gizmos Assets/ && mv _pi_ Assets/
+
+      - name: "Inspect structure"
+        run: ls -R Assets/
       
       - uses: pCYSl5EDgo/create-unitypackage@master
         with:
