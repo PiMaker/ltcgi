@@ -94,6 +94,10 @@ namespace pi.LTCGI
 
             EditorGUILayout.Space(); EditorGUILayout.Space();
 
+            LTCGI_Controller.DrawAutoSetupEditor(LTCGI_Controller.Singleton);
+
+            EditorGUILayout.Space(); EditorGUILayout.Space();
+
             if (LTCGI_Controller.Singleton.cachedMeshRenderers != null && LTCGI_Controller.Singleton._LTCGI_ScreenTransforms != null)
             {
                     EditorGUILayout.HelpBox(
