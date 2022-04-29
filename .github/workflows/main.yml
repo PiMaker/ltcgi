@@ -25,6 +25,10 @@ jobs:
 
       - name: "Copy unitypackage.list"
         run: cp _pi_/_LTCGI/unitypackage.list .
+      - name: "Copy unitypackage-adapter-protv.list"
+        run: cp _pi_/_LTCGI/unitypackage-adapter-protv.list .
+      - name: "Copy unitypackage-adapter-usharp.list"
+        run: cp _pi_/_LTCGI/unitypackage-adapter-usharp.list .
       - name: "Copy Gizmos"
         run: mkdir Gizmos && cp _pi_/_LTCGI/Propaganda/LTCGI_Screen_Gizmo.png ./Gizmos && cp _pi_/_LTCGI/Propaganda/LTCGI_Screen_Gizmo.png.meta ./Gizmos
 
