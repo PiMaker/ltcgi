@@ -26,7 +26,7 @@ float4 _LTCGI_Vertices_3_get(uint i) {
 
 #else
 
-// vertices in object space; w component is UV
+// vertices in object space; w component is UV (legacy)
 uniform float4 _LTCGI_Vertices_0[MAX_SOURCES];
 uniform float4 _LTCGI_Vertices_1[MAX_SOURCES];
 uniform float4 _LTCGI_Vertices_2[MAX_SOURCES];
@@ -60,6 +60,8 @@ uniform bool _LTCGI_Mask[MAX_SOURCES];
 //   b4-b7=texture index (0=video, (n>0)=n-1)
 //   b8-b9=color mode
 //   b10-b11=lightmap channel (0=disabled, 1=r, 2=g, 3=b)
+//   b12=cylinder
+//   b13-14=audio link band
 // (color black = fully disabled)
 uniform float4 _LTCGI_ExtraData[MAX_SOURCES];
 struct ltcgi_flags

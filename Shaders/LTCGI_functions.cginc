@@ -281,7 +281,7 @@ float2 LTCGI_rotateVector(float2 x, float angle)
     return mul(float2x2(c,s,-s,c), x);
 }
 
-float2 LTCGI_calculateUV(uint i, float3 L[5], out float3 ray)
+float2 LTCGI_calculateUV(uint i, float3 L[5], float2 uvStart, float2 uvEnd, out float3 ray)
 {
     // calculate perpendicular vector to plane defined by area light
     float3 E1 = L[1] - L[0];
@@ -296,10 +296,10 @@ float2 LTCGI_calculateUV(uint i, float3 L[5], out float3 ray)
     }
 
     float2 uvs[4];
-    uvs[0] = _LTCGI_static_uniforms[uint2(4, i)].xy;
+    uvs[0] = uvStart; // == _LTCGI_static_uniforms[uint2(4, i)].xy;
     uvs[1] = _LTCGI_static_uniforms[uint2(4, i)].zw;
     uvs[2] = _LTCGI_static_uniforms[uint2(5, i)].xy;
-    uvs[3] = _LTCGI_static_uniforms[uint2(5, i)].zw;
+    uvs[3] = uvEnd; // == _LTCGI_static_uniforms[uint2(5, i)].zw;
 
     // map barycentric triangle coordinates to the according object UVs
     float3 bary3 = float3(bary, 1 - bary.x - bary.y);
@@ -372,7 +372,6 @@ void LTCGI_GetLw(uint i, ltcgi_flags flags, float3 worldPos, out float3 Lw[4], o
         Lw[2] = v2.xyz - worldPos;
         Lw[3] = v3.xyz - worldPos;
         #ifndef SHADER_TARGET_SURFACE_ANALYSIS
-            // TODO: optimize this away in case of texture color mode?
             uvStart = _LTCGI_static_uniforms[uint2(4, i)].xy;
             uvEnd = _LTCGI_static_uniforms[uint2(5, i)].zw;
         #else

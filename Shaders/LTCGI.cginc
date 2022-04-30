@@ -80,7 +80,7 @@
     [branch]
     if (flags.colormode == LTCGI_COLORMODE_TEXTURE) {
         float3 RN;
-        float2 uv = LTCGI_calculateUV(i, L, RN);
+        float2 uv = LTCGI_calculateUV(i, L, uvStart, uvEnd, RN);
         float planeAreaSquared = dot(RN, RN);
         float planeDistxPlaneArea = dot(RN, L[0]);
 
