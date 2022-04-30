@@ -281,7 +281,7 @@ float2 LTCGI_rotateVector(float2 x, float angle)
     return mul(float2x2(c,s,-s,c), x);
 }
 
-float2 LTCGI_calculateUV(uint i, float3 L[5], float2 uvStart, float2 uvEnd, out float3 ray)
+float2 LTCGI_calculateUV(uint i, float3 L[5], bool isTri, float2 uvStart, float2 uvEnd, out float3 ray)
 {
     // calculate perpendicular vector to plane defined by area light
     float3 E1 = L[1] - L[0];
@@ -290,7 +290,7 @@ float2 LTCGI_calculateUV(uint i, float3 L[5], float2 uvStart, float2 uvEnd, out 
 
     // raycast it against the two triangles formed by the quad
     float2 bary;
-    bool hit0 = LTCGI_tri_ray(0, ray, L[0], L[2], L[3], bary);
+    bool hit0 = LTCGI_tri_ray(0, ray, L[0], L[2], L[3], bary) || isTri;
     if (!hit0) {
         LTCGI_tri_ray(0, ray, L[0], L[1], L[2], bary);
     }
