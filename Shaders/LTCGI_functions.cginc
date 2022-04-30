@@ -368,22 +368,25 @@ void LTCGI_GetLw(uint i, ltcgi_flags flags, float3 worldPos, out float3 Lw[4], o
         Lw[2] = float3(p2.x, in_base.y,             p2.y) - worldPos;
         Lw[3] = float3(p2.x, in_base.y + in_height, p2.y) - worldPos;
 
+        isTri = false;
+
         // UV depends on "viewing" angle of the shade point towards the cylinder
         float2 viewDir = normalize((in_base - worldPos).xz);
-        // forwardAngle == atan2(cos(in_angle), sin(in_angle))
+        // forwardAngle == atan2(cos(in_angle), sin(in_angle)); but only negative
         float forwardAngle = -in_angle + UNITY_HALF_PI;
-        if (in_angle >= UNITY_PI * 1.5f)
-            forwardAngle += UNITY_TWO_PI;
         // offset from center of screen forward to the side ends, positive goes left/ccw fpv top,
         // sine to account for the fact we're rotating around a cylinder which has depth
         float viewAngle = forwardAngle - atan2(viewDir.y, viewDir.x);
-        viewAngle = clamp(viewAngle, -in_size, in_size);
+        // prevent rollover, since we need to clamp we must stay withing [-pi, pi]
+        if (viewAngle < -UNITY_PI)
+            viewAngle += UNITY_TWO_PI;
+        if (viewAngle > UNITY_PI)
+            viewAngle -= UNITY_TWO_PI;
+        viewAngle = clamp(viewAngle * 0.5f, -in_size, in_size);
         viewAngle = sin(viewAngle);
         // full view UVs, but shifted left/right depending on view angle
         uvStart = float2(1 - saturate(viewAngle), 0);
         uvEnd = float2(1 - saturate(viewAngle + 1), 1);
-
-        isTri = false;
 
     } else {
         // use passed in data, offset around worldPos
