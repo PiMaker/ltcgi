@@ -211,7 +211,7 @@ namespace pi.LTCGI
                 var leftStyle = EditorStyles.miniButtonLeft;
                 var midStyle = EditorStyles.miniButtonMid;
                 var rightStyle = EditorStyles.miniButtonRight;
-                var toggleMesh = GUILayout.Toggle(!isCylinder, "4-point Mesh", leftStyle);
+                var toggleMesh = GUILayout.Toggle(!isCylinder, "Quad/Triangle", leftStyle);
                 var toggleCyl = GUILayout.Toggle(isCylinder, "Cylinder", rightStyle);
 
                 if ((toggleMesh && isCylinder) || (!toggleMesh && !isCylinder))
@@ -238,9 +238,9 @@ namespace pi.LTCGI
                 {
                     error = "Mesh is not readable!";
                 }
-                else if (mesh.vertexCount != 4)
+                else if (mesh.vertexCount != 4 && mesh.vertexCount != 3)
                 {
-                    error = "Mesh does not have exactly 4 vertices!";
+                    error = "Mesh does not have exactly 3 or 4 vertices!";
                 }
                 if (error != "")
                 {

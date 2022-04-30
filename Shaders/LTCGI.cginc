@@ -19,7 +19,7 @@
 
 // Main function - this calculates the approximated model for one pixel and one light
 /* private */ float LTCGI_Evaluate(
-    float3 Lw[4], float3 worldNorm, float3 viewDir, float3x3 Minv, uint i, float roughness,
+    float3 Lw[4], float3 worldNorm, float3 viewDir, float3x3 Minv, uint i, float roughness, bool isTri,
     float2 uvStart, float2 uvEnd, const bool diffuse, ltcgi_flags flags, inout float3 color
 ) {
     // diffuse distance fade
@@ -72,7 +72,7 @@
     float3 L[5];
     L[0] = mul(Minv, Lw[0]);
     L[1] = mul(Minv, Lw[1]);
-    L[2] = mul(Minv, Lw[3]);
+    L[2] = isTri ? L[1] : mul(Minv, Lw[3]);
     L[3] = mul(Minv, Lw[2]);
     L[4] = 0;
 
@@ -128,11 +128,13 @@
     L[3] = normalize(L[3]);
     L[4] = normalize(L[4]);
 
-    // integrate
+    // integrate (and pray that constant folding works well)
     float sum = 0;
     [unroll(5)]
     for (uint v = 0; v < max(3, (uint)n); v++) {
-        sum += LTCGI_IntegrateEdge(L[v], L[(v + 1) % 5]).z;
+        float3 a = L[v];
+        float3 b = L[(v + 1) % 5];
+        sum += LTCGI_IntegrateEdge(a, b).z;
     }
 
     #ifdef LTCGI_DISTANCE_FADE_APPROX
@@ -245,11 +247,12 @@
         // calculate (shifted) world space positions
         float3 Lw[4];
         float2 uvStart, uvEnd;
-        LTCGI_GetLw(i, flags, worldPos, Lw, uvStart, uvEnd);
+        bool isTri;
+        LTCGI_GetLw(i, flags, worldPos, Lw, uvStart, uvEnd, isTri);
 
         // skip single-sided lights that face the other way
         if (!flags.doublesided) {
-            float3 screenNorm = cross(Lw[1] - Lw[0], Lw[3] - Lw[0]);
+            float3 screenNorm = cross(Lw[1] - Lw[0], Lw[2] - Lw[0]);
             if (dot(screenNorm, Lw[0]) < 0)
                 continue;
         }
@@ -276,7 +279,7 @@
                     else
                         lmd = smoothstep(0.0, LTCGI_SPECULAR_LIGHTMAP_STEP, saturate(lm - LTCGI_LIGHTMAP_CUTOFF));
                 }
-                float diff = LTCGI_Evaluate(Lw, worldNorm, viewDir, identityBrdf, i, roughness, uvStart, uvEnd, true, flags, color);
+                float diff = LTCGI_Evaluate(Lw, worldNorm, viewDir, identityBrdf, i, roughness, isTri, uvStart, uvEnd, true, flags, color);
                 diffuse += (diff * color * lmd);
             }
         #endif
@@ -293,7 +296,7 @@
                     color = saturate(extra.rgb);
                 #endif
 
-                float spec = LTCGI_Evaluate(Lw, worldNorm, viewDir, Minv, i, roughness, uvStart, uvEnd, false, flags, color);
+                float spec = LTCGI_Evaluate(Lw, worldNorm, viewDir, Minv, i, roughness, isTri, uvStart, uvEnd, false, flags, color);
                 spec *= spec_amp * smoothstep(0.0, LTCGI_SPECULAR_LIGHTMAP_STEP, saturate(lm - LTCGI_LIGHTMAP_CUTOFF));
                 #ifndef LTCGI_SPECULAR_OFF
                     totalSpecularIntensity += spec;

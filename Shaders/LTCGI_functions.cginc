@@ -290,9 +290,9 @@ float2 LTCGI_calculateUV(uint i, float3 L[5], float2 uvStart, float2 uvEnd, out 
 
     // raycast it against the two triangles formed by the quad
     float2 bary;
-    bool hit0 = LTCGI_tri_ray(0, ray, L[0], L[1], L[2], bary);
+    bool hit0 = LTCGI_tri_ray(0, ray, L[0], L[2], L[3], bary);
     if (!hit0) {
-        LTCGI_tri_ray(0, ray, L[0], L[2], L[3], bary);
+        LTCGI_tri_ray(0, ray, L[0], L[1], L[2], bary);
     }
 
     float2 uvs[4];
@@ -303,7 +303,7 @@ float2 LTCGI_calculateUV(uint i, float3 L[5], float2 uvStart, float2 uvEnd, out 
 
     // map barycentric triangle coordinates to the according object UVs
     float3 bary3 = float3(bary, 1 - bary.x - bary.y);
-    float2 uv = uvs[3 - hit0*2] * bary3.x + uvs[2 + hit0] * bary3.y + uvs[0] * bary3.z;
+    float2 uv = uvs[1 + hit0*2] * bary3.x + uvs[3 - hit0] * bary3.y + uvs[0] * bary3.z;
 
     return uv;
 }
@@ -312,7 +312,7 @@ float2 LTCGI_calculateUV(uint i, float3 L[5], float2 uvStart, float2 uvEnd, out 
     EXPERIMENTAL: CYLINDER HELPER
 */
 
-void LTCGI_GetLw(uint i, ltcgi_flags flags, float3 worldPos, out float3 Lw[4], out float2 uvStart, out float2 uvEnd) {
+void LTCGI_GetLw(uint i, ltcgi_flags flags, float3 worldPos, out float3 Lw[4], out float2 uvStart, out float2 uvEnd, out bool isTri) {
     bool cylinder = false;
     #ifdef LTCGI_CYLINDER
         // statically optimize out branch below in case disabled
@@ -365,6 +365,8 @@ void LTCGI_GetLw(uint i, ltcgi_flags flags, float3 worldPos, out float3 Lw[4], o
         uvStart = float2(-(1 - sin(saturate(viewAngle*0.5))), 0);
         uvEnd = float2(-sin(saturate(-viewAngle*0.5)), 1);
 
+        isTri = false;
+
     } else {
         // use passed in data, offset around worldPos
         Lw[0] = v0.xyz - worldPos;
@@ -378,6 +380,10 @@ void LTCGI_GetLw(uint i, ltcgi_flags flags, float3 worldPos, out float3 Lw[4], o
             uvStart = float2(0, 0);
             uvEnd = float2(1, 1);
         #endif
+
+        // we only detect triangles for "blender" import configuration, as those are the only
+        // ones that can actually be triangles (I think?)
+        isTri = /*distance(Lw[2], Lw[3]) < 0.001 || */distance(Lw[1], Lw[3]) < 0.001;
     }
 }
 

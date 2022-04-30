@@ -202,16 +202,36 @@ namespace pi.LTCGI
                     {
                         SetMeshImporterFormat(mf.sharedMesh, true);
                     }
-                    if (mf.sharedMesh.vertexCount != 4)
+                    var mesh = mf.sharedMesh;
+                    if (mesh.vertexCount != 4 && mesh.vertexCount != 3)
                     {
                         if (fast) return;
-                        throw new Exception($"Mesh on '{s.gameObject.name}' does not have 4 vertices ({mf.sharedMesh.vertexCount})");
+                        throw new Exception($"Mesh on '{s.gameObject.name}' does not have 3 or 4 vertices ({mesh.vertexCount})");
                     }
-                    var verts = mf.sharedMesh.vertices;
-                    _LTCGI_Vertices_0[i] = new Vector4(verts[0].x, verts[0].y, verts[0].z, mf.sharedMesh.uv[0].x);
-                    _LTCGI_Vertices_1[i] = new Vector4(verts[1].x, verts[1].y, verts[1].z, mf.sharedMesh.uv[0].y);
-                    _LTCGI_Vertices_2[i] = new Vector4(verts[2].x, verts[2].y, verts[2].z, mf.sharedMesh.uv[3].x);
-                    _LTCGI_Vertices_3[i] = new Vector4(verts[3].x, verts[3].y, verts[3].z, mf.sharedMesh.uv[3].y);
+
+                    if (mf.sharedMesh.vertexCount == 3)
+                    {
+                        // extend triangle to virtual quad
+                        mesh = Instantiate(mesh);
+                        mesh.vertices = new Vector3[] {
+                            mesh.vertices[0],
+                            mesh.vertices[1],
+                            mesh.vertices[2],
+                            mesh.vertices[2],
+                        };
+                        mesh.uv = new Vector2[] {
+                            mesh.uv[0],
+                            mesh.uv[1],
+                            mesh.uv[2],
+                            mesh.uv[2],
+                        };
+                    }
+
+                    var verts = mesh.vertices;
+                    _LTCGI_Vertices_0[i] = new Vector4(verts[0].x, verts[0].y, verts[0].z, mesh.uv[0].x);
+                    _LTCGI_Vertices_1[i] = new Vector4(verts[1].x, verts[1].y, verts[1].z, mesh.uv[0].y);
+                    _LTCGI_Vertices_2[i] = new Vector4(verts[2].x, verts[2].y, verts[2].z, mesh.uv[3].x);
+                    _LTCGI_Vertices_3[i] = new Vector4(verts[3].x, verts[3].y, verts[3].z, mesh.uv[3].y);
 
                     var angle = Vector3.Dot(
                         new Vector3(_LTCGI_Vertices_1[i].x, _LTCGI_Vertices_1[i].y, _LTCGI_Vertices_1[i].z) -
@@ -231,30 +251,30 @@ namespace pi.LTCGI
                         _LTCGI_Vertices_1[i] = v3;
                         _LTCGI_Vertices_2[i] = v1;
                         _LTCGI_Vertices_3[i] = v2;
-                        _LTCGI_Vertices_0[i].w = mf.sharedMesh.uv[0].x * flip;
-                        _LTCGI_Vertices_1[i].w = mf.sharedMesh.uv[0].y;
-                        _LTCGI_Vertices_2[i].w = mf.sharedMesh.uv[2].x * flip;
-                        _LTCGI_Vertices_3[i].w = mf.sharedMesh.uv[2].y;
+                        _LTCGI_Vertices_0[i].w = mesh.uv[0].x * flip;
+                        _LTCGI_Vertices_1[i].w = mesh.uv[0].y;
+                        _LTCGI_Vertices_2[i].w = mesh.uv[2].x * flip;
+                        _LTCGI_Vertices_3[i].w = mesh.uv[2].y;
 
                         if (s.FlipUV)
                         {
                             _LTCGI_UVs[i] = new Vector2[]
                             {
                                 // TODO: is this required? if so, implement it. for now, no-op.
-                                mf.sharedMesh.uv[0],
-                                mf.sharedMesh.uv[3],
-                                mf.sharedMesh.uv[1],
-                                mf.sharedMesh.uv[2],
+                                mesh.uv[0],
+                                mesh.uv[3],
+                                mesh.uv[1],
+                                mesh.uv[2],
                             };
                         }
                         else
                         {
                             _LTCGI_UVs[i] = new Vector2[]
                             {
-                                mf.sharedMesh.uv[0],
-                                mf.sharedMesh.uv[3],
-                                mf.sharedMesh.uv[1],
-                                mf.sharedMesh.uv[2],
+                                mesh.uv[0],
+                                mesh.uv[3],
+                                mesh.uv[1],
+                                mesh.uv[2],
                             };
                         }
                     }
@@ -262,10 +282,10 @@ namespace pi.LTCGI
                     {
                         _LTCGI_UVs[i] = new Vector2[]
                         {
-                            mf.sharedMesh.uv[0],
-                            mf.sharedMesh.uv[1],
-                            mf.sharedMesh.uv[2],
-                            mf.sharedMesh.uv[3],
+                            mesh.uv[0],
+                            mesh.uv[1],
+                            mesh.uv[2],
+                            mesh.uv[3],
                         };
                     }
 
@@ -273,6 +293,11 @@ namespace pi.LTCGI
                     {
                         _LTCGI_Vertices_0[i].w = s.SingleUV.x;
                         _LTCGI_Vertices_1[i].w = s.SingleUV.y;
+                    }
+
+                    if (mf.sharedMesh.vertexCount == 3)
+                    {
+                        DestroyImmediate(mesh);
                     }
                 }
 
