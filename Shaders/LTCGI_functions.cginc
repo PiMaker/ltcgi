@@ -281,7 +281,7 @@ float2 LTCGI_rotateVector(float2 x, float angle)
     return mul(float2x2(c,s,-s,c), x);
 }
 
-float2 LTCGI_calculateUV(uint i, float3 L[5], bool isTri, float2 uvStart, float2 uvEnd, out float3 ray)
+float2 LTCGI_calculateUV(uint i, ltcgi_flags flags, float3 L[5], bool isTri, float2 uvStart, float2 uvEnd, out float3 ray)
 {
     // calculate perpendicular vector to plane defined by area light
     float3 E1 = L[1] - L[0];
@@ -296,10 +296,20 @@ float2 LTCGI_calculateUV(uint i, float3 L[5], bool isTri, float2 uvStart, float2
     }
 
     float2 uvs[4];
-    uvs[0] = uvStart; // == _LTCGI_static_uniforms[uint2(4, i)].xy;
-    uvs[1] = _LTCGI_static_uniforms[uint2(4, i)].zw;
-    uvs[2] = _LTCGI_static_uniforms[uint2(5, i)].xy;
-    uvs[3] = uvEnd; // == _LTCGI_static_uniforms[uint2(5, i)].zw;
+    #ifdef LTCGI_CYLINDER
+    if (flags.cylinder) {
+        uvs[0] = uvStart;
+        uvs[1] = float2(uvStart.x, uvEnd.y);
+        uvs[2] = float2(uvEnd.x, uvStart.y);
+        uvs[3] = uvEnd;
+    } else
+    #endif
+    {
+        uvs[0] = uvStart; // == _LTCGI_static_uniforms[uint2(4, i)].xy;
+        uvs[1] = _LTCGI_static_uniforms[uint2(4, i)].zw;
+        uvs[2] = _LTCGI_static_uniforms[uint2(5, i)].xy;
+        uvs[3] = uvEnd; // == _LTCGI_static_uniforms[uint2(5, i)].zw;
+    }
 
     // map barycentric triangle coordinates to the according object UVs
     float3 bary3 = float3(bary, 1 - bary.x - bary.y);
@@ -358,12 +368,20 @@ void LTCGI_GetLw(uint i, ltcgi_flags flags, float3 worldPos, out float3 Lw[4], o
         Lw[2] = float3(p2.x, in_base.y,             p2.y) - worldPos;
         Lw[3] = float3(p2.x, in_base.y + in_height, p2.y) - worldPos;
 
-        // UV depends on "viewing" angle (for specular)
-        float2 centerForward = float2(sin(in_angle), cos(in_angle));
+        // UV depends on "viewing" angle of the shade point towards the cylinder
         float2 viewDir = normalize((in_base - worldPos).xz);
-        float viewAngle = atan2(centerForward.y, centerForward.x) - atan2(viewDir.y, viewDir.x);
-        uvStart = float2(-(1 - sin(saturate(viewAngle*0.5))), 0);
-        uvEnd = float2(-sin(saturate(-viewAngle*0.5)), 1);
+        // forwardAngle == atan2(cos(in_angle), sin(in_angle))
+        float forwardAngle = -in_angle + UNITY_HALF_PI;
+        if (in_angle >= UNITY_PI * 1.5f)
+            forwardAngle += UNITY_TWO_PI;
+        // offset from center of screen forward to the side ends, positive goes left/ccw fpv top,
+        // sine to account for the fact we're rotating around a cylinder which has depth
+        float viewAngle = forwardAngle - atan2(viewDir.y, viewDir.x);
+        viewAngle = clamp(viewAngle, -in_size, in_size);
+        viewAngle = sin(viewAngle);
+        // full view UVs, but shifted left/right depending on view angle
+        uvStart = float2(1 - saturate(viewAngle), 0);
+        uvEnd = float2(1 - saturate(viewAngle + 1), 1);
 
         isTri = false;
 
