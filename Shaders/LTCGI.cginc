@@ -29,16 +29,18 @@
         #endif
         if (diffuse) // static branch, specular does not directly fade with distance
         {
-            // very approximate lol
-            float3 ctr = (Lw[0] + Lw[1])/2;
-            float dist = length(ctr);
-            if (dist > LTCGI_DISTANCE_FADE_APPROX_MULT)
-            {
-                #ifdef LTCGI_DISTANCE_FADE_APPROX_ERROR_VISUALIZE
-                    distFadeError = true;
-                #else
-                    return 0;
-                #endif
+            if (!flags.lmdOnly) {
+                // very approximate lol
+                float3 ctr = (Lw[0] + Lw[1])/2;
+                float dist = length(ctr);
+                if (dist > LTCGI_DISTANCE_FADE_APPROX_MULT)
+                {
+                    #ifdef LTCGI_DISTANCE_FADE_APPROX_ERROR_VISUALIZE
+                        distFadeError = true;
+                    #else
+                        return 0;
+                    #endif
+                }
             }
         }
     #endif
@@ -246,9 +248,13 @@
 
         // calculate (shifted) world space positions
         float3 Lw[4];
-        float2 uvStart, uvEnd;
-        bool isTri;
-        LTCGI_GetLw(i, flags, worldPos, Lw, uvStart, uvEnd, isTri);
+        float2 uvStart = (float2)0, uvEnd = (float2)0;
+        bool isTri = false;
+        if (flags.lmdOnly) {
+            Lw[0] = Lw[1] = Lw[2] = Lw[3] = (float3)0;
+        } else {
+            LTCGI_GetLw(i, flags, worldPos, Lw, uvStart, uvEnd, isTri);
+        }
 
         // skip single-sided lights that face the other way
         if (!flags.doublesided) {

@@ -1,19 +1,13 @@
 ﻿#if UNITY_EDITOR
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UdonSharp;
-using UdonSharpEditor;
 #endif
 
 namespace pi.LTCGI
 {
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
     [ExecuteInEditMode]
-    [RequireComponent(typeof(MeshRenderer), typeof(MeshFilter))]
     public class LTCGI_Screen : MonoBehaviour
     {
         public Color Color = Color.white;
@@ -141,14 +135,12 @@ namespace pi.LTCGI
     [CanEditMultipleObjects]
     public class LTCGI_ScreenEditor : Editor
     {
-        SerializedProperty colorProp, sidedProp, dynamicProp, indexProp, colormodeProp, specProp, diffProp, lmProp, singleUVProp, rendererModeProp, rendererListProp, rendererDistProp, diffModeProp, diffuseFromLmProp, flipProp, lmIntensProp, alBandProp;
-        SerializedProperty cylProp, cylBaseProp, cylHeightProp, cylAngleProp, cylRadiusProp, cylSizeProp;
+        protected SerializedProperty colorProp, sidedProp, dynamicProp, indexProp, colormodeProp, specProp, diffProp, lmProp, singleUVProp, rendererModeProp, rendererListProp, rendererDistProp, diffModeProp, diffuseFromLmProp, flipProp, lmIntensProp, alBandProp;
+        protected SerializedProperty cylProp, cylBaseProp, cylHeightProp, cylAngleProp, cylRadiusProp, cylSizeProp;
 
-        LTCGI_Screen screen;
+        protected static Texture Logo;
 
-        private static Texture Logo;
-
-        private enum LMChannel
+        protected enum LMChannel
         {
             Off = 0,
             Red = 1,
@@ -156,7 +148,7 @@ namespace pi.LTCGI
             Blue = 3,
         }
 
-        private enum DiffMode
+        protected enum DiffMode
         {
             NoDiffuse = 0,
             LTCDiffuse = 1,
@@ -200,7 +192,7 @@ namespace pi.LTCGI
             style.fixedHeight = 150;
             GUI.Box(GUILayoutUtility.GetRect(300, 150, style), Logo, style);
 
-            screen = (LTCGI_Screen)target;
+            var screen = (LTCGI_Screen)target;
 
             serializedObject.Update();
 
@@ -276,33 +268,7 @@ namespace pi.LTCGI
                 EditorGUILayout.Separator();
             }
 
-            var newCol = EditorGUILayout.ColorField(new GUIContent("Color"), colorProp.colorValue, true, false, true);
-            if (colorProp.colorValue != newCol)
-            {
-                colorProp.colorValue = newCol;
-            }
-
-            if (colorProp.colorValue.maxColorComponent == 0.0f)
-            {
-                EditorGUILayout.HelpBox("Screen is disabled with color black!", MessageType.Warning, true);
-            }
-            
-            if (GUILayout.Button("Try get Color from Material"))
-            {
-                var ren = screen.gameObject.GetComponent<Renderer>();
-                if (ren != null)
-                {
-                    var mat = ren.sharedMaterial;
-                    if (mat != null)
-                    {
-                        var col = mat.GetColor("_Color");
-                        if (col != null)
-                        {
-                            colorProp.colorValue = col;
-                        }
-                    }
-                }
-            }
+            DrawColorSelector(screen);
 
             EditorGUILayout.Space();
             EditorGUILayout.Separator();
@@ -333,7 +299,52 @@ namespace pi.LTCGI
             EditorGUILayout.PropertyField(flipProp);
 
             EditorGUILayout.Separator();
+            DrawColorModeSelector(true);
+            EditorGUILayout.Separator();
+            DrawRendererModeSelector();
+            EditorGUILayout.Separator();
+            DrawLmChannelSelector();
 
+            if (serializedObject.hasModifiedProperties)
+            {
+                serializedObject.ApplyModifiedProperties();
+                LTCGI_Controller.Singleton?.UpdateMaterials();
+            }
+        }
+
+        protected void DrawColorSelector(LTCGI_Screen screen)
+        {
+            var newCol = EditorGUILayout.ColorField(new GUIContent("Color"), colorProp.colorValue, true, false, true);
+            if (colorProp.colorValue != newCol)
+            {
+                colorProp.colorValue = newCol;
+            }
+
+            if (colorProp.colorValue.maxColorComponent == 0.0f)
+            {
+                EditorGUILayout.HelpBox("Screen is disabled with color black!", MessageType.Warning, true);
+            }
+            
+            if (GUILayout.Button("Try get Color from Material"))
+            {
+                var ren = screen.gameObject.GetComponent<Renderer>();
+                if (ren != null)
+                {
+                    var mat = ren.sharedMaterial;
+                    if (mat != null)
+                    {
+                        var col = mat.GetColor("_Color");
+                        if (col != null)
+                        {
+                            colorProp.colorValue = col;
+                        }
+                    }
+                }
+            }
+        }
+
+        protected void DrawColorModeSelector(bool allowTextured)
+        {
             var texmode = (ColorMode)EditorGUILayout.EnumPopup("Color Mode", (ColorMode)colormodeProp.intValue);
             if (colormodeProp.intValue != (int)texmode)
             {
@@ -365,7 +376,14 @@ namespace pi.LTCGI
                         indexProp.intValue = 0;
                         break;
                     case ColorMode.Texture:
-                        texSelect();
+                        if (allowTextured)
+                        {
+                            texSelect();
+                        }
+                        else
+                        {
+                            EditorGUILayout.HelpBox("Texture mode is not allowed for emitters! Falling back to static color.", MessageType.Error, true);
+                        }
                         break;
                     case ColorMode.SingleUV:
                         texSelect();
@@ -382,9 +400,10 @@ namespace pi.LTCGI
             {
                 EditorGUILayout.HelpBox("(cannot multi-edit 'Color Mode' settings)", MessageType.None, false);
             }
+        }
 
-            EditorGUILayout.Separator();
-
+        protected void DrawRendererModeSelector()
+        {
             var rendererMode = (RendererMode)EditorGUILayout.EnumPopup("Affected Renderers", (RendererMode)rendererModeProp.intValue);
             if (rendererModeProp.intValue != (int)rendererMode)
             {
@@ -398,9 +417,10 @@ namespace pi.LTCGI
             {
                 EditorGUILayout.PropertyField(rendererDistProp);
             }
+        }
 
-            EditorGUILayout.Separator();
-
+        protected void DrawLmChannelSelector()
+        {
             var lmch = (LMChannel)EditorGUILayout.EnumPopup("Lightmap Channel", (LMChannel)lmProp.intValue);
             if (lmProp.intValue != (int)lmch)
             {
@@ -410,12 +430,6 @@ namespace pi.LTCGI
             if (lmch != LMChannel.Off)
             {
                 EditorGUILayout.PropertyField(lmIntensProp);
-            }
-
-            if (serializedObject.hasModifiedProperties)
-            {
-                serializedObject.ApplyModifiedProperties();
-                LTCGI_Controller.Singleton?.UpdateMaterials();
             }
         }
     }

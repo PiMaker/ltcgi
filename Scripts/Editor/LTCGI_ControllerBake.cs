@@ -142,28 +142,34 @@ namespace pi.LTCGI
                 mat.doubleSidedGI = true; // scr.DoubleSided ??
                 mat.globalIlluminationFlags = MaterialGlobalIlluminationFlags.BakedEmissive;
 
-                var rend = scr.gameObject.GetComponent<MeshRenderer>();
-                var flags = GameObjectUtility.GetStaticEditorFlags(scr.gameObject);
-                var r = resetter(scr.gameObject);
-                r.ResetData = true;
-                r.Materials = rend.sharedMaterials;
-                r.Flags = flags;
-                r.ShadowCastingMode = rend.shadowCastingMode;
-                //#if !BAKERY_INCLUDED
-                if (rend.shadowCastingMode == ShadowCastingMode.Off || rend.shadowCastingMode == ShadowCastingMode.ShadowsOnly)
+                Action<Renderer> handleRenderer = (rend) => {
+                    var flags = GameObjectUtility.GetStaticEditorFlags(rend.gameObject);
+                    var r = resetter(rend.gameObject);
+                    r.ResetData = true;
+                    r.Materials = rend.sharedMaterials;
+                    r.Flags = flags;
+                    r.ShadowCastingMode = rend.shadowCastingMode;
+                    if (rend.shadowCastingMode == ShadowCastingMode.Off || rend.shadowCastingMode == ShadowCastingMode.ShadowsOnly)
+                    {
+                        rend.shadowCastingMode = ShadowCastingMode.On;
+                    }
+                    rend.sharedMaterials = new Material[] { mat };
+                    GameObjectUtility.SetStaticEditorFlags(rend.gameObject, flags | StaticEditorFlags.ContributeGI);
+                };
+
+                LTCGI_Emitter emitter;
+                if ((emitter = scr as LTCGI_Emitter) != null)
                 {
-                    rend.shadowCastingMode = ShadowCastingMode.On;
+                    foreach (var rend in emitter.EmissiveRenderers)
+                    {
+                        handleRenderer(rend);
+                    }
                 }
-                //#endif
-                rend.sharedMaterials = new Material[] { mat };
-                GameObjectUtility.SetStaticEditorFlags(scr.gameObject, flags | StaticEditorFlags.ContributeGI);
-                // #if BAKERY_INCLUDED
-                // r.RemoveBakeryLightMesh = true;
-                // var lmesh = scr.gameObject.AddComponent<BakeryLightMesh>();
-                // //lmesh.selfShadow = false;
-                // lmesh.color = col;
-                // lmesh.intensity = 2;
-                // #endif
+                else
+                {
+                    var rend = scr.gameObject.GetComponent<MeshRenderer>();
+                    handleRenderer(rend);
+                }
             }
 
             bakeInProgress = true;

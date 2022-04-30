@@ -166,7 +166,14 @@ namespace pi.LTCGI
                 if (fast && screen != null && s != screen) continue;
 
                 _LTCGI_ScreenTransforms[i] = s.transform;
-                if (s.Cylinder)
+                LTCGI_Emitter emitter;
+                if ((emitter = s as LTCGI_Emitter) != null)
+                {
+                    _LTCGI_Vertices_0[i] = _LTCGI_Vertices_1[i] = _LTCGI_Vertices_2[i] = _LTCGI_Vertices_3[i] = Vector4.zero;
+                    _LTCGI_Vertices_0[i].w = s.SingleUV.x;
+                    _LTCGI_Vertices_1[i].w = s.SingleUV.y;
+                }
+                else if (s.Cylinder)
                 {
                     // Experimental!
                     _LTCGI_Vertices_0[i] = new Vector4(
@@ -325,6 +332,7 @@ namespace pi.LTCGI
                 flags |= ((uint)s.LightmapChannel & 0x3) << 10;
                 if (s.Cylinder) flags |= (1<<12);
                 flags |= ((uint)s.AudioLinkBand & 0x3) << 13;
+                if (s is LTCGI_Emitter) flags |= (1<<15); // TODO: can this be set based on other flags?
 
                 var col = s.enabled && s.gameObject.activeInHierarchy ? s.Color : Color.black;
                 float fflags = BitConverter.ToSingle(BitConverter.GetBytes(flags), 0);

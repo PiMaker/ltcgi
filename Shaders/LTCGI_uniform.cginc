@@ -62,6 +62,7 @@ uniform bool _LTCGI_Mask[MAX_SOURCES];
 //   b10-b11=lightmap channel (0=disabled, 1=r, 2=g, 3=b)
 //   b12=cylinder
 //   b13-14=audio link band
+//   b15=lightmap diffuse only
 // (color black = fully disabled)
 uniform float4 _LTCGI_ExtraData[MAX_SOURCES];
 struct ltcgi_flags
@@ -75,6 +76,7 @@ struct ltcgi_flags
     uint lmch, lmidx;
     bool cylinder;
     uint alBand;
+    bool lmdOnly;
 };
 
 #define LTCGI_COLORMODE_STATIC 0
@@ -110,6 +112,8 @@ ltcgi_flags ltcgi_parse_flags(uint val, bool noLmDiff)
     #ifdef LTCGI_AUDIOLINK
     ret.alBand      = (val & 0x6000) >> 13;
     #endif
+
+    ret.lmdOnly     = (val & (1 << 15)) == (1 << 15);
 
     return ret;
 }
