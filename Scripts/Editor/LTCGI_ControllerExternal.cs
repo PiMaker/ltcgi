@@ -106,6 +106,15 @@ LTCGI_Screen Components: {LTCGI_Controller.Singleton._LTCGI_ScreenTransforms.Cou
 AudioLink: {(LTCGI_Controller.AudioLinkAvailable ? "Available" : "Not Detected")}",
                     MessageType.Info, true
                 );
+
+                if (!LTCGI_Controller.AudioLinkAvailable)
+                {
+                    if (GUILayout.Button("Re-Detect AudioLink"))
+                    {
+                        LTCGI_Controller.audioLinkAvailable = null;
+                        var _ignored = LTCGI_Controller.AudioLinkAvailable;
+                    }
+                }
             }
             else
             {

@@ -12,12 +12,13 @@ namespace pi.LTCGI
     #if UNITY_EDITOR
     public partial class LTCGI_Controller
     {
-        private static bool? audioLinkAvailable = null;
+        internal static bool? audioLinkAvailable = null;
         public static bool AudioLinkAvailable {
             get {
                 if (!audioLinkAvailable.HasValue)
                 {
-                    audioLinkAvailable = AssetDatabase.FindAssets("Assets/AudioLink/Shaders/AudioLink.cginc").Length > 0;
+                    audioLinkAvailable = System.IO.File.Exists("Assets/AudioLink/Shaders/AudioLink.cginc");
+                    Debug.Log("LTCGI: AudioLink available = " + audioLinkAvailable);
                 }
                 return audioLinkAvailable.Value;
             }
