@@ -30,12 +30,14 @@ Assets/_pi_/_LTCGI/Scripts/LTCGI_UdonAdapter.cs.meta
 Assets/_pi_/_LTCGI/Scripts/LTCGI_Assembly.asmdef.meta
 Assets/_pi_/_LTCGI/Scripts/Editor/LTCGI_BakeReset.cs.meta
 Assets/_pi_/_LTCGI/Scripts/Editor/LTCGI_Controller.cs.meta
+Assets/_pi_/_LTCGI/Scripts/Editor/LTCGI_ControllerAutoSetup.cs.meta
 Assets/_pi_/_LTCGI/Scripts/Editor/LTCGI_ControllerBake.cs.meta
 Assets/_pi_/_LTCGI/Scripts/Editor/LTCGI_ControllerExternal.cs.meta
 Assets/_pi_/_LTCGI/Scripts/Editor/LTCGI_ControllerHelpers.cs.meta
 Assets/_pi_/_LTCGI/Scripts/Editor/LTCGI_ControllerLOD.cs.meta
 Assets/_pi_/_LTCGI/Scripts/Editor/LTCGI_Include.cs.meta
 Assets/_pi_/_LTCGI/Scripts/Editor/LTCGI_Screen.cs.meta
+Assets/_pi_/_LTCGI/Scripts/Editor/LTCGI_Emitter.cs.meta
 Assets/_pi_/_LTCGI/Scripts/Editor/Resources/LTCGI-Logo.png.meta
 Assets/_pi_/_LTCGI/Scripts/Editor/Resources/LTCGI-LogoController.png.meta
 Assets/_pi_/_LTCGI/Shaders/Amplify/AmplifyTest.mat.meta
