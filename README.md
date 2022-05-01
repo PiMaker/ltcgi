@@ -19,6 +19,7 @@ To use LTCGI, all objects that should receive lighting must use a compatible sha
 
 * [ORL Shader Family](https://shaders.orels.sh/) by [@orels1](https://github.com/orels1)
 * [Silent's Filamented](https://gitlab.com/s-ilent/filamented)
+* [Mochie's Unity Shaders](https://github.com/MochiesCode/Mochies-Unity-Shaders)
 * Basic "Unlit" Test Shader (included)
 * Surface Shader (included)
 
