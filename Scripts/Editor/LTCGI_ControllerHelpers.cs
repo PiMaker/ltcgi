@@ -17,7 +17,7 @@ namespace pi.LTCGI
             get {
                 if (!audioLinkAvailable.HasValue)
                 {
-                    audioLinkAvailable = AssetDatabase.FindAssets("Assets/AudioLink/Shaders/AudioLink.cginc") != null;
+                    audioLinkAvailable = AssetDatabase.FindAssets("Assets/AudioLink/Shaders/AudioLink.cginc").Length > 0;
                 }
                 return audioLinkAvailable.Value;
             }
