@@ -18,7 +18,7 @@ namespace pi.LTCGI
                 if (!audioLinkAvailable.HasValue)
                 {
                     audioLinkAvailable = System.IO.File.Exists("Assets/AudioLink/Shaders/AudioLink.cginc");
-                    Debug.Log("LTCGI: AudioLink available = " + audioLinkAvailable);
+                    //Debug.Log("LTCGI: AudioLink available = " + audioLinkAvailable);
                 }
                 return audioLinkAvailable.Value;
             }
