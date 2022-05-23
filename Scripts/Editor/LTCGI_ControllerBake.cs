@@ -378,6 +378,7 @@ namespace pi.LTCGI
         }
 
         [MenuItem("Tools/LTCGI/Force Settings Reset after Bake")]
+        public static void ResetConfigurationMenu() => LTCGI_Controller.Singleton.ResetConfiguration();
         public void ResetConfiguration()
         {
             if (bakeMaterialReset_key != null)
