@@ -83,6 +83,8 @@ namespace pi.LTCGI
                 LTCGI_Controller.Singleton.CreateLODTextureArrays();
             }
 
+            EditorGUILayout.Separator();
+
             if (!LTCGI_Controller.Singleton.bakeInProgress && GUILayout.Button("Bake Shadowmap"))
             {
                 LTCGI_Controller.BakeLightmap();
@@ -90,6 +92,10 @@ namespace pi.LTCGI
             if (LTCGI_Controller.Singleton.bakeInProgress && GUILayout.Button("Bake Shadowmap - FORCE FINISH"))
             {
                 LTCGI_Controller.Singleton.BakeComplete();
+            }
+            if (LTCGI_Controller.Singleton.bakeMaterialReset_key != null && GUILayout.Button("Force Settings Reset after Bake"))
+            {
+                LTCGI_Controller.Singleton.ResetConfiguration();
             }
 
             EditorGUILayout.Space(); EditorGUILayout.Space();

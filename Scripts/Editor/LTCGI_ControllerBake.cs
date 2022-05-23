@@ -14,7 +14,7 @@ namespace pi.LTCGI
     public partial class LTCGI_Controller
     {
         [Header("Lightmap Baking Cache (do not edit!)")]
-        [SerializeField] private List<Material> bakeMaterialReset_key;
+        [SerializeField] internal List<Material> bakeMaterialReset_key;
         [SerializeField] private List<MaterialGlobalIlluminationFlags> bakeMaterialReset_val;
         [SerializeField] internal bool bakeInProgress;
         [SerializeField] private LightingDataAsset prevLightmapData;
@@ -237,20 +237,6 @@ namespace pi.LTCGI
             #endif
         }
 
-        private List<LTCGI_BakeReset> GetAllBakeResets()
-        {
-            List<LTCGI_BakeReset> found = new List<LTCGI_BakeReset>();
-            foreach (LTCGI_BakeReset br in Resources.FindObjectsOfTypeAll(typeof(LTCGI_BakeReset)) as LTCGI_BakeReset[])
-            {
-                if (!EditorUtility.IsPersistent(br.gameObject.transform.root.gameObject) &&
-                    !(br.gameObject.hideFlags == HideFlags.NotEditable || br.gameObject.hideFlags == HideFlags.HideAndDontSave))
-                {
-                    found.Add(br);
-                }
-            }
-            return found;
-        }
-
         private static void BakeCompleteEvent()
         {
             var obj = GameObject.FindObjectOfType<LTCGI_Controller>();
@@ -279,7 +265,7 @@ namespace pi.LTCGI
         }
         internal void BakeCompleteProg()
         {
-            EditorUtility.DisplayDialog("LTCGI bake", "Lightmap baking has finished, LTCGI will now apply the generated configuration.", "OK");
+            //EditorUtility.DisplayDialog("LTCGI bake", "Lightmap baking has finished, LTCGI will now apply the generated configuration.", "OK");
 
             EditorUtility.DisplayProgressBar("Finishing LTCGI bake", "Copying calculated lightmaps", 0.0f);
 
@@ -347,20 +333,7 @@ namespace pi.LTCGI
             _LTCGI_LightmapIndex_val = rival.ToArray();
 
             EditorUtility.DisplayProgressBar("Finishing LTCGI bake", "Resetting configuration", 1.0f);
-
-            // restore screen materials
-            for (int i = 0; i < bakeMaterialReset_key.Count; i++)
-            {
-                bakeMaterialReset_key[i].globalIlluminationFlags = bakeMaterialReset_val[i];
-            }
-
-            var resetters = GetAllBakeResets();
-            foreach (LTCGI_BakeReset r in resetters)
-            {
-                r.ApplyReset();
-                DestroyImmediate(r);
-            }
-
+            ResetConfiguration();
             bakeInProgress = false;
             AssetDatabase.SaveAssets();
             EditorSceneManager.SaveOpenScenes();
@@ -384,6 +357,40 @@ namespace pi.LTCGI
             LTCGI_Controller.Singleton.UpdateMaterials();
 
             Debug.Log("LTCGI: Shadowmap bake complete!");
+        }
+
+        // includes ones on hidden/disabled objects
+        private List<LTCGI_BakeReset> GetAllBakeResets()
+        {
+            List<LTCGI_BakeReset> found = new List<LTCGI_BakeReset>();
+            foreach (LTCGI_BakeReset br in Resources.FindObjectsOfTypeAll(typeof(LTCGI_BakeReset)) as LTCGI_BakeReset[])
+            {
+                if (!EditorUtility.IsPersistent(br.gameObject.transform.root.gameObject) &&
+                    !(br.gameObject.hideFlags == HideFlags.NotEditable || br.gameObject.hideFlags == HideFlags.HideAndDontSave))
+                {
+                    found.Add(br);
+                }
+            }
+            return found;
+        }
+
+        [MenuItem("Tools/LTCGI/Force Settings Reset after Bake")]
+        public void ResetConfiguration()
+        {
+            if (bakeMaterialReset_key != null)
+            {
+                for (int i = 0; i < bakeMaterialReset_key.Count; i++)
+                {
+                    bakeMaterialReset_key[i].globalIlluminationFlags = bakeMaterialReset_val[i];
+                }
+            }
+
+            var resetters = GetAllBakeResets();
+            foreach (LTCGI_BakeReset r in resetters)
+            {
+                r.ApplyReset();
+                DestroyImmediate(r);
+            }
         }
     }
     #endif
