@@ -20,7 +20,6 @@ namespace pi.LTCGI
         const string VERSION = "v0.9.3.99";
 
         private static readonly string[] CONFIGURATION_PROPS = new[] {
-            "VideoTexture",
             "StaticTextures",
             "DynamicRenderers",
             "CustomBlurChain",
@@ -133,6 +132,13 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable ? "Available" : "Not Detected")
             header.fontSize += 4;
             GUILayout.Label("LTCGI Configuration", header);
             EditorGUILayout.Space();
+
+            var vidTex = serializedObject.FindProperty("VideoTexture");
+            EditorGUILayout.PropertyField(vidTex, true);
+            if (vidTex.objectReferenceValue == null)
+            {
+                EditorGUILayout.HelpBox("Video Texture is not set! This means video player will not reflect their screen. use Auto-Configure options above or refer to documentation on how to set this up if required.", MessageType.Warning);
+            }
 
             foreach (var prop in CONFIGURATION_PROPS)
             {
