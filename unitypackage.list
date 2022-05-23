@@ -28,6 +28,7 @@ Assets/_pi_/_LTCGI/Propaganda/pi_graffiti.png.meta
 Assets/_pi_/_LTCGI/Scripts/LTCGI_UdonAdapter.asset.meta
 Assets/_pi_/_LTCGI/Scripts/LTCGI_UdonAdapter.cs.meta
 Assets/_pi_/_LTCGI/Scripts/LTCGI_Assembly.asmdef.meta
+Assets/_pi_/_LTCGI/Scripts/LTCGI_AssemblyUdon.asset.meta
 Assets/_pi_/_LTCGI/Scripts/Editor/LTCGI_BakeReset.cs.meta
 Assets/_pi_/_LTCGI/Scripts/Editor/LTCGI_Controller.cs.meta
 Assets/_pi_/_LTCGI/Scripts/Editor/LTCGI_ControllerAutoSetup.cs.meta

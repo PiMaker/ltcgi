@@ -15,6 +15,7 @@ public class LTCGI_UdonAdapter : UdonSharpBehaviour
     public Renderer[] _DynamicRenderers;
     public Texture2D[] _LTCGI_Lightmaps;
     public Vector4[] _LTCGI_LightmapST;
+    [VRC.Udon.Serialization.OdinSerializer.OdinSerialize] // U# requires this?
     public float[][] _LTCGI_Mask;
     public Vector4 _LTCGI_LightmapMult;
     public GameObject[] _Screens;
