@@ -17,6 +17,8 @@ namespace pi.LTCGI
     {
         public Renderer[] EmissiveRenderers;
 
+        [HideInInspector] public bool Initialized = false;
+
         public LTCGI_Emitter()
         {
             // static values for emitters
@@ -42,6 +44,17 @@ namespace pi.LTCGI
             GUI.Box(GUILayoutUtility.GetRect(300, 150, style), Logo, style);
 
             var emitter = (LTCGI_Emitter)target;
+            serializedObject.Update();
+
+            var emissiveRenderers = serializedObject.FindProperty("EmissiveRenderers");
+
+            if (!emitter.Initialized)
+            {
+                serializedObject.FindProperty("Initialized").boolValue = true;
+                lmProp.intValue = 1;
+                emissiveRenderers.InsertArrayElementAtIndex(0);
+                emissiveRenderers.GetArrayElementAtIndex(0).objectReferenceValue = emitter.GetComponent<Renderer>();
+            }
 
             EditorGUILayout.HelpBox("This is an emitter component. It can only produce diffuse, untextured light. It can however apply to multiple objects and is a lot cheaper to use.", MessageType.Info);
             EditorGUILayout.Space();
@@ -54,11 +67,16 @@ namespace pi.LTCGI
             EditorGUILayout.Space();
             DrawLmChannelSelector();
 
+            if (lmProp.intValue == 0)
+            {
+                EditorGUILayout.HelpBox("This emitter is not using a lightmap channel. It will not look correct.", MessageType.Warning);
+            }
+
             EditorGUILayout.Space();
             EditorGUILayout.Space();
 
             EditorGUILayout.LabelField("List all emissive renderers below:", EditorStyles.boldLabel);
-            EditorGUILayout.PropertyField(serializedObject.FindProperty("EmissiveRenderers"), true);
+            EditorGUILayout.PropertyField(emissiveRenderers, true);
 
             if (serializedObject.hasModifiedProperties)
             {
