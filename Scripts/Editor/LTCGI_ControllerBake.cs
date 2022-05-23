@@ -261,6 +261,9 @@ namespace pi.LTCGI
             {
                 // avoid stuck progress bar
                 EditorUtility.ClearProgressBar();
+
+                // I think this should be safe, and avoid some issues with data not being reset
+                ResetConfiguration();
             }
         }
         internal void BakeCompleteProg()
