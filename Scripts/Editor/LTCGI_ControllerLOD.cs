@@ -13,6 +13,7 @@ namespace pi.LTCGI
     #if UNITY_EDITOR
     public partial class LTCGI_Controller
     {
+        public bool PrecomputeOnBuild = true;
         private Texture2D[] CreateLODs(Texture2D input, int width, int height)
         {
             var result = new Texture2D[4];

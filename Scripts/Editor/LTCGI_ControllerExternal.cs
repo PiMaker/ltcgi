@@ -82,6 +82,7 @@ namespace pi.LTCGI
             {
                 LTCGI_Controller.Singleton.CreateLODTextureArrays();
             }
+            EditorGUILayout.PropertyField(serializedObject.FindProperty("PrecomputeOnBuild"));
 
             EditorGUILayout.Separator();
 
@@ -364,7 +365,10 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable ? "Available" : "Not Detected")
             if (LTCGI_Controller.Singleton != null)
             {
                 LTCGI_Controller.Singleton.UpdateMaterials();
-                //LTCGI_Controller.Singleton.CreateLODTextureArrays();
+                if (LTCGI_Controller.Singleton.PrecomputeOnBuild)
+                {
+                    LTCGI_Controller.Singleton.CreateLODTextureArrays();
+                }
             }
             return true;
         }
