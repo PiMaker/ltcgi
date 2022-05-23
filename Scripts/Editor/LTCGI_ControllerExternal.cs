@@ -89,6 +89,10 @@ namespace pi.LTCGI
             {
                 LTCGI_Controller.BakeLightmap();
             }
+            else if (!LTCGI_Controller.Singleton.bakeInProgress && GUILayout.Button("Bake Shadowmap and Normal Lightmap"))
+            {
+                LTCGI_Controller.BakeLightmapFollowup();
+            }
             if (LTCGI_Controller.Singleton.bakeInProgress && GUILayout.Button("Bake Shadowmap - FORCE FINISH"))
             {
                 LTCGI_Controller.Singleton.BakeComplete();

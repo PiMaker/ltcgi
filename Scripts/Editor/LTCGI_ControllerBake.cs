@@ -29,6 +29,9 @@ namespace pi.LTCGI
         [SerializeField] private Vector4[] _LTCGI_LightmapOffsets_val;
         [SerializeField] private int[] _LTCGI_LightmapIndex_val;
 
+        [SerializeField] private bool followupWithRealBake;
+        [SerializeField] private bool followupBakery;
+
         [MenuItem("Tools/LTCGI/Bake Shadowmap")]
         public static void BakeLightmap()
         {
@@ -36,10 +39,20 @@ namespace pi.LTCGI
             #if BAKERY_INCLUDED
                 bakery = EditorUtility.DisplayDialog("LTCGI", "Bakery has been detected in your project. Do you want to bake the lightmap with Bakery?", "Yes, use Bakery", "No, use built-in");
             #endif
-            LTCGI_Controller.Singleton.BakeLightmap(bakery);
+            LTCGI_Controller.Singleton.BakeLightmap(bakery, false);
         }
 
-        internal void BakeLightmap(bool bakery)
+        [MenuItem("Tools/LTCGI/Bake Shadowmap and Normal Lightmap")]
+        public static void BakeLightmapFollowup()
+        {
+            var bakery = false;
+            #if BAKERY_INCLUDED
+                bakery = EditorUtility.DisplayDialog("LTCGI", "Bakery has been detected in your project. Do you want to bake the lightmap with Bakery?", "Yes, use Bakery", "No, use built-in");
+            #endif
+            LTCGI_Controller.Singleton.BakeLightmap(bakery, true);
+        }
+
+        internal void BakeLightmap(bool bakery, bool followup)
         {
             if (Lightmapping.isRunning
             #if BAKERY_INCLUDED
@@ -53,6 +66,9 @@ namespace pi.LTCGI
             #if !BAKERY_INCLUDED
                 bakery = false;
             #endif
+
+            followupWithRealBake = followup;
+            followupBakery = bakery;
 
             LTCGI_Controller.Singleton.UpdateMaterials();
             Lightmapping.giWorkflowMode = Lightmapping.GIWorkflowMode.OnDemand;
@@ -259,6 +275,8 @@ namespace pi.LTCGI
             }
             finally
             {
+                followupWithRealBake = false;
+
                 // avoid stuck progress bar
                 EditorUtility.ClearProgressBar();
 
@@ -360,6 +378,27 @@ namespace pi.LTCGI
             LTCGI_Controller.Singleton.UpdateMaterials();
 
             Debug.Log("LTCGI: Shadowmap bake complete!");
+
+            if (followupWithRealBake)
+            {
+                followupWithRealBake = false;
+
+                #if BAKERY_INCLUDED
+                if (followupBakery)
+                {
+                    EditorApplication.delayCall += () => {
+                        var b = ftRenderLightmap.instance;
+                        b.RenderButton(false);
+                    };
+                }
+                else
+                #endif
+                {
+                    EditorApplication.delayCall += () => {
+                        Lightmapping.BakeAsync();
+                    };
+                }
+            }
         }
 
         // includes ones on hidden/disabled objects
