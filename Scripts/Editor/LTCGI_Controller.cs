@@ -3,16 +3,17 @@
 
 #if UNITY_EDITOR
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.IO;
 using UnityEditor;
 using UnityEngine;
+using UnityEditor.SceneManagement;
+
+#if VRC_SDK_VRCSDK3
 using UdonSharp;
 using UdonSharpEditor;
-using UnityEditor.SceneManagement;
-using UnityEngine.SceneManagement;
+#endif
 #endif
 
 namespace pi.LTCGI
@@ -534,10 +535,37 @@ namespace pi.LTCGI
 
             if (!fast && this != null && this.gameObject != null)
             {
-                LTCGI_UdonAdapter adapter = this.gameObject.GetComponent<LTCGI_UdonAdapter>();
-                if (adapter == null)
+                #if VRC_SDK_VRCSDK3
+                LTCGI_UdonAdapter adapter;
+                Component[] adapters = this.gameObject.GetComponents<LTCGI_UdonAdapter>();
+                #else
+                LTCGI_RuntimeAdapter adapter;
+                Component[] adapters = this.gameObject.GetComponents<LTCGI_RuntimeAdapter>();
+                #endif
+
+                if (adapters == null || adapters.Length == 0)
                 {
+                    #if VRC_SDK_VRCSDK3
                     adapter = this.gameObject.AddUdonSharpComponent<LTCGI_UdonAdapter>();
+                    #else
+                    adapter = this.gameObject.AddComponent<LTCGI_RuntimeAdapter>();
+                    #endif
+                }
+                else
+                {
+                    #if VRC_SDK_VRCSDK3
+                    adapter = (LTCGI_UdonAdapter)adapters[0];
+                    #else
+                    adapter = (LTCGI_RuntimeAdapter)adapters[0];
+                    #endif
+                    if (adapters.Length > 1)
+                    {
+                        for (int i = 1; i < adapters.Length; i++)
+                        {
+                            Debug.LogWarning("LTCGI: WARNING: Deleting extra *Adapter component on " + this.gameObject.name);
+                            DestroyImmediate(adapters[i]);
+                        }
+                    }
                 }
                 
                 // update LTCGI_UdonAdapter proxy with new data
@@ -559,7 +587,12 @@ namespace pi.LTCGI
                         var idx = Array.IndexOf(_LTCGI_LightmapData_key, r);
                         return idx < 0 ? Vector4.zero : _LTCGI_LightmapOffsets_val[idx];
                     }).ToArray();
-                adapter._LTCGI_Mask = cachedMeshRenderers.Select(x => GetMaskForRenderer(screens, x)).ToArray();
+                var mask2d = cachedMeshRenderers.Select(x => GetMaskForRenderer(screens, x)).ToArray();
+                // float[][] doesn't serialize in normal Unity, so linearize it
+                adapter._LTCGI_Mask =
+                    Enumerable.Range(0, adapter._Renderers.Length)
+                    .SelectMany(i => mask2d[i])
+                    .ToArray();
                 adapter._Screens = screens.Select(x => x?.gameObject).ToArray();
                 adapter._LTCGI_LODs = new Texture[4];
                 adapter._LTCGI_LODs[0] = VideoTexture;
@@ -592,7 +625,7 @@ namespace pi.LTCGI
                 adapter._LTCGI_ScreenCount = screens.Length;
                 adapter._LTCGI_ScreenCountDynamic = screens.TakeWhile(x => x.Dynamic).Count();
                 adapter._LTCGI_ScreenCountMasked = 
-                    adapter._LTCGI_Mask.Select(mask =>
+                    mask2d.Select(mask =>
                         Math.Max(adapter._LTCGI_ScreenCountDynamic,
                             Array.FindLastIndex(mask, m => m == 0.0f) + 1)).ToArray();
                 adapter.BlurCRTInput = LOD1s;
@@ -608,7 +641,7 @@ namespace pi.LTCGI
                     foreach (var m in r.sharedMaterials)
                     {
                         if (m == null) continue;
-                        var data = (adapter._LTCGI_ScreenCountMasked[i], adapter._LTCGI_Mask[i], r);
+                        var data = (adapter._LTCGI_ScreenCountMasked[i], mask2d[i], r);
                         if (mats.ContainsKey(m))
                         {
                             var prev = mats[m];

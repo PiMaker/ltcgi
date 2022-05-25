@@ -6,6 +6,7 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
+using UnityEditor.Build.Reporting;
 #if VRC_SDK_VRCSDK2 || VRC_SDK_VRCSDK3
 using VRC.SDKBase.Editor.BuildPipeline;
 #endif
@@ -337,21 +338,6 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable ? "Available" : "Not Detected")
             }
         }
     }
-    
-    // [InitializeOnLoad]
-    // static class LTCGI_Loader
-    // {
-    //     static LTCGI_Loader()
-    //     {
-    //         // force load on project startup
-    //         var controllers = AssetDatabase.FindAssets("t:" + nameof(LTCGI_Controller));
-    //         foreach (var guid in controllers)
-    //         {
-    //             var cpath = AssetDatabase.GUIDToAssetPath(guid);
-    //             AssetDatabase.LoadAssetAtPath<LTCGI_Controller>(cpath);
-    //         }
-    //     }
-    // }
 
     // automatic callbacks
     public class ShaderPostprocessLTCGI : AssetPostprocessor
@@ -365,7 +351,7 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable ? "Available" : "Not Detected")
         }
     }
 
-    #if VRC_SDK_VRCSDK2 || VRC_SDK_VRCSDK3
+    #if VRC_SDK_VRCSDK3
     public class VRCSDKHookLTCGI : IVRCSDKBuildRequestedCallback
     {
         public int callbackOrder => 68;
@@ -381,6 +367,23 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable ? "Available" : "Not Detected")
                 }
             }
             return true;
+        }
+    }
+    #else
+    public class PostBuildCallbackLTCGI : UnityEditor.Build.IPreprocessBuildWithReport
+    {
+        public int callbackOrder => 68;
+
+        public void OnPreprocessBuild(BuildReport report)
+        {
+            if (LTCGI_Controller.Singleton != null)
+            {
+                LTCGI_Controller.Singleton.UpdateMaterials();
+                if (LTCGI_Controller.Singleton.PrecomputeOnBuild)
+                {
+                    LTCGI_Controller.Singleton.CreateLODTextureArrays();
+                }
+            }
         }
     }
     #endif

@@ -11,6 +11,7 @@
         "Android",
         "Editor",
         "LinuxStandalone64",
+        "WebGL",
         "WindowsStandalone64"
     ],
     "excludePlatforms": [],

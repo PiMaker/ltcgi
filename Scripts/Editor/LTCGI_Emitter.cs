@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UdonSharp;
-using UdonSharpEditor;
 #endif
 
 namespace pi.LTCGI

@@ -1,11 +1,21 @@
 ﻿using System;
-using UdonSharp;
 using UnityEngine;
+
+#if VRC_SDK_VRCSDK3
+using UdonSharp;
 using VRC.SDKBase;
 using VRC.Udon;
+#endif
 
+#if VRC_SDK_VRCSDK3
 [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
 public class LTCGI_UdonAdapter : UdonSharpBehaviour
+#else
+// FIXME: This makes the filename mismatch the class name
+// - I think Unity doesn't like that?
+public class LTCGI_RuntimeAdapter : MonoBehaviour
+#endif
+
 {
     // perhaps fixes some lightmap issues with static batching?
     public bool DEBUG_ReverseUnityLightmapST = false;
@@ -15,8 +25,7 @@ public class LTCGI_UdonAdapter : UdonSharpBehaviour
     public Renderer[] _DynamicRenderers;
     public Texture2D[] _LTCGI_Lightmaps;
     public Vector4[] _LTCGI_LightmapST;
-    [VRC.Udon.Serialization.OdinSerializer.OdinSerialize] // U# requires this?
-    public float[][] _LTCGI_Mask;
+    public float[] _LTCGI_Mask;
     public Vector4 _LTCGI_LightmapMult;
     public GameObject[] _Screens;
     public Texture2D _LTCGI_lut1, _LTCGI_lut2;
@@ -86,7 +95,9 @@ public class LTCGI_UdonAdapter : UdonSharpBehaviour
             }
             block.SetTexture("_LTCGI_lut1", _LTCGI_lut1);
             block.SetTexture("_LTCGI_lut2", _LTCGI_lut2);
-            block.SetFloatArray("_LTCGI_Mask", _LTCGI_Mask[i]);
+            var maskSubset = new float[_LTCGI_ScreenCount];
+            Array.Copy(_LTCGI_Mask, i * _LTCGI_ScreenCount, maskSubset, 0, _LTCGI_ScreenCount);
+            block.SetFloatArray("_LTCGI_Mask", maskSubset);
             block.SetInt("_LTCGI_ScreenCount", _LTCGI_ScreenCountMasked[i]);
             block.SetTexture("_LTCGI_Lightmap", _LTCGI_Lightmaps[i]);
             block.SetVector("_LTCGI_LightmapMult", _LTCGI_LightmapMult);
