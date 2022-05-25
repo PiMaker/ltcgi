@@ -2,13 +2,16 @@
 
 Optimized plug-and-play realtime area lighting using the [linearly transformed cosine algorithm](#LTC) for Unity/VRChat. Free to use with [attribution](#Attribution).
 
-**NOTE: While the shader is optimized, it still equates to real-time lighting - so use sparingly, and read the [Wiki](https://github.com/PiMaker/ltcgi/wiki) on performance optimization!**
+**NOTE: While the shader is optimized, it still equates to real-time lighting - so use sparingly, and read the [Wiki](https://github.com/pimaker/ltcgi/wiki) on performance optimization!**
 
 If you like this prefab, consider [supporting me on KoFi](https://ko-fi.com/pimaker)!
 
 Join the Discord for support or other questions: https://discord.gg/r38vJd2DuJ
 
-![Header Image](./Screenshots/header.jpg)
+![Screenshot of Demo App](./Screenshots/demoapp.jpg)
+
+You can [download](https://github.com/PiMaker/ltcgi/raw/main/DemoApp.zip) the standalone demo app pictured above to try it out for yourself.  
+Alternatively, join the [demo world](https://vrchat.com/home/launch?worldId=wrld_aa2627ec-c63a-4db2-aa3e-9078d41c6d9c) in VRChat.
 
 ![Demo Video](./Screenshots/demo.gif)  
 [Demo Video](https://www.youtube.com/watch?v=DJXgspErWlU)
@@ -25,20 +28,26 @@ To use LTCGI, all objects that should receive lighting must use a compatible sha
 
 ## How to use / Download
 
-See the [Wiki](https://github.com/PiMaker/ltcgi/wiki) for instructions. Please check them out before using the prefab in your world!  
+See the [Wiki](https://github.com/pimaker/ltcgi/wiki) for instructions. Please check it out before using LTCGI!  
 Also consider the [attribution requirements](#Attribution).
 
-Check the [Releases](https://github.com/PiMaker/ltcgi/releases) tab for downloads.
+Check the [Releases](https://github.com/pimaker/ltcgi/releases) tab for downloads.
 
-### Dependencies
+### Dependencies for VRChat
 * [UdonSharp](https://github.com/MerlinVR/UdonSharp)
 * [CyanEmu](https://github.com/CyanLaser/CyanEmu) (optional, but highly recommended)
 
+You do *not* need those if you plan to use LTCGI in a standalone Unity project!
+
+In that case, just make sure your color space is set to linear:
+
+![Unity Color Space Setting must be Linear](Screenshots/LinearColorSpace.jpg)
+
 ### Debug builds
 
-*NOTE: These are provided as-is with no guarantees. Feel free to report any issues on the [Discord](https://discord.gg/r38vJd2DuJ), but remember that it is explicitly recommended to use the downloads from the [Releases](https://github.com/PiMaker/ltcgi/releases) tab instead!*
+*NOTE: These are provided as-is with no guarantees. Feel free to report any issues on the [Discord](https://discord.gg/r38vJd2DuJ), but remember that it is explicitly recommended to use the downloads from the [Releases](https://github.com/pimaker/ltcgi/releases) tab instead!*
 
-Check the latest build from the [Actions tab](https://github.com/PiMaker/ltcgi/actions/workflows/main.yml?query=is%3Asuccess) and download the corresponding *artifact* (comes as a zip you need to extract first).
+Check the latest build from the [Actions tab](https://github.com/pimaker/ltcgi/actions/workflows/main.yml?query=is%3Asuccess) and download the corresponding *artifact* (comes as a zip you need to extract first).
 
 ## Attribution
 
