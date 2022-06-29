@@ -84,6 +84,13 @@ namespace pi.LTCGI
                 Debug.LogError("Invalid script path: " + pathToScript);
                 EditorUtility.DisplayDialog("LTCGI", "ERROR: Wrong path to 'LTCGI_Controller.cs' detected. Please do *not* move the LTCGI folder! Try reimporting the LTCGI package to fix.", "OK");
             }
+
+            EditorApplication.playModeStateChanged += (change) => {
+                if (change == PlayModeStateChange.ExitingEditMode)
+                {
+                    UpdateMaterials();
+                }
+            };
         }
 
         private string GetCurrentFileName([System.Runtime.CompilerServices.CallerFilePath] string fileName = null)
