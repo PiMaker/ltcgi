@@ -12,7 +12,7 @@ const config = {
   baseUrl: '/ltcgi/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
-  // favicon: 'img/favicon.ico',
+  favicon: 'img/pi.ico',
 
   // GitHub pages deployment config.
   // If you aren't using GitHub pages, you don't need these.
@@ -45,7 +45,7 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          sidebarCollapsible: false,
+          sidebarCollapsed: false,
           routeBasePath: '/',
         },
         blog: false,
@@ -61,10 +61,10 @@ const config = {
     ({
       navbar: {
         title: 'LTCGI Documentation',
-        // logo: {
-        //   alt: 'My Site Logo',
-        //   src: 'img/logo.svg',
-        // },
+        logo: {
+          alt: 'pi symbol logo',
+          src: 'img/pi.svg',
+        },
         items: [
           {
             href: 'https://github.com/pimaker/ltcgi',
