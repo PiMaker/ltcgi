@@ -59,6 +59,13 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
             Debug.LogWarning("WARNING: LTCGI DEBUG_ReverseUnityLightmapST is active! This is probably not what you want!");
         }
 
+        if (_LTCGI_ScreenCount == 0)
+        {
+            Debug.LogError("LTCGI Adapter: No screens found! Try deleting the LTCGI_UdonAdapter component from the controller object and clicking 'Force Update' on the controller if this is unexpected.");
+            this.enabled = false;
+            return;
+        }
+
         _LTCGI_Vertices_0t = new Vector4[_LTCGI_Vertices_0.Length];
         _LTCGI_Vertices_1t = new Vector4[_LTCGI_Vertices_1.Length];
         _LTCGI_Vertices_2t = new Vector4[_LTCGI_Vertices_2.Length];
@@ -99,7 +106,8 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
             Array.Copy(_LTCGI_Mask, i * _LTCGI_ScreenCount, maskSubset, 0, _LTCGI_ScreenCount);
             block.SetFloatArray("_LTCGI_Mask", maskSubset);
             block.SetInt("_LTCGI_ScreenCount", _LTCGI_ScreenCountMasked[i]);
-            block.SetTexture("_LTCGI_Lightmap", _LTCGI_Lightmaps[i]);
+            if (_LTCGI_Lightmaps[i] != null)
+                block.SetTexture("_LTCGI_Lightmap", _LTCGI_Lightmaps[i]);
             block.SetVector("_LTCGI_LightmapMult", _LTCGI_LightmapMult);
 
             if (_LTCGI_static_uniforms != null)
