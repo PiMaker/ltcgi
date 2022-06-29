@@ -29,6 +29,8 @@ const config = {
     locales: ['en'],
   },
 
+  plugins: [require.resolve("@cmfcmf/docusaurus-search-local")],
+
   presets: [
     [
       'classic',
@@ -36,6 +38,7 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
+          sidebarCollapsible: false,
           routeBasePath: '/',
         },
         blog: false,
@@ -95,6 +98,7 @@ const config = {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
+      defaultDarkMode: true,
     }),
 };
 
