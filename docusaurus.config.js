@@ -8,8 +8,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'LTCGI Documentation',
   tagline: 'Optimized plug-and-play realtime area lighting using the linearly transformed cosine algorithm for Unity/VRChat.',
-  url: 'https://pimaker.github.io/ltcgi',
-  baseUrl: '/',
+  url: 'https://pimaker.github.io/',
+  baseUrl: '/ltcgi/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   // favicon: 'img/favicon.ico',
@@ -18,6 +18,8 @@ const config = {
   // If you aren't using GitHub pages, you don't need these.
   organizationName: 'pimaker', // Usually your GitHub org/user name.
   projectName: 'ltcgi', // Usually your repo name.
+  deploymentBranch: 'gh-pages-deploy',
+  trailingSlash: false,
 
   // Even if you don't use internalization, you can use this field to set useful
   // metadata like html lang. For example, if your site is Chinese, you may want
@@ -34,11 +36,9 @@ const config = {
       ({
         docs: {
           sidebarPath: require.resolve('./sidebars.js'),
-          // Please change this to your repo.
-          // Remove this to remove the "edit this page" links.
-          editUrl:
-            'https://github.com/facebook/docusaurus/tree/main/packages/create-docusaurus/templates/shared/',
+          routeBasePath: '/',
         },
+        blog: false,
         theme: {
           customCss: require.resolve('./src/css/custom.css'),
         },
@@ -56,12 +56,6 @@ const config = {
         //   src: 'img/logo.svg',
         // },
         items: [
-          {
-            type: 'doc',
-            docId: 'intro',
-            position: 'left',
-            label: 'About LTCGI',
-          },
           {
             href: 'https://github.com/pimaker/ltcgi',
             label: 'GitHub',
