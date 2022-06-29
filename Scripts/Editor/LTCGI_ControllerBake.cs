@@ -16,7 +16,7 @@ namespace pi.LTCGI
         [Header("Lightmap Baking Cache (do not edit!)")]
         [SerializeField] internal List<Material> bakeMaterialReset_key;
         [SerializeField] private List<MaterialGlobalIlluminationFlags> bakeMaterialReset_val;
-        [SerializeField] internal bool bakeInProgress;
+        [SerializeField] public bool bakeInProgress;
         [SerializeField] private LightingDataAsset prevLightmapData;
         [SerializeField] private Texture2D[] prevLightmaps0;
         [SerializeField] private Texture2D[] prevLightmaps1;
@@ -31,6 +31,15 @@ namespace pi.LTCGI
 
         [SerializeField] private bool followupWithRealBake;
         [SerializeField] private bool followupBakery;
+
+        public bool HasLightmapData() => _LTCGI_Lightmaps != null && _LTCGI_Lightmaps.Length > 0;
+        public void ClearLightmapData()
+        {
+            _LTCGI_Lightmaps = null;
+            _LTCGI_LightmapData_key = null;
+            _LTCGI_LightmapOffsets_val = null;
+            _LTCGI_LightmapIndex_val = null;
+        }
 
         [MenuItem("Tools/LTCGI/Bake Shadowmap")]
         public static void BakeLightmap()

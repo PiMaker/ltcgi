@@ -98,10 +98,22 @@ namespace pi.LTCGI
             {
                 LTCGI_Controller.Singleton.BakeComplete();
             }
-            if (LTCGI_Controller.Singleton.bakeMaterialReset_key != null && GUILayout.Button("Force Settings Reset after Bake"))
+
+            var resetCol = GUI.backgroundColor;
+            GUI.backgroundColor = Color.red;
+            if (LTCGI_Controller.Singleton.bakeMaterialReset_key != null && GUILayout.Button("DEBUG: Force Settings Reset after Bake"))
             {
                 LTCGI_Controller.Singleton.ResetConfiguration();
             }
+            
+            if (!LTCGI_Controller.Singleton.bakeInProgress && LTCGI_Controller.Singleton.HasLightmapData() &&
+                GUILayout.Button("Clear Baked Data"))
+            {
+                LTCGI_Controller.Singleton.ResetConfiguration();
+                LTCGI_Controller.Singleton.ClearLightmapData();
+                LTCGI_Controller.Singleton.UpdateMaterials();
+            }
+            GUI.backgroundColor = resetCol;
 
             EditorGUILayout.Space(); EditorGUILayout.Space();
 
@@ -306,7 +318,7 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable ? "Available" : "Not Detected")
                     bigButton.fontSize = 18;
                     bigButton.normal.textColor = Color.white;
                     bigButton.hover.textColor = Color.white;
-                    var resetCol = GUI.backgroundColor;
+                    resetCol = GUI.backgroundColor;
                     GUI.backgroundColor = Color.red;
                     if (GUILayout.Button("Apply", bigButton))
                     {
