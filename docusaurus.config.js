@@ -8,8 +8,8 @@ const darkCodeTheme = require('prism-react-renderer/themes/dracula');
 const config = {
   title: 'LTCGI Documentation',
   tagline: 'Optimized plug-and-play realtime area lighting using the linearly transformed cosine algorithm for Unity/VRChat.',
-  url: 'https://pimaker.github.io/',
-  baseUrl: '/ltcgi/',
+  url: 'https://ltcgi.dev/',
+  baseUrl: '/',
   onBrokenLinks: 'throw',
   onBrokenMarkdownLinks: 'warn',
   favicon: 'img/pi.ico',
