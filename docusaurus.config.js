@@ -98,7 +98,9 @@ const config = {
         theme: lightCodeTheme,
         darkTheme: darkCodeTheme,
       },
-      defaultDarkMode: true,
+      colorMode: {
+        defaultMode: 'dark',
+      },
     }),
 };
 
