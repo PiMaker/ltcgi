@@ -19,7 +19,7 @@ namespace pi.LTCGI
         public GameObject AutoSetupEditor(LTCGI_Controller controller)
         {
             var usharpPlayers = SceneManager.GetActiveScene().GetRootGameObjects()
-                .SelectMany(sceneRoot => sceneRoot.GetComponentsInChildren<USharpVideoPlayer>());
+                .SelectMany(sceneRoot => sceneRoot.GetUdonSharpComponentsInChildren<USharpVideoPlayer>());
             var first = true;
             foreach (var player in usharpPlayers)
             {
@@ -36,13 +36,14 @@ namespace pi.LTCGI
                     adapter.transform.rotation = player.transform.rotation;
 
                     var script = adapter.AddUdonSharpComponent<LTCGI_USharpVideoAdapter>();
+                    script.UpdateProxy();
                     script.VideoPlayer = player;
                     script.CRT = AssetDatabase.LoadAssetAtPath<CustomRenderTexture>("Assets/_pi_/_LTCGI/Adapters/LTCGI_BlitCRT.asset");
 
                     controller.VideoTexture = script.CRT;
 
                     // attempt to read standby texture from player
-                    var handler = player.GetComponentInChildren<VideoScreenHandler>();
+                    var handler = player.GetUdonSharpComponentInChildren<VideoScreenHandler>();
                     if (handler != null)
                     {
                         script.StandbyTexture = handler.standbyTexture;
@@ -51,6 +52,7 @@ namespace pi.LTCGI
                     {
                         script.StandbyTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/_pi_/_LTCGI/Adapters/black1px.png");
                     }
+                    script.ApplyProxyModifications();
 
                     var quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
                     quad.transform.parent = adapter.transform;
