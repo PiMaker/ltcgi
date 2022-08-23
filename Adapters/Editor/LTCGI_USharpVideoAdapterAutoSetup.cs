@@ -18,8 +18,10 @@ namespace pi.LTCGI
 
         public GameObject AutoSetupEditor(LTCGI_Controller controller)
         {
+            #pragma warning disable 618
             var usharpPlayers = SceneManager.GetActiveScene().GetRootGameObjects()
                 .SelectMany(sceneRoot => sceneRoot.GetUdonSharpComponentsInChildren<USharpVideoPlayer>());
+            #pragma warning restore 618
             var first = true;
             foreach (var player in usharpPlayers)
             {
@@ -36,14 +38,18 @@ namespace pi.LTCGI
                     adapter.transform.rotation = player.transform.rotation;
 
                     var script = adapter.AddUdonSharpComponent<LTCGI_USharpVideoAdapter>();
+                    #pragma warning disable 618
                     script.UpdateProxy();
+                    #pragma warning restore 618
                     script.VideoPlayer = player;
                     script.CRT = AssetDatabase.LoadAssetAtPath<CustomRenderTexture>("Assets/_pi_/_LTCGI/Adapters/LTCGI_BlitCRT.asset");
 
                     controller.VideoTexture = script.CRT;
 
                     // attempt to read standby texture from player
+                    #pragma warning disable 618
                     var handler = player.GetUdonSharpComponentInChildren<VideoScreenHandler>();
+                    #pragma warning restore 618
                     if (handler != null)
                     {
                         script.StandbyTexture = handler.standbyTexture;
@@ -52,7 +58,9 @@ namespace pi.LTCGI
                     {
                         script.StandbyTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/_pi_/_LTCGI/Adapters/black1px.png");
                     }
+                    #pragma warning disable 618
                     script.ApplyProxyModifications();
+                    #pragma warning restore 618
 
                     var quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
                     quad.transform.parent = adapter.transform;

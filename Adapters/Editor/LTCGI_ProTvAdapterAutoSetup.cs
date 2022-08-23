@@ -23,8 +23,10 @@ namespace pi.LTCGI
 
         public GameObject AutoSetupEditor(LTCGI_Controller controller)
         {
+            #pragma warning disable 618
             var protvPlayers = SceneManager.GetActiveScene().GetRootGameObjects()
                 .SelectMany(sceneRoot => sceneRoot.GetUdonSharpComponentsInChildren<TVManagerV2>());
+            #pragma warning restore 618
             var first = true;
             foreach (var player in protvPlayers)
             {
@@ -41,7 +43,9 @@ namespace pi.LTCGI
                     adapter.transform.rotation = player.transform.rotation;
 
                     var script = adapter.AddUdonSharpComponent<LTCGI_ProTvAdapter>();
+                    #pragma warning disable 618
                     script.UpdateProxy();
+                    #pragma warning restore 618
                     script.Tv = player;
                     script.SharedMaterial = AssetDatabase.LoadAssetAtPath<Material>("Assets/_pi_/_LTCGI/Adapters/LTCGI_AvProBlit_Material.mat");
                     script.BlitCRT = AssetDatabase.LoadAssetAtPath<CustomRenderTexture>("Assets/_pi_/_LTCGI/Adapters/LTCGI_BlitCRT.asset");
@@ -99,7 +103,9 @@ namespace pi.LTCGI
                     script.AdapterScreensKey = adapterScreensKey.ToArray();
                     script.AdapterScreensValue = adapterScreensValue.ToArray();
                     script.AdapterScreensIsUnity = adapterScreensIsUnity.ToArray();
+                    #pragma warning disable 618
                     script.ApplyProxyModifications();
+                    #pragma warning restore 618
 
                     var ltcgi = quad.AddComponent<LTCGI_Screen>();
                     ltcgi.ColorMode = ColorMode.Texture;
