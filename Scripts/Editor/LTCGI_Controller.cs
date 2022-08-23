@@ -91,6 +91,9 @@ namespace pi.LTCGI
                     UpdateMaterials();
                 }
             };
+
+            // workaround a dumb thing
+            AssetDatabase.ImportAsset("Assets/_pi_/_LTCGI/Scripts/LTCGI_AssemblyUdon.asset", ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport | ImportAssetOptions.ImportRecursive);
         }
 
         private string GetCurrentFileName([System.Runtime.CompilerServices.CallerFilePath] string fileName = null)
