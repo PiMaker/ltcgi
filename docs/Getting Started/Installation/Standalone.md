@@ -14,4 +14,6 @@ Download the latest version from the [Releases Tab](https://github.com/pimaker/l
 
 Then, simply install it into your project!
 
-![installing the ltcgi .unitypackage](../../vid/installing_unitypackage.webm)
+<video controls loop width="100%">
+  <source src="/vid/installing_unitypackage.webm"/>
+</video>

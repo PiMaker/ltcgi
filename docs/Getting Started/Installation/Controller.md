@@ -10,4 +10,6 @@ The main component of LTCGI is the `LTCGI_Controller`. It controls everything re
 
 To begin with, drag the `LTCGI_Controller.prefab` somewhere into your scene. It is recommended to put it into the root of your hierarchy. **You must only ever have 1 of these in your scene!**
 
-![dragging the controller into your scene](../../vid/drag_in_controller.webm)
+<video controls loop width="100%">
+  <source src="/vid/drag_in_controller.webm"/>
+</video>
