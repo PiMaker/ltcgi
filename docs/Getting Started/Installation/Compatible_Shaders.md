@@ -2,7 +2,7 @@
 sidebar_position: 5
 ---
 
-# 4️⃣ Compatible Shaders
+# 3️⃣ Compatible Shaders
 
 For any object to receive lighting and reflections from LTCGI-enabled screens or emitters, it **must** use a supported shader. The list of currently supported shaders can be found [on GitHub](https://github.com/PiMaker/ltcgi#supported-shaders).
 

@@ -2,7 +2,7 @@
 sidebar_position: 4
 ---
 
-# 3️⃣ Setting up the Controller
+# 4️⃣ Setting up the Controller
 
 The main component of LTCGI is the `LTCGI_Controller`. It controls everything related to LTCGI and bakes the required data into new builds. Note that the controller itself does _not_ get uploaded to VRChat or included into your final build! It only exists in the editor.
 
