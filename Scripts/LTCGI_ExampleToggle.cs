@@ -1,4 +1,5 @@
-﻿using UdonSharp;
+﻿#if VRC_SDK_VRCSDK3
+using UdonSharp;
 
 // NOTE: This script has to be in the "_LTCGI/Scripts" folder, *or* reference
 // the "LTCGI_AssemblyUdon" to allow it to use the "LTCGI_UdonAdapter" type!
@@ -26,3 +27,4 @@ public class LTCGI_ExampleToggle : UdonSharpBehaviour
         Adapter._SetGlobalState(state);
     }
 }
+#endif
