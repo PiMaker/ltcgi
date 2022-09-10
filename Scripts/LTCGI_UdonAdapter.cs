@@ -47,6 +47,8 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
     private Material[] mats;
     private int mi;
 
+    private bool disabled = false;
+
     void Start()
     {
         Debug.Log("LTCGI adapter start");
@@ -198,6 +200,8 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
 
     void Update()
     {
+        if (disabled) return;
+
         for (int i = 0; i < _LTCGI_ScreenCountDynamic /* only run for dynamic screens */; i++)
         {
             var transform = _LTCGI_ScreenTransforms[i];
@@ -312,6 +316,29 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
         setFlags(screen, flags);
 
         if (!this.enabled) Update();
+    }
+
+    public void _SetGlobalState(bool enabled)
+    {
+        float fstate = enabled ? 0.0f : 1.0f;
+        for (int i = 0; i < mi; i++)
+        {
+            mats[i].SetFloat("_LTCGI_GlobalDisable", fstate);
+        }
+
+        var block = new MaterialPropertyBlock();
+        for (int i = 0; i < _DynamicRenderers.Length; i++)
+        {
+            var r = _DynamicRenderers[i];
+            if (r.HasPropertyBlock())
+                r.GetPropertyBlock(block);
+            else
+                block = new MaterialPropertyBlock();
+            block.SetFloat("_LTCGI_GlobalDisable", fstate);
+            r.SetPropertyBlock(block);
+        }
+
+        disabled = !enabled;
     }
 
 

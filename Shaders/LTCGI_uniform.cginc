@@ -144,4 +144,7 @@ uniform Texture2D<float4> _LTCGI_Lightmap;
 uniform float3 _LTCGI_LightmapMult;
 uniform float4 _LTCGI_LightmapST;
 
+// global toggle
+uniform float _LTCGI_GlobalDisable;
+
 #endif

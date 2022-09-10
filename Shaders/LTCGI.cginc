@@ -164,6 +164,11 @@
     , inout half3 specular, out float totalSpecularIntensity
 #endif
 ) {
+    if (_LTCGI_GlobalDisable) {
+        totalSpecularIntensity = 0;
+        return;
+    }
+
     // sample lookup tables
     float theta = acos(dot(worldNorm, viewDir));
     float2 uv = float2(roughness, theta/(0.5*UNITY_PI));
