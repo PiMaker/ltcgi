@@ -69,6 +69,10 @@ LTCGI tries to run stuff automatically, but sometimes you need to help it out - 
 
 Then go **check the Unity Console for any errors!**
 
+### ❓ I did a material swap on one of my objects, and now LTCGI is broken?
+
+You need to mark any object in your scene that receives LTCGI lighting but can dynamically swap materials as a "Dynamic Renderers". Check the docs on the [LTCGI Controller](/Getting%20Started/Installation/Controller#controller-usage) on how to do this!
+
 ### ❓ Why does moving LTCGI screens around lag my editor?
 
 Because I'm a bad programmer that didn't write optimized code. Sorry. Feel free to use the magic of open source to help me make it fast though!

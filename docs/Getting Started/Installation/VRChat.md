@@ -8,6 +8,8 @@ sidebar_position: 1
 
 Before installing LTCGI into your project, make sure you have all prerequisites installed. This includes making sure you can successfully build and upload your world to VRChat _before_ adding LTCGI!
 
+> ⚠️ If you are importing LTCGI into an existing project, make sure you have a backup first!
+
 ## Creator Companion
 
 I recommend using the [VRChat Creator Companion](https://vcc.docs.vrchat.com/) to automate the steps below. Simply create a new project with the `UdonSharp` template, and you're good to go!
@@ -22,7 +24,7 @@ I recommend using the [VRChat Creator Companion](https://vcc.docs.vrchat.com/) t
 
 The only hard dependency is UdonSharp. It is recommended to use U# 1.0 or higher, as installed by the [VRChat Creator Companion](https://vcc.docs.vrchat.com/). For now, LTCGI _should_ be compatible with older versions too.
 
-I do however very highly recommend ClientSim, as it allows you to test your world straight in the editor.
+I do however very highly recommend ClientSim (previously CyanEmu), as it allows you to test your world straight in the editor.
 
 ## Installing LTCGI
 
@@ -33,3 +35,7 @@ Then, simply install it into your project!
 <video controls loop width="100%">
   <source src="/vid/installing_unitypackage.webm"/>
 </video>
+
+## Upgrading LTCGI
+
+Download the new version and drop it into your project as described above. Note that this will reset your "Global Shader Options".

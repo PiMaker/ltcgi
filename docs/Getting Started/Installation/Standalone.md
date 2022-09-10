@@ -14,6 +14,12 @@ Download the latest version from the [Releases Tab](https://github.com/pimaker/l
 
 Then, simply install it into your project!
 
+> ⚠️ If you are importing LTCGI into an existing project, make sure you have a backup first!
+
 <video controls loop width="100%">
   <source src="/vid/installing_unitypackage.webm"/>
 </video>
+
+## Upgrading LTCGI
+
+Download the new version and drop it into your project as described above. Note that this will reset your "Global Shader Options".
