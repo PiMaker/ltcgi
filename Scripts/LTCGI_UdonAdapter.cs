@@ -459,4 +459,10 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
         if(negate) result = -result;
         return result;
     }
+
+    // extremely cursed compat stuff
+    #if !VRC_SDK_VRCSDK3
+    public void UpdateProxy() {}
+    public void ApplyProxyModifications() {}
+    #endif
 }
