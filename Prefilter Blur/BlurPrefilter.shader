@@ -163,9 +163,14 @@ Shader "LTCGI/Blur Prefilter"
         uniform SamplerState _blur_trilinear_mirror_sampler;
         uniform SamplerState _blur_trilinear_clamp_sampler;
 
-        half4 frag_blur(Texture2D<float4> tex, float2 iuv_sample, float2 iuv_calc, float2 dir)
+        half3 alpha(half4 i)
         {
-            float4 col = 0;
+            return i.rgb * i.a;
+        }
+
+        half3 frag_blur(Texture2D<float4> tex, float2 iuv_sample, float2 iuv_calc, float2 dir)
+        {
+            half3 col = 0;
             float sum = 0;
 
             float2 outside = saturate(abs(iuv_calc - 0.5) - 0.5);
@@ -176,7 +181,7 @@ Shader "LTCGI/Blur Prefilter"
             {
                 if (_OutsideBlurOnly)
                 {
-                    return tex.SampleLevel(_blur_trilinear_clamp_sampler, iuv_sample, _LOD);
+                    return alpha(tex.SampleLevel(_blur_trilinear_clamp_sampler, iuv_sample, _LOD));
                 }
 
                 dirmod = 1;
@@ -199,8 +204,8 @@ Shader "LTCGI/Blur Prefilter"
                 float gauss = (1 / sqrt(2*UNITY_PI*sq)) * pow(E, -((offset*offset)/(2*sq)));
                 sum += gauss;
                 col += lerp(
-                        tex.SampleLevel(_blur_trilinear_clamp_sampler, uv, _LOD),
-                        tex.SampleLevel(_blur_trilinear_mirror_sampler, uv, _LOD),
+                        alpha(tex.SampleLevel(_blur_trilinear_clamp_sampler, uv, _LOD)),
+                        alpha(tex.SampleLevel(_blur_trilinear_mirror_sampler, uv, _LOD)),
                         saturate(olen * 3.6 - 0.25)
                     ) * gauss;
             }
@@ -223,7 +228,7 @@ Shader "LTCGI/Blur Prefilter"
                 float2 insCalc = float2(_InsetCalculate, _InsetCalculate) * dir.yx;
                 float2 uv_sample = (1 + insSample*2) * i.globalTexcoord.xy - insSample;
                 float2 uv_calc = (1 + insCalc*2) * i.globalTexcoord.xy - insCalc;
-                return frag_blur(_MainTex, uv_sample, uv_calc, dir);
+                return half4(frag_blur(_MainTex, uv_sample, uv_calc, dir), 1);
             }
             ENDCG
         }
@@ -241,7 +246,7 @@ Shader "LTCGI/Blur Prefilter"
                 float2 insCalc = float2(_InsetCalculate, _InsetCalculate) * dir.yx;
                 float2 uv_sample = (1 + insSample*2) * i.globalTexcoord.xy - insSample;
                 float2 uv_calc = (1 + insCalc*2) * i.globalTexcoord.xy - insCalc;
-                return frag_blur(_MainTex, uv_sample, uv_calc, dir);
+                return half4(frag_blur(_MainTex, uv_sample, uv_calc, dir), 1);
             }
             ENDCG
         }

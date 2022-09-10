@@ -133,6 +133,11 @@ float2 LTCGI_inset_uv(float2 uv)
     return uv * 0.75 + float2(0.125, 0.125);
 }
 
+half3 premul_alpha(half4 i)
+{
+    return i.rgb * i.a;
+}
+
 float3 LTCGI_sample(float2 uv, uint lod, uint idx, float blend)
 {
     #ifndef LTCGI_STATIC_TEXTURES
@@ -157,19 +162,19 @@ float3 LTCGI_sample(float2 uv, uint lod, uint idx, float blend)
             if (idx == 0)
             {
                 #ifndef SHADER_TARGET_SURFACE_ANALYSIS
-                return _LTCGI_Texture_LOD0.SampleLevel(sampler_LTCGI_trilinear_clamp_sampler, uv, lod).rgb;
+                return premul_alpha(_LTCGI_Texture_LOD0.SampleLevel(sampler_LTCGI_trilinear_clamp_sampler, uv, lod));
                 #else
                 return 0;
                 #endif
             }
             else
             {
-                return UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
+                return premul_alpha(UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
                     _LTCGI_Texture_LOD0_arr,
                     _LTCGI_trilinear_clamp_sampler,
                     float3(uv, idx - 1),
                     lod
-                ).rgb;
+                ));
             }
         }
     }
