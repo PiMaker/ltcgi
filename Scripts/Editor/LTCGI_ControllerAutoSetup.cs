@@ -58,7 +58,6 @@ namespace pi.LTCGI
                 {
                     DestroyImmediate(my.ConfiguredAdapter);
                     my.ConfiguredAdapter = null;
-                    LTCGI_Controller.Singleton.UpdateMaterials();
                 }
                 return;
             }
@@ -70,8 +69,7 @@ namespace pi.LTCGI
                 if (set != null)
                 {
                     my.ConfiguredAdapter = set;
-                    LTCGI_Controller.Singleton.UpdateMaterials();
-                    return;
+                    break;
                 }
             }
         }
