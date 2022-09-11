@@ -86,7 +86,7 @@ namespace pi.LTCGI
             };
 
             // workaround a dumb thing
-            AssetDatabase.ImportAsset("Packages/at.pimaker.ltcgi/Runtime/Scripts/LTCGI_AssemblyUdon.asset", ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport | ImportAssetOptions.ImportRecursive);
+            AssetDatabase.ImportAsset("Packages/at.pimaker.ltcgi/Udon/LTCGI_AssemblyUdon.asset", ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport | ImportAssetOptions.ImportRecursive);
 
             // legacy compat
             var filename = @"Assets/_pi_/_LTCGI/Shaders/LTCGI.cginc";
@@ -96,12 +96,7 @@ namespace pi.LTCGI
                 AssetDatabase.CreateFolder("Assets/_pi_", "_LTCGI");
             if (!AssetDatabase.IsValidFolder("Assets/_pi_/_LTCGI/Shaders"))
                 AssetDatabase.CreateFolder("Assets/_pi_/_LTCGI", "Shaders");
-            System.IO.File.WriteAllText(filename, "// auto-generated legacy compat, do not edit!" + System.Environment.NewLine + "#include \"Packages/at.pimaker.ltcgi/Runtime/Shaders/LTCGI.cginc\"");
-        }
-
-        private string GetCurrentFileName([System.Runtime.CompilerServices.CallerFilePath] string fileName = null)
-        {
-            return fileName;
+            System.IO.File.WriteAllText(filename, "// auto-generated legacy compat, do not edit!" + System.Environment.NewLine + "#include \"Packages/at.pimaker.ltcgi/Shaders/LTCGI.cginc\"");
         }
 
         public static bool MatLTCGIenabled(Material mat)

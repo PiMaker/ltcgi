@@ -21,7 +21,7 @@ Shader "LTCGI_Amplify"
 		#include "UnityShaderVariables.cginc"
 		#include "Lighting.cginc"
 		#pragma target 3.0
-		#include "Packages/at.pimaker.ltcgi/Runtime/Shaders/LTCGI.cginc"
+		#include "Packages/at.pimaker.ltcgi/Shaders/LTCGI.cginc"
 		#ifdef UNITY_PASS_SHADOWCASTER
 			#undef INTERNAL_DATA
 			#undef WorldReflectionVector

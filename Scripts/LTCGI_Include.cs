@@ -32,18 +32,18 @@ public class LTCGI_Define : IActiveBuildTargetChanged
         var needsAdapterMove = false;
         if (AssetDatabase.GUIDToAssetPath("ecf7b0fb0de08cf47953bc100f818854") != "") // TVManagerV2.cs
         {
-            AddDefine("LTCGI_PROTV_DETECTED");
+            //AddDefine("LTCGI_PROTV_DETECTED");
             needsAdapterMove = true;
         }
         if (AssetDatabase.GUIDToAssetPath("61a08afb94ef7364d8358a64333fb431") != "") // VideoPlayerManager.cs
         {
-            AddDefine("LTCGI_USHARP_VIDEO_DETECTED");
+            //AddDefine("LTCGI_USHARP_VIDEO_DETECTED");
             needsAdapterMove = true;
         }
 
         if (needsAdapterMove && AssetDatabase.IsValidFolder("Packages/at.pimaker.ltcgi/Adapters"))
         {
-            AssetDatabase.MoveAsset("Packages/at.pimaker.ltcgi/Adapters", "Assets/_pi_/_LTCGI/Adapters");
+            //AssetDatabase.MoveAsset("Packages/at.pimaker.ltcgi/Adapters", "Assets/_pi_/_LTCGI/Adapters");
         }
     }
 

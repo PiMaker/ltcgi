@@ -1,10 +1,8 @@
 {
-    "name": "at.pimaker.ltcgi",
+    "name": "LTCGI_UdonAssembly",
     "references": [
-        "VRC.SDK3",
-        "VRC.SDKBase",
-        "UdonSharp.Runtime",
-        ""
+        "GUID:6490804aa441dfe4b88eb56cccbdf081",
+        "GUID:99835874ee819da44948776e0df4ff1d"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

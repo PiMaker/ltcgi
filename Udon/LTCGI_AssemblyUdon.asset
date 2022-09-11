@@ -12,5 +12,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5136146375e9a0a498a72a0091b40cc1, type: 3}
   m_Name: LTCGI_AssemblyUdon
   m_EditorClassIdentifier: 
-  sourceAssembly: {fileID: 5897886265953266890, guid: 6b3ffc30ed940b14d85d7edafa0a0151,
+  sourceAssembly: {fileID: 5897886265953266890, guid: 9729b85aa10b63f40857ef7966d4e7c0,
     type: 3}
