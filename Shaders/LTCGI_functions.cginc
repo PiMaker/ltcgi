@@ -162,7 +162,7 @@ float3 LTCGI_sample(float2 uv, uint lod, uint idx, float blend)
             if (idx == 0)
             {
                 #ifndef SHADER_TARGET_SURFACE_ANALYSIS
-                return premul_alpha(_LTCGI_Texture_LOD0.SampleLevel(sampler_LTCGI_trilinear_clamp_sampler, uv, lod));
+                return premul_alpha(_Udon_LTCGI_Texture_LOD0.SampleLevel(sampler_LTCGI_trilinear_clamp_sampler, uv, lod));
                 #else
                 return 0;
                 #endif
@@ -170,7 +170,7 @@ float3 LTCGI_sample(float2 uv, uint lod, uint idx, float blend)
             else
             {
                 return premul_alpha(UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
-                    _LTCGI_Texture_LOD0_arr,
+                    _Udon_LTCGI_Texture_LOD0_arr,
                     _LTCGI_trilinear_clamp_sampler,
                     float3(uv, idx - 1),
                     lod
@@ -188,11 +188,11 @@ float3 LTCGI_sample(float2 uv, uint lod, uint idx, float blend)
         switch (lod)
         {
             case 1:
-                return _LTCGI_Texture_LOD1.SampleLevel(sampler_LTCGI_bilinear_clamp_sampler, ruv, 0).rgb;
+                return _Udon_LTCGI_Texture_LOD1.SampleLevel(sampler_LTCGI_bilinear_clamp_sampler, ruv, 0).rgb;
             case 2:
-                return _LTCGI_Texture_LOD2.SampleLevel(sampler_LTCGI_bilinear_clamp_sampler, ruv, 0).rgb;
+                return _Udon_LTCGI_Texture_LOD2.SampleLevel(sampler_LTCGI_bilinear_clamp_sampler, ruv, 0).rgb;
             default:
-                return _LTCGI_Texture_LOD3.SampleLevel(sampler_LTCGI_trilinear_clamp_sampler, ruv, blend*0.72).rgb;
+                return _Udon_LTCGI_Texture_LOD3.SampleLevel(sampler_LTCGI_trilinear_clamp_sampler, ruv, blend*0.72).rgb;
         }
         #else
         return 0;
@@ -205,21 +205,21 @@ float3 LTCGI_sample(float2 uv, uint lod, uint idx, float blend)
         {
             case 1:
                 return UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
-                    _LTCGI_Texture_LOD1_arr,
+                    _Udon_LTCGI_Texture_LOD1_arr,
                     _LTCGI_bilinear_clamp_sampler,
                     float3(ruv, idx - 1),
                     0
                 ).rgb;
             case 2:
                 return UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
-                    _LTCGI_Texture_LOD2_arr,
+                    _Udon_LTCGI_Texture_LOD2_arr,
                     _LTCGI_bilinear_clamp_sampler,
                     float3(ruv, idx - 1),
                     0
                 ).rgb;
             default:
                 return UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
-                    _LTCGI_Texture_LOD3_arr,
+                    _Udon_LTCGI_Texture_LOD3_arr,
                     _LTCGI_trilinear_clamp_sampler,
                     float3(ruv, idx - 1),
                     blend
@@ -310,10 +310,10 @@ float2 LTCGI_calculateUV(uint i, ltcgi_flags flags, float3 L[5], bool isTri, flo
     } else
     #endif
     {
-        uvs[0] = uvStart; // == _LTCGI_static_uniforms[uint2(4, i)].xy;
-        uvs[1] = _LTCGI_static_uniforms[uint2(4, i)].zw;
-        uvs[2] = _LTCGI_static_uniforms[uint2(5, i)].xy;
-        uvs[3] = uvEnd; // == _LTCGI_static_uniforms[uint2(5, i)].zw;
+        uvs[0] = uvStart; // == _Udon_LTCGI_static_uniforms[uint2(4, i)].xy;
+        uvs[1] = _Udon_LTCGI_static_uniforms[uint2(4, i)].zw;
+        uvs[2] = _Udon_LTCGI_static_uniforms[uint2(5, i)].xy;
+        uvs[3] = uvEnd; // == _Udon_LTCGI_static_uniforms[uint2(5, i)].zw;
     }
 
     // map barycentric triangle coordinates to the according object UVs
@@ -400,8 +400,8 @@ void LTCGI_GetLw(uint i, ltcgi_flags flags, float3 worldPos, out float3 Lw[4], o
         Lw[2] = v2.xyz - worldPos;
         Lw[3] = v3.xyz - worldPos;
         #ifndef SHADER_TARGET_SURFACE_ANALYSIS
-            uvStart = _LTCGI_static_uniforms[uint2(4, i)].xy;
-            uvEnd = _LTCGI_static_uniforms[uint2(5, i)].zw;
+            uvStart = _Udon_LTCGI_static_uniforms[uint2(4, i)].xy;
+            uvEnd = _Udon_LTCGI_static_uniforms[uint2(5, i)].zw;
         #else
             uvStart = float2(0, 0);
             uvEnd = float2(1, 1);

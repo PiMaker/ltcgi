@@ -2,57 +2,57 @@
 #define LTCGI_UNIFORM_INCLUDED
 
 // LUTs
-uniform sampler2D _LTCGI_lut2;
-uniform sampler2D _LTCGI_lut1;
+uniform sampler2D _Udon_LTCGI_lut2;
+uniform sampler2D _Udon_LTCGI_lut1;
 
 #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
-uniform Texture2D<float4> _LTCGI_static_uniforms;
+uniform Texture2D<float4> _Udon_LTCGI_static_uniforms;
 #endif
 
 #ifdef LTCGI_STATIC_UNIFORMS
 
 float4 _LTCGI_Vertices_0_get(uint i) {
-    return _LTCGI_static_uniforms[uint2(0, i)];
+    return _Udon_LTCGI_static_uniforms[uint2(0, i)];
 }
 float4 _LTCGI_Vertices_1_get(uint i) {
-    return _LTCGI_static_uniforms[uint2(1, i)];
+    return _Udon_LTCGI_static_uniforms[uint2(1, i)];
 }
 float4 _LTCGI_Vertices_2_get(uint i) {
-    return _LTCGI_static_uniforms[uint2(2, i)];
+    return _Udon_LTCGI_static_uniforms[uint2(2, i)];
 }
 float4 _LTCGI_Vertices_3_get(uint i) {
-    return _LTCGI_static_uniforms[uint2(3, i)];
+    return _Udon_LTCGI_static_uniforms[uint2(3, i)];
 }
 
 #else
 
 // vertices in object space; w component is UV (legacy)
-uniform float4 _LTCGI_Vertices_0[MAX_SOURCES];
-uniform float4 _LTCGI_Vertices_1[MAX_SOURCES];
-uniform float4 _LTCGI_Vertices_2[MAX_SOURCES];
-uniform float4 _LTCGI_Vertices_3[MAX_SOURCES];
+uniform float4 _Udon_LTCGI_Vertices_0[MAX_SOURCES];
+uniform float4 _Udon_LTCGI_Vertices_1[MAX_SOURCES];
+uniform float4 _Udon_LTCGI_Vertices_2[MAX_SOURCES];
+uniform float4 _Udon_LTCGI_Vertices_3[MAX_SOURCES];
 
 float4 _LTCGI_Vertices_0_get(uint i) {
-    return _LTCGI_Vertices_0[i];
+    return _Udon_LTCGI_Vertices_0[i];
 }
 float4 _LTCGI_Vertices_1_get(uint i) {
-    return _LTCGI_Vertices_1[i];
+    return _Udon_LTCGI_Vertices_1[i];
 }
 float4 _LTCGI_Vertices_2_get(uint i) {
-    return _LTCGI_Vertices_2[i];
+    return _Udon_LTCGI_Vertices_2[i];
 }
 float4 _LTCGI_Vertices_3_get(uint i) {
-    return _LTCGI_Vertices_3[i];
+    return _Udon_LTCGI_Vertices_3[i];
 }
 
 #endif
 
 // light source count, maximum is MAX_SOURCES
-uniform uint _LTCGI_ScreenCount;
+uniform uint _Udon_LTCGI_ScreenCount;
 
 // per-renderer mask to select sources,
 // for max perf update _LTCGI_ScreenCount too
-uniform bool _LTCGI_Mask[MAX_SOURCES];
+uniform bool _Udon_LTCGI_Mask[MAX_SOURCES];
 
 // extra data per light source, layout:
 //  color.r   color.g   color.b   flags*
@@ -64,7 +64,7 @@ uniform bool _LTCGI_Mask[MAX_SOURCES];
 //   b13-14=audio link band
 //   b15=lightmap diffuse only
 // (color black = fully disabled)
-uniform float4 _LTCGI_ExtraData[MAX_SOURCES];
+uniform float4 _Udon_LTCGI_ExtraData[MAX_SOURCES];
 struct ltcgi_flags
 {
     bool doublesided;
@@ -125,26 +125,26 @@ uniform SamplerState sampler_LTCGI_bilinear_clamp_sampler;
 
 // video input
 #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
-uniform Texture2D<float4> _LTCGI_Texture_LOD0;
-uniform Texture2D<float4> _LTCGI_Texture_LOD1;
-uniform Texture2D<float4> _LTCGI_Texture_LOD2;
-uniform Texture2D<float4> _LTCGI_Texture_LOD3;
+uniform Texture2D<float4> _Udon_LTCGI_Texture_LOD0;
+uniform Texture2D<float4> _Udon_LTCGI_Texture_LOD1;
+uniform Texture2D<float4> _Udon_LTCGI_Texture_LOD2;
+uniform Texture2D<float4> _Udon_LTCGI_Texture_LOD3;
 #endif
 
 // static textures
-UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_LTCGI_Texture_LOD0_arr);
-UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_LTCGI_Texture_LOD1_arr);
-UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_LTCGI_Texture_LOD2_arr);
-UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_LTCGI_Texture_LOD3_arr);
+UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_Udon_LTCGI_Texture_LOD0_arr);
+UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_Udon_LTCGI_Texture_LOD1_arr);
+UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_Udon_LTCGI_Texture_LOD2_arr);
+UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_Udon_LTCGI_Texture_LOD3_arr);
 
 // lightmap
 #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
-uniform Texture2D<float4> _LTCGI_Lightmap;
+uniform Texture2D<float4> _Udon_LTCGI_Lightmap;
 #endif
-uniform float3 _LTCGI_LightmapMult;
-uniform float4 _LTCGI_LightmapST;
+uniform float3 _Udon_LTCGI_LightmapMult;
+uniform float4 _Udon_LTCGI_LightmapST;
 
 // global toggle
-uniform float _LTCGI_GlobalDisable;
+uniform float _Udon_LTCGI_GlobalDisable;
 
 #endif

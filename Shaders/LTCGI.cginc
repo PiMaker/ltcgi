@@ -164,7 +164,7 @@
     , inout half3 specular, out float totalSpecularIntensity
 #endif
 ) {
-    if (_LTCGI_GlobalDisable) {
+    if (_Udon_LTCGI_GlobalDisable) {
         totalSpecularIntensity = 0;
         return;
     }
@@ -194,7 +194,7 @@
     #endif
 
     // sample BDRF approximation from lookup texture
-    float4 t = tex2Dlod(_LTCGI_lut1, float4(uv, 0, 0));
+    float4 t = tex2Dlod(_Udon_LTCGI_lut1, float4(uv, 0, 0));
     float3x3 Minv = float3x3(
         float3(  1,   0, t.w),
         float3(  0, t.z,   0),
@@ -214,7 +214,7 @@
 
     // specular brightness
     #ifndef LTCGI_SPECULAR_OFF
-        float spec_amp = tex2Dlod(_LTCGI_lut2, float4(uv, 0, 0)).x;
+        float spec_amp = tex2Dlod(_Udon_LTCGI_lut2, float4(uv, 0, 0)).x;
     #endif
 
     #ifdef LTCGI_VISUALIZE_SCREEN_COUNT
@@ -229,18 +229,18 @@
     #ifdef LTCGI_LTC_DIFFUSE_FALLBACK
     #ifndef SHADER_TARGET_SURFACE_ANALYSIS
         float2 lmSize;
-        _LTCGI_Lightmap.GetDimensions(lmSize.x, lmSize.y);
+        _Udon_LTCGI_Lightmap.GetDimensions(lmSize.x, lmSize.y);
         noLm = lmSize.x == 1;
     #endif
     #endif
 
     // loop through all lights and add them to the output
-    uint count = min(_LTCGI_ScreenCount, MAX_SOURCES);
+    uint count = min(_Udon_LTCGI_ScreenCount, MAX_SOURCES);
     [loop]
     for (uint i = 0; i < count; i++) {
         // skip masked and black lights
-        if (_LTCGI_Mask[i]) continue;
-        float4 extra = _LTCGI_ExtraData[i];
+        if (_Udon_LTCGI_Mask[i]) continue;
+        float4 extra = _Udon_LTCGI_ExtraData[i];
         float3 color = extra.rgb;
         if (!any(color)) continue;
 
@@ -286,7 +286,7 @@
                 float lmd = lm;
                 if (flags.lmch) {
                     if (flags.diffFromLm)
-                        lmd *= _LTCGI_LightmapMult[flags.lmch - 1];
+                        lmd *= _Udon_LTCGI_LightmapMult[flags.lmch - 1];
                     else
                         lmd = smoothstep(0.0, LTCGI_SPECULAR_LIGHTMAP_STEP, saturate(lm - LTCGI_LIGHTMAP_CUTOFF));
                 }
