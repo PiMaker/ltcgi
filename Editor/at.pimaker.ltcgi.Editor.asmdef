@@ -1,0 +1,25 @@
+{
+    "name": "at.pimaker.ltcgi.Editor",
+    "references": [
+        "VRC.SDK3",
+        "VRC.SDK3.Editor",
+        "VRC.SDKBase",
+        "VRC.SDKBase.Editor",
+        "at.pimaker.ltcgi",
+        "UdonSharp.Editor",
+        "UdonSharp.Runtime",
+        "BakeryEditorAssembly",
+        "BakeryRuntimeAssembly"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

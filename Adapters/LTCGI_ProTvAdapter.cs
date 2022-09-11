@@ -1,4 +1,5 @@
-﻿using UdonSharp;
+﻿#if LTCGI_PROTV_DETECTED
+using UdonSharp;
 using UnityEngine;
 using ArchiTech;
 
@@ -74,3 +75,4 @@ public class LTCGI_ProTvAdapter : UdonSharpBehaviour
         }
     }
 }
+#endif

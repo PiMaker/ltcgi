@@ -20,38 +20,18 @@ jobs:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
       - uses: actions/checkout@v2
         with:
-          path: _pi_/_LTCGI/
           lfs: true
 
-      - name: "Copy unitypackage.list"
-        run: cp _pi_/_LTCGI/unitypackage.list .
-      - name: "Copy unitypackage-adapter-protv.list"
-        run: cp _pi_/_LTCGI/unitypackage-adapter-protv.list .
-      - name: "Copy unitypackage-adapter-usharp.list"
-        run: cp _pi_/_LTCGI/unitypackage-adapter-usharp.list .
-      - name: "Copy Gizmos"
-        run: mkdir Gizmos && cp _pi_/_LTCGI/Propaganda/LTCGI_Screen_Gizmo.png ./Gizmos && cp _pi_/_LTCGI/Propaganda/LTCGI_Screen_Gizmo.png.meta ./Gizmos
-
-      - name: "Put into Assets/ folder"
-        run: mkdir Assets && mv Gizmos Assets/ && mv _pi_ Assets/
+      - name: "Put into Packages/ folder"
+        run: mkdir -p Packages/at.pimaker.ltcgi && mv ./* Packages/at.pimaker.ltcgi/
 
       - name: "Inspect structure"
-        run: ls -R Assets/
+        run: ls -R Packages/
       
       - uses: pCYSl5EDgo/create-unitypackage@master
         with:
           package-path: "ltcgi-${{ github.sha }}.unitypackage"
           include-files: unitypackage.list
-
-      - uses: pCYSl5EDgo/create-unitypackage@master
-        with:
-          package-path: "ltcgi-adapter-protv-${{ github.sha }}.unitypackage"
-          include-files: unitypackage-adapter-protv.list
-
-      - uses: pCYSl5EDgo/create-unitypackage@master
-        with:
-          package-path: "ltcgi-adapter-usharp-${{ github.sha }}.unitypackage"
-          include-files: unitypackage-adapter-usharp.list
 
       - name: List created unitypackages
         run: find . -iname "*.unitypackage"
@@ -60,11 +40,3 @@ jobs:
         with:
           name: "ltcgi-${{ github.sha }}.unitypackage"
           path: "ltcgi-${{ github.sha }}.unitypackage"
-      - uses: actions/upload-artifact@v2
-        with:
-          name: "ltcgi-adapter-protv-${{ github.sha }}.unitypackage"
-          path: "ltcgi-adapter-protv-${{ github.sha }}.unitypackage"
-      - uses: actions/upload-artifact@v2
-        with:
-          name: "ltcgi-adapter-usharp-${{ github.sha }}.unitypackage"
-          path: "ltcgi-adapter-usharp-${{ github.sha }}.unitypackage"

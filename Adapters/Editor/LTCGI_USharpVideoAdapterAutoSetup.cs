@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+#if LTCGI_USHARP_VIDEO_DETECTED
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
@@ -37,7 +38,7 @@ namespace pi.LTCGI
 
                     var script = adapter.AddUdonSharpComponent<LTCGI_USharpVideoAdapter>();
                     script.VideoPlayer = player;
-                    script.CRT = AssetDatabase.LoadAssetAtPath<CustomRenderTexture>("Assets/_pi_/_LTCGI/Adapters/LTCGI_BlitCRT.asset");
+                    script.CRT = AssetDatabase.LoadAssetAtPath<CustomRenderTexture>("Packages/at.pimaker.ltcgi/Runtime/Adapters/LTCGI_BlitCRT.asset");
 
                     controller.VideoTexture = script.CRT;
 
@@ -49,7 +50,7 @@ namespace pi.LTCGI
                     }
                     else
                     {
-                        script.StandbyTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/_pi_/_LTCGI/Adapters/black1px.png");
+                        script.StandbyTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Packages/at.pimaker.ltcgi/Runtime/Adapters/black1px.png");
                     }
 
                     var quad = GameObject.CreatePrimitive(PrimitiveType.Quad);
@@ -79,4 +80,5 @@ namespace pi.LTCGI
     }
 }
 
+#endif
 #endif

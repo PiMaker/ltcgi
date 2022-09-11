@@ -1,4 +1,5 @@
 #if UNITY_EDITOR
+#if LTCGI_PROTV_DETECTED
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
@@ -42,8 +43,8 @@ namespace pi.LTCGI
 
                     var script = adapter.AddUdonSharpComponent<LTCGI_ProTvAdapter>();
                     script.Tv = player;
-                    script.SharedMaterial = AssetDatabase.LoadAssetAtPath<Material>("Assets/_pi_/_LTCGI/Adapters/LTCGI_AvProBlit_Material.mat");
-                    script.BlitCRT = AssetDatabase.LoadAssetAtPath<CustomRenderTexture>("Assets/_pi_/_LTCGI/Adapters/LTCGI_BlitCRT.asset");
+                    script.SharedMaterial = AssetDatabase.LoadAssetAtPath<Material>("Packages/at.pimaker.ltcgi/Runtime/Adapters/LTCGI_AvProBlit_Material.mat");
+                    script.BlitCRT = AssetDatabase.LoadAssetAtPath<CustomRenderTexture>("Packages/at.pimaker.ltcgi/Runtime/Adapters/LTCGI_BlitCRT.asset");
                     script.AvProBranding = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/ArchiTechAnon/ProTV/Images/ProTVLogo_16x9.png");
 
                     controller.VideoTexture = script.BlitCRT;
@@ -117,4 +118,5 @@ namespace pi.LTCGI
     }
 }
 
+#endif
 #endif

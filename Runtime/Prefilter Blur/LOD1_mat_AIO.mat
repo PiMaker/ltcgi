@@ -1,0 +1,48 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!21 &2100000
+Material:
+  serializedVersion: 6
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: LOD1_mat_AIO
+  m_Shader: {fileID: 4800000, guid: e2019055fa8c4c5499f0c01c3fbeb6f1, type: 3}
+  m_ShaderKeywords: GAUSS _SAMPLES_HIGH
+  m_LightmapFlags: 0
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - _MainTex:
+        m_Texture: {fileID: 8600000, guid: 4b71bf169350ba842b575577023ab60d, type: 2}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OverlayTex:
+        m_Texture: {fileID: 2800000, guid: d2b066007d71ef446be3dae8b3ac067c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Floats:
+    - _BlurSize: 0.08
+    - _Debug: 0
+    - _Direction: 0
+    - _Gamma: 1
+    - _Gauss: 1
+    - _IdxOverride: 0
+    - _Inset: 0.125
+    - _InsetCalculate: 0.182
+    - _InsetSample: 0.075
+    - _LOD: 3
+    - _LOD_Sample: 1
+    - _OutsideBlurOnly: 0
+    - _OutsideMult: 16
+    - _Overlay: 1
+    - _Samples: 0
+    - _Size: 111.36
+    - _StandardDeviation: 0.016
+    m_Colors: []
