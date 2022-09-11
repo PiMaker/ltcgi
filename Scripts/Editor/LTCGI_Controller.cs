@@ -547,7 +547,7 @@ namespace pi.LTCGI
             {
                 #if VRC_SDK_VRCSDK3
                 LTCGI_UdonAdapter adapter;
-                Component[] adapters = this.gameObject.GetUdonSharpComponent<LTCGI_UdonAdapter>();
+                Component[] adapters = this.gameObject.GetComponents<LTCGI_UdonAdapter>();
                 #else
                 LTCGI_RuntimeAdapter adapter;
                 Component[] adapters = this.gameObject.GetComponents<LTCGI_RuntimeAdapter>();
@@ -579,7 +579,6 @@ namespace pi.LTCGI
                 }
                 
                 // update LTCGI_UdonAdapter proxy with new data
-                adapter.UpdateProxy();
                 adapter._Renderers = cachedMeshRenderers.Where(cm => !IsEditorOnly(cm.gameObject)).ToArray();
                 adapter._LTCGI_Lightmaps = cachedMeshRenderers
                     .Select(r => {
@@ -678,8 +677,6 @@ namespace pi.LTCGI
                     }
                 }
                 adapter._DynamicRenderers = dynr.ToArray();
-
-                adapter.ApplyProxyModifications();
 
                 #if DEBUG_LOG
                     Debug.Log("LTCGI: updated UdonSharp adapter");

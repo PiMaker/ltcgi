@@ -24,7 +24,7 @@ namespace pi.LTCGI
         public GameObject AutoSetupEditor(LTCGI_Controller controller)
         {
             var protvPlayers = SceneManager.GetActiveScene().GetRootGameObjects()
-                .SelectMany(sceneRoot => sceneRoot.GetUdonSharpComponentsInChildren<TVManagerV2>());
+                .SelectMany(sceneRoot => sceneRoot.GetComponentsInChildren<TVManagerV2>());
             var first = true;
             foreach (var player in protvPlayers)
             {
@@ -41,7 +41,6 @@ namespace pi.LTCGI
                     adapter.transform.rotation = player.transform.rotation;
 
                     var script = adapter.AddUdonSharpComponent<LTCGI_ProTvAdapter>();
-                    script.UpdateProxy();
                     script.Tv = player;
                     script.SharedMaterial = AssetDatabase.LoadAssetAtPath<Material>("Assets/_pi_/_LTCGI/Adapters/LTCGI_AvProBlit_Material.mat");
                     script.BlitCRT = AssetDatabase.LoadAssetAtPath<CustomRenderTexture>("Assets/_pi_/_LTCGI/Adapters/LTCGI_BlitCRT.asset");
@@ -99,7 +98,6 @@ namespace pi.LTCGI
                     script.AdapterScreensKey = adapterScreensKey.ToArray();
                     script.AdapterScreensValue = adapterScreensValue.ToArray();
                     script.AdapterScreensIsUnity = adapterScreensIsUnity.ToArray();
-                    script.ApplyProxyModifications();
 
                     var ltcgi = quad.AddComponent<LTCGI_Screen>();
                     ltcgi.ColorMode = ColorMode.Texture;
