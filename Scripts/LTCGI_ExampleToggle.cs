@@ -1,4 +1,4 @@
-﻿#if VRC_SDK_VRCSDK3
+﻿#if VRC_SDK_VRCSDK3 && UDONSHARP
 using UdonSharp;
 
 // NOTE: This script has to be in the "_LTCGI/Scripts" folder, *or* reference

@@ -2,8 +2,10 @@
 #define LTCGI_UNIFORM_INCLUDED
 
 // LUTs
-uniform sampler2D _Udon_LTCGI_lut2;
-uniform sampler2D _Udon_LTCGI_lut1;
+#ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
+uniform Texture2D<float4> _Udon_LTCGI_lut2;
+uniform Texture2D<float4> _Udon_LTCGI_lut1;
+#endif
 
 #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
 uniform Texture2D<float4> _Udon_LTCGI_static_uniforms;
@@ -146,5 +148,6 @@ uniform float4 _Udon_LTCGI_LightmapST;
 
 // global toggle
 uniform float _Udon_LTCGI_GlobalDisable;
+uniform float _Udon_LTCGI_AvatarEnable;
 
 #endif

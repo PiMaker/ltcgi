@@ -1,13 +1,17 @@
 ﻿using System;
 using UnityEngine;
 
-#if VRC_SDK_VRCSDK3
+#if VRC_SDK_VRCSDK3 && UDONSHARP
 using UdonSharp;
 using VRC.SDKBase;
 using VRC.Udon;
+
+using LTCGIShader = VRC.SDKBase.VRCShader;
+#else
+using LTCGIShader = UnityEngine.Shader;
 #endif
 
-#if VRC_SDK_VRCSDK3
+#if VRC_SDK_VRCSDK3 && UDONSHARP
 [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
 public class LTCGI_UdonAdapter : UdonSharpBehaviour
 #else
@@ -87,30 +91,30 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
         {
             if (_LTCGI_LODs[j] != null)
             {
-                var id = VRCShader.PropertyToID("_Udon_LTCGI_Texture_LOD" + j);
-                VRCShader.SetGlobalTexture(id, _LTCGI_LODs[j]);
+                var id = LTCGIShader.PropertyToID("_Udon_LTCGI_Texture_LOD" + j);
+                LTCGIShader.SetGlobalTexture(id, _LTCGI_LODs[j]);
                 if (j == 0)
                     textureLod0Id = id;
             }
         }
         if (_LTCGI_Static_LODs_0 != null)
         {
-            VRCShader.SetGlobalTexture(VRCShader.PropertyToID("_Udon_LTCGI_Texture_LOD0_arr"), _LTCGI_Static_LODs_0);
-            VRCShader.SetGlobalTexture(VRCShader.PropertyToID("_Udon_LTCGI_Texture_LOD1_arr"), _LTCGI_Static_LODs_1);
-            VRCShader.SetGlobalTexture(VRCShader.PropertyToID("_Udon_LTCGI_Texture_LOD2_arr"), _LTCGI_Static_LODs_2);
-            VRCShader.SetGlobalTexture(VRCShader.PropertyToID("_Udon_LTCGI_Texture_LOD3_arr"), _LTCGI_Static_LODs_3);
+            LTCGIShader.SetGlobalTexture(LTCGIShader.PropertyToID("_Udon_LTCGI_Texture_LOD0_arr"), _LTCGI_Static_LODs_0);
+            LTCGIShader.SetGlobalTexture(LTCGIShader.PropertyToID("_Udon_LTCGI_Texture_LOD1_arr"), _LTCGI_Static_LODs_1);
+            LTCGIShader.SetGlobalTexture(LTCGIShader.PropertyToID("_Udon_LTCGI_Texture_LOD2_arr"), _LTCGI_Static_LODs_2);
+            LTCGIShader.SetGlobalTexture(LTCGIShader.PropertyToID("_Udon_LTCGI_Texture_LOD3_arr"), _LTCGI_Static_LODs_3);
         }
 
-        VRCShader.SetGlobalTexture(VRCShader.PropertyToID("_Udon_LTCGI_lut1"), _LTCGI_lut1);
-        VRCShader.SetGlobalTexture(VRCShader.PropertyToID("_Udon_LTCGI_lut2"), _LTCGI_lut2);
+        LTCGIShader.SetGlobalTexture(LTCGIShader.PropertyToID("_Udon_LTCGI_lut1"), _LTCGI_lut1);
+        LTCGIShader.SetGlobalTexture(LTCGIShader.PropertyToID("_Udon_LTCGI_lut2"), _LTCGI_lut2);
         
-        VRCShader.SetGlobalInteger(VRCShader.PropertyToID("_Udon_LTCGI_ScreenCount"), _LTCGI_ScreenCount);
+        LTCGIShader.SetGlobalInteger(LTCGIShader.PropertyToID("_Udon_LTCGI_ScreenCount"), _LTCGI_ScreenCount);
 
         if (_LTCGI_static_uniforms != null)
-            VRCShader.SetGlobalTexture(VRCShader.PropertyToID("_Udon_LTCGI_static_uniforms"), _LTCGI_static_uniforms);
+            LTCGIShader.SetGlobalTexture(LTCGIShader.PropertyToID("_Udon_LTCGI_static_uniforms"), _LTCGI_static_uniforms);
         
         // by default, mask allows all
-        VRCShader.SetGlobalFloatArray(VRCShader.PropertyToID("_Udon_LTCGI_Mask"), new float[_LTCGI_ScreenCount]);
+        LTCGIShader.SetGlobalFloatArray(LTCGIShader.PropertyToID("_Udon_LTCGI_Mask"), new float[_LTCGI_ScreenCount]);
 
         for (int i = 0; i < _Renderers.Length; i++)
         {
@@ -140,17 +144,20 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
             r.SetPropertyBlock(block);
         }
 
-        extraDataId = VRCShader.PropertyToID("_Udon_LTCGI_ExtraData");
-        vert0Id = VRCShader.PropertyToID("_Udon_LTCGI_Vertices_0");
-        vert1Id = VRCShader.PropertyToID("_Udon_LTCGI_Vertices_1");
-        vert2Id = VRCShader.PropertyToID("_Udon_LTCGI_Vertices_2");
-        vert3Id = VRCShader.PropertyToID("_Udon_LTCGI_Vertices_3");
+        // experimental support for LTCGI on avatar shaders!
+        LTCGIShader.SetGlobalFloat(LTCGIShader.PropertyToID("_Udon_LTCGI_AvatarEnable"), 1.0f);
+
+        extraDataId = LTCGIShader.PropertyToID("_Udon_LTCGI_ExtraData");
+        vert0Id = LTCGIShader.PropertyToID("_Udon_LTCGI_Vertices_0");
+        vert1Id = LTCGIShader.PropertyToID("_Udon_LTCGI_Vertices_1");
+        vert2Id = LTCGIShader.PropertyToID("_Udon_LTCGI_Vertices_2");
+        vert3Id = LTCGIShader.PropertyToID("_Udon_LTCGI_Vertices_3");
 
         Update();
 
         stopwatch.Stop();
 
-        Debug.Log($"LTCGI adapter started for {_LTCGI_ScreenCount} ({_LTCGI_ScreenCountDynamic} dynamic) screens, {_Renderers.Length} renderers, VRCShader mode, took: {stopwatch.ElapsedMilliseconds}ms");
+        Debug.Log($"LTCGI adapter started for {_LTCGI_ScreenCount} ({_LTCGI_ScreenCountDynamic} dynamic) screens, {_Renderers.Length} renderers, LTCGIShader mode, took: {stopwatch.ElapsedMilliseconds}ms");
 
         if (_LTCGI_ScreenCountDynamic == 0 || _Renderers.Length == 0)
         {
@@ -179,11 +186,11 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
             _LTCGI_Vertices_3t[i] = CalcTransform(_LTCGI_Vertices_3[i], transform);
         }
 
-        VRCShader.SetGlobalVectorArray(extraDataId, _LTCGI_ExtraData);
-        VRCShader.SetGlobalVectorArray(vert0Id, _LTCGI_Vertices_0t);
-        VRCShader.SetGlobalVectorArray(vert1Id, _LTCGI_Vertices_1t);
-        VRCShader.SetGlobalVectorArray(vert2Id, _LTCGI_Vertices_2t);
-        VRCShader.SetGlobalVectorArray(vert3Id, _LTCGI_Vertices_3t);
+        LTCGIShader.SetGlobalVectorArray(extraDataId, _LTCGI_ExtraData);
+        LTCGIShader.SetGlobalVectorArray(vert0Id, _LTCGI_Vertices_0t);
+        LTCGIShader.SetGlobalVectorArray(vert1Id, _LTCGI_Vertices_1t);
+        LTCGIShader.SetGlobalVectorArray(vert2Id, _LTCGI_Vertices_2t);
+        LTCGIShader.SetGlobalVectorArray(vert3Id, _LTCGI_Vertices_3t);
     }
 
     // See the docs for more info:
@@ -229,7 +236,7 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
     public void _SetVideoTexture(Texture texture)
     {
         BlurCRTInput.material.SetTexture("_MainTex", texture);
-        VRCShader.SetGlobalTexture(textureLod0Id, texture);
+        LTCGIShader.SetGlobalTexture(textureLod0Id, texture);
     }
 
     private uint getFlags(int screen)
@@ -263,8 +270,8 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
     {
         float fstate = enabled ? 0.0f : 1.0f;
         if (globalDisableId == -1)
-            globalDisableId = VRCShader.PropertyToID("_Udon_LTCGI_GlobalDisable");
-        VRCShader.SetGlobalFloat(globalDisableId, fstate);
+            globalDisableId = LTCGIShader.PropertyToID("_Udon_LTCGI_GlobalDisable");
+        LTCGIShader.SetGlobalFloat(globalDisableId, fstate);
         disabled = !enabled;
     }
 
