@@ -419,6 +419,8 @@ namespace pi.LTCGI
             // write out uniforms into data texture
             var staticUniformTex = WriteStaticUniform(screens, fast);
 
+            var screenCountDynamic = screens.TakeWhile(x => x.Dynamic).Count();
+
             for (int i = 0; i < cachedMeshRenderers.Length; i++)
             {
                 var r = cachedMeshRenderers[i];
@@ -481,7 +483,6 @@ namespace pi.LTCGI
                     prop.SetTexture("_LTCGI_lut1", LUT1);
                     prop.SetTexture("_LTCGI_lut2", LUT2);
 
-                    prop.SetInt("_LTCGI_ScreenCount", screens.Length);
                     if (screens.Length > 0)
                     {
                         prop.SetVectorArray("_LTCGI_Vertices_0", _LTCGI_Vertices_0t);
@@ -492,7 +493,10 @@ namespace pi.LTCGI
                             prop.SetTexture("_LTCGI_static_uniforms", staticUniformTex);
                         prop.SetVectorArray("_LTCGI_ExtraData", _LTCGI_ExtraData);
                         prop.SetVector("_LTCGI_LightmapMult", _LTCGI_LightmapMult);
-                        prop.SetFloatArray("_LTCGI_Mask", GetMaskForRenderer(screens, r));
+                        var mask = GetMaskForRenderer(screens, r);
+                        prop.SetFloatArray("_LTCGI_Mask", mask);
+                        prop.SetInt("_LTCGI_ScreenCount", Math.Max(screenCountDynamic,
+                                Array.FindLastIndex(mask, m => m == 0.0f) + 1));
                         prop.SetMatrixArray("_LTCGI_ScreenTransforms",
                             _LTCGI_ScreenTransforms.Take(screens.Length).Select(x => x == null ? Matrix4x4.identity : x.localToWorldMatrix).ToArray());
                     }
@@ -638,7 +642,7 @@ namespace pi.LTCGI
                 adapter._LTCGI_ExtraData = _LTCGI_ExtraData;
                 adapter._LTCGI_static_uniforms = staticUniformTex;
                 adapter._LTCGI_ScreenCount = screens.Length;
-                adapter._LTCGI_ScreenCountDynamic = screens.TakeWhile(x => x.Dynamic).Count();
+                adapter._LTCGI_ScreenCountDynamic = screenCountDynamic;
                 adapter._LTCGI_ScreenCountMasked = 
                     mask2d.Select(mask =>
                         Math.Max(adapter._LTCGI_ScreenCountDynamic,
