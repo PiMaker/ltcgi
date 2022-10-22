@@ -170,21 +170,7 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable ? "Available" : "Not Detected")
             GUILayout.Label("Global Shader Options", header);
             EditorGUILayout.Space();
 
-            if (configPath == null || !File.Exists(configPath))
-            {
-                // FIXME: make more robust
-                var guids = AssetDatabase.FindAssets("LTCGI_config");
-                if (guids.Length < 1)
-                {
-                    Debug.LogError($"Could not find LTCGI_config.cginc ({guids.Length})! Please reimport package.");
-                    return;
-                }
-                else if (guids.Length > 1)
-                {
-                    Debug.LogWarning("LTCGI_config.cginc found more than once - this is not recommended!");
-                }
-                configPath = AssetDatabase.GUIDToAssetPath(guids[0]);
-            }
+            RecalculateAutoConfig(target as LTCGI_Controller);
 
             var config = File.ReadAllLines(configPath);
             var description = "";
@@ -194,23 +180,6 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable ? "Available" : "Not Detected")
                 string lineRaw = config[i];
                 var line = lineRaw.Trim();
                 if (string.IsNullOrEmpty(line)) continue;
-
-                if (line.EndsWith("#define LTCGI_AUDIOLINK"))
-                {
-                    var enabledInConfig = !line.StartsWith("//");
-                    var available = LTCGI_Controller.AudioLinkAvailable;
-                    if (enabledInConfig != available)
-                    {
-                        config[i] = (available ? "" : "//") + "#define LTCGI_AUDIOLINK";
-                        if (configChangedValues.Count == 0)
-                        {
-                            // force apply in case no apply button visible
-                            File.WriteAllLines(configPath, config);
-                            AssetDatabase.Refresh();
-                        }
-                    }
-                    continue;
-                }
 
                 if (line.StartsWith("///"))
                 {
@@ -347,6 +316,75 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable ? "Available" : "Not Detected")
             if (update)
             {
                 LTCGI_Controller.Singleton.UpdateMaterials();
+            }
+        }
+
+        public static void RecalculateAutoConfig(LTCGI_Controller controller)
+        {
+            if (configPath == null || !File.Exists(configPath))
+            {
+                // FIXME: make more robust
+                var guids = AssetDatabase.FindAssets("LTCGI_config");
+                if (guids.Length < 1)
+                {
+                    Debug.LogError($"Could not find LTCGI_config.cginc ({guids.Length})! Please reimport package.");
+                    return;
+                }
+                else if (guids.Length > 1)
+                {
+                    Debug.LogWarning("LTCGI_config.cginc found more than once - this is not recommended!");
+                }
+                configPath = AssetDatabase.GUIDToAssetPath(guids[0]);
+            }
+
+            var config = File.ReadAllLines(configPath);
+            var changed = false;
+            for (int i = 0; i < config.Length; i++)
+            {
+                string lineRaw = config[i];
+                var line = lineRaw.Trim();
+                if (string.IsNullOrEmpty(line)) continue;
+
+                if (line.EndsWith("#define LTCGI_AUDIOLINK"))
+                {
+                    var enabledInConfig = !line.StartsWith("//");
+                    var available = LTCGI_Controller.AudioLinkAvailable;
+                    if (enabledInConfig != available)
+                    {
+                        config[i] = (available ? "" : "//") + "#define LTCGI_AUDIOLINK";
+                        changed = true;
+                    }
+                }
+
+                if (controller != null)
+                {
+                    if (line.EndsWith("#define LTCGI_STATIC_UNIFORMS"))
+                    {
+                        var enabledInConfig = !line.StartsWith("//");
+                        var available = !controller.HasDynamicScreens;
+                        if (enabledInConfig != available)
+                        {
+                            config[i] = (available ? "" : "//") + "#define LTCGI_STATIC_UNIFORMS";
+                            changed = true;
+                        }
+                    }
+
+                    if (line.EndsWith("#define LTCGI_CYLINDER"))
+                    {
+                        var enabledInConfig = !line.StartsWith("//");
+                        var available = controller.HasCylinders;
+                        if (enabledInConfig != available)
+                        {
+                            config[i] = (available ? "" : "//") + "#define LTCGI_CYLINDER";
+                            changed = true;
+                        }
+                    }
+                }
+            }
+            if (changed)
+            {
+                File.WriteAllLines(configPath, config);
+                AssetDatabase.Refresh();
             }
         }
     }

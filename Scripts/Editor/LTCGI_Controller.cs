@@ -60,6 +60,9 @@ namespace pi.LTCGI
 
         private Texture2DArray[] _LTCGI_LOD_arrays;
 
+        public bool HasDynamicScreens = false;
+        public bool HasCylinders = false;
+
         public void OnEnable()
         {
             if (PrefabUtility.IsPartOfPrefabAsset(this.gameObject)) return;
@@ -158,6 +161,9 @@ namespace pi.LTCGI
                 _LTCGI_UVs = new Vector2[MAX_SOURCES][];
             }
 
+            HasDynamicScreens = false;
+            HasCylinders = false;
+
             // construct data
             var screens = GameObject
                 .FindObjectsOfType<LTCGI_Screen>()
@@ -211,6 +217,8 @@ namespace pi.LTCGI
                         s.CylinderBase.z,
                         s.CylinderAngle
                     );
+
+                    HasCylinders = true;
                 }
                 else
                 {
@@ -316,6 +324,11 @@ namespace pi.LTCGI
                     if (mf.sharedMesh.vertexCount == 3)
                     {
                         DestroyImmediate(mesh);
+                    }
+
+                    if (s.Dynamic)
+                    {
+                        HasDynamicScreens = true;
                     }
                 }
 
@@ -695,6 +708,11 @@ namespace pi.LTCGI
                     Debug.Log("LTCGI: updated UdonSharp adapter");
                 #endif
             }
+
+            #if DEBUG_LOG
+                Debug.Log("LTCGI: writing auto-config file");
+            #endif
+            LTCGI_ControllerEditor.RecalculateAutoConfig(this);
 
             #if DEBUG_LOG
                 Debug.Log("LTCGI: update done!");

@@ -5,12 +5,6 @@
 // They will apply to all LTCGI materials in the project.
 // Most of these can be changed in the LTCGI_Controller editor as well.
 
-/// Bake screen data into texture for better performance. Disables moveable screens.
-//#define LTCGI_STATIC_UNIFORMS
-
-/// Enable support for cylindrical screens.
-#define LTCGI_CYLINDER
-
 /// No specular at all.
 //#define LTCGI_SPECULAR_OFF
 /// No diffuse at all.
@@ -80,7 +74,13 @@ static float LUT_SCALE = (LUT_SIZE - 1.0)/LUT_SIZE;
 const float LUT_BIAS = 0.5/LUT_SIZE;
 
 // will be set automatically if audiolink is available
-#define LTCGI_AUDIOLINK
+//#define LTCGI_AUDIOLINK
+
+/// Bake screen data into texture for better performance. Disables moveable screens.
+#define LTCGI_STATIC_UNIFORMS
+
+/// Enable support for cylindrical screens.
+//#define LTCGI_CYLINDER
 
 
 #ifdef SHADER_TARGET_SURFACE_ANALYSIS
