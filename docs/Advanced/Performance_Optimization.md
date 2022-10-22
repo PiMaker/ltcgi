@@ -44,7 +44,9 @@ Diffuse Lighting can have a distinct performance impact. As a first test, I reco
 
 ## "Dynamic" Screens
 
-LTCGI is mostly GPU heavy, CPU overhead is generally very low. Still, it is recommended to turn off "Dynamic" on any `LTCGI_Screen` that will neither move nor change color\* during runtime (e.g. a static TV screen).
+It is recommended to turn off "Dynamic" on any `LTCGI_Screen` that will neither move nor change color\* during runtime (e.g. a static TV screen).
+
+If all screens in a scene are non-dynamic, LTCGI will automatically switch to a slightly faster way of pushing data to the GPU, which can lead to better frame times.
 
 \* "color" here referring to the "Color" setting itself, the _actual_ color can change with the video even if "Dynamic" is off
 
@@ -52,9 +54,11 @@ LTCGI is mostly GPU heavy, CPU overhead is generally very low. Still, it is reco
 
 ## Advanced Settings
 
-On the LTCGI Controller there are some advanced settings under the "Global Shader Options" heading that can help with performance. These reduce feature set (e.g. disabling moveable screens entirely or no specular/diffuse lighting) but improve performance overall. Especially the `LTCGI_STATIC_UNIFORMS` (no moveable screens) has a noticeable impact on frametimes and should be considered.
+On the LTCGI Controller there are some advanced settings under the "Global Shader Options" heading that can help with performance. These reduce feature set (e.g. disabling moveable screens entirely or no specular/diffuse lighting) but improve performance overall.
 
 ![Global Performance Settings](../img/ltcgi_global_perf_settings.jpg)
+
+(The first 2 options in the screenshot are no longer available, as they are now calculated and set automatically to give you the best performance possible.)
 
 Don't forget to hit "Apply"!
 
