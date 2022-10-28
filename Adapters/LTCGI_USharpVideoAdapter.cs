@@ -1,4 +1,5 @@
-﻿using UdonSharp;
+﻿#if UDON
+using UdonSharp;
 using UdonSharp.Video;
 using UnityEngine;
 
@@ -59,3 +60,4 @@ public class LTCGI_USharpVideoAdapter : UdonSharpBehaviour
         }
     }
 }
+#endif

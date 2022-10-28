@@ -2,12 +2,14 @@
 using UnityEngine;
 
 #if VRC_SDK_VRCSDK3
-using UdonSharp;
 using VRC.SDKBase;
+#if UDON
+using UdonSharp;
 using VRC.Udon;
 #endif
+#endif
 
-#if VRC_SDK_VRCSDK3
+#if UDON
 [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
 public class LTCGI_UdonAdapter : UdonSharpBehaviour
 #else

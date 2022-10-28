@@ -1,4 +1,4 @@
-#if UNITY_EDITOR
+#if UNITY_EDITOR && UDON
 using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
