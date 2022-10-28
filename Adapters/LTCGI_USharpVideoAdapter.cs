@@ -1,4 +1,4 @@
-﻿#if UDON
+﻿#if UDONSHARP
 using UdonSharp;
 using UdonSharp.Video;
 using UnityEngine;

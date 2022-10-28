@@ -1,4 +1,4 @@
-#if UNITY_EDITOR && UDON
+#if UNITY_EDITOR && UDONSHARP
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
