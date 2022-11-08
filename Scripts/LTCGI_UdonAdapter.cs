@@ -488,7 +488,7 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
     }
 
     // extremely cursed compat stuff
-    #if ! UDONSHARP
+    #if !UDONSHARP
     public void UpdateProxy() {}
     public void ApplyProxyModifications() {}
     #endif
