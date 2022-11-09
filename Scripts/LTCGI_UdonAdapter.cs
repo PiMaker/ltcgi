@@ -1,13 +1,13 @@
 ﻿using System;
 using UnityEngine;
 
-#if VRC_SDK_VRCSDK3
+#if UDONSHARP
 using UdonSharp;
 using VRC.SDKBase;
 using VRC.Udon;
 #endif
 
-#if VRC_SDK_VRCSDK3
+#if UDONSHARP
 [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
 public class LTCGI_UdonAdapter : UdonSharpBehaviour
 #else
@@ -488,7 +488,7 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
     }
 
     // extremely cursed compat stuff
-    #if !VRC_SDK_VRCSDK3
+    #if !UDONSHARP
     public void UpdateProxy() {}
     public void ApplyProxyModifications() {}
     #endif

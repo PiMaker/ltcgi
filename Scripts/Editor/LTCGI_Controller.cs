@@ -10,7 +10,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEditor.SceneManagement;
 
-#if VRC_SDK_VRCSDK3
+#if UDONSHARP
 using UdonSharp;
 using UdonSharpEditor;
 #endif
@@ -562,7 +562,7 @@ namespace pi.LTCGI
 
             if (!fast && this != null && this.gameObject != null)
             {
-                #if VRC_SDK_VRCSDK3
+                #if UDONSHARP
                 LTCGI_UdonAdapter adapter;
                 #pragma warning disable 618
                 LTCGI_UdonAdapter[] adapters = this.gameObject.GetUdonSharpComponents<LTCGI_UdonAdapter>();
@@ -574,7 +574,7 @@ namespace pi.LTCGI
 
                 if (adapters == null || adapters.Length == 0)
                 {
-                    #if VRC_SDK_VRCSDK3
+                    #if UDONSHARP
                     adapter = this.gameObject.AddUdonSharpComponent<LTCGI_UdonAdapter>();
                     #else
                     adapter = this.gameObject.AddComponent<LTCGI_RuntimeAdapter>();
@@ -582,7 +582,7 @@ namespace pi.LTCGI
                 }
                 else
                 {
-                    #if VRC_SDK_VRCSDK3
+                    #if UDONSHARP
                     adapter = (LTCGI_UdonAdapter)adapters[0];
                     #else
                     adapter = (LTCGI_RuntimeAdapter)adapters[0];

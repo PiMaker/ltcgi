@@ -7,7 +7,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.Rendering;
 using UnityEditor.Build.Reporting;
-#if VRC_SDK_VRCSDK2 || VRC_SDK_VRCSDK3
+#if VRC_SDK_VRCSDK2 || UDONSHARP
 using VRC.SDKBase.Editor.BuildPipeline;
 #endif
 #endif
@@ -401,7 +401,7 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable ? "Available" : "Not Detected")
         }
     }
 
-    #if VRC_SDK_VRCSDK3
+    #if UDONSHARP
     public class VRCSDKHookLTCGI : IVRCSDKBuildRequestedCallback
     {
         public int callbackOrder => 68;
