@@ -9,7 +9,7 @@ using UnityEngine.Rendering;
 
 namespace pi.LTCGI
 {
-    #if UNITY_EDITOR
+#if UNITY_EDITOR
     public partial class LTCGI_Controller
     {
         internal static bool? audioLinkAvailable = null;
@@ -17,7 +17,7 @@ namespace pi.LTCGI
             get {
                 if (!audioLinkAvailable.HasValue)
                 {
-                    audioLinkAvailable = System.IO.File.Exists("Assets/AudioLink/Shaders/AudioLink.cginc");
+                    audioLinkAvailable = System.IO.File.Exists("Packages/com.llealloo.audiolink/Runtime/Shaders/AudioLink.cginc");
                     //Debug.Log("LTCGI: AudioLink available = " + audioLinkAvailable);
                 }
                 return audioLinkAvailable.Value;
@@ -103,5 +103,5 @@ namespace pi.LTCGI
             return obj.tag == "EditorOnly";
         }
     }
-    #endif
+#endif
 }
