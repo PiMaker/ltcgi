@@ -19,7 +19,7 @@ namespace pi.LTCGI
                 {
                     audioLinkAvailable = System.IO.File.Exists("Packages/com.llealloo.audiolink/Runtime/Shaders/AudioLink.cginc");
                     //New Audiolink Filepath
-                    //If new filepath doesn't exist check for old filpath
+                    //If new filepath doesn't exist check for old filepath
                     if (!audioLinkAvailable == true)
                     {
                         audioLinkAvailable = System.IO.File.Exists("Assets/AudioLink/Shaders/AudioLink.cginc");
