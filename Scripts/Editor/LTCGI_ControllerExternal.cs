@@ -126,15 +126,15 @@ namespace pi.LTCGI
                     EditorGUILayout.HelpBox(
 $@"Affected Renderers Total: {LTCGI_Controller.Singleton.cachedMeshRenderers.Length}
 LTCGI_Screen Components: {LTCGI_Controller.Singleton._LTCGI_ScreenTransforms.Count(x => x != null)} / {LTCGI_Controller.MAX_SOURCES}
-AudioLink: {(LTCGI_Controller.AudioLinkAvailable ? "Available" : "Not Detected")}",
+AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAvailability.Unavailable ? "Not Detected" : (LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAvailability.AvailableAsset ? "Detected (Asset)" : "Detected (Package)"))}",
                     MessageType.Info, true
                 );
 
-                if (!LTCGI_Controller.AudioLinkAvailable)
+                if (LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAvailability.Unavailable)
                 {
                     if (GUILayout.Button("Re-Detect AudioLink"))
                     {
-                        LTCGI_Controller.audioLinkAvailable = null;
+                        LTCGI_Controller.audioLinkAvailable = LTCGI_Controller.AudioLinkAvailability.NeedsCheck;
                         var _ignored = LTCGI_Controller.AudioLinkAvailable;
                     }
                 }
@@ -348,10 +348,23 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable ? "Available" : "Not Detected")
                 if (line.EndsWith("#define LTCGI_AUDIOLINK"))
                 {
                     var enabledInConfig = !line.StartsWith("//");
-                    var available = LTCGI_Controller.AudioLinkAvailable;
+                    var available = LTCGI_Controller.AudioLinkAvailable != LTCGI_Controller.AudioLinkAvailability.Unavailable;
                     if (enabledInConfig != available)
                     {
                         config[i] = (available ? "" : "//") + "#define LTCGI_AUDIOLINK";
+                        changed = true;
+                    }
+                }
+                if (line.StartsWith("#include")) // cursed, but audiolink is the only include for now
+                {
+                    var newConfig = (LTCGI_Controller.AudioLinkAvailable != LTCGI_Controller.AudioLinkAvailability.Unavailable ? (
+                        LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAvailability.AvailableAsset ?
+                        "#include \"Assets/AudioLink/Shaders/AudioLink.cginc\"" :
+                        "#include \"Packages/com.llealloo.audiolink/Runtime/Shaders/AudioLink.cginc\""
+                    ) : "#include \"not-available\"");
+                    if (config[i] != newConfig)
+                    {
+                        config[i] = newConfig;
                         changed = true;
                     }
                 }
