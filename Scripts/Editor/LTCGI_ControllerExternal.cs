@@ -18,7 +18,7 @@ namespace pi.LTCGI
     [CustomEditor(typeof(LTCGI_Controller))]
     public class LTCGI_ControllerEditor : Editor
     {
-        const string VERSION = "v1.0.0";
+        const string VERSION = "v1.0.1";
 
         private static readonly string[] CONFIGURATION_PROPS = new[] {
             "StaticTextures",
