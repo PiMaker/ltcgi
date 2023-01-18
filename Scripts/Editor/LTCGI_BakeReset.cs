@@ -18,6 +18,10 @@ namespace pi.LTCGI
         public StaticEditorFlags Flags;
         public ShadowCastingMode ShadowCastingMode;
 
+        public bool ResetLightMesh;
+        public Color lightMeshColor;
+        public float lightMeshIntensity;
+
         public bool RemoveBakeryLightMesh;
 
         internal void ApplyReset()
@@ -35,6 +39,15 @@ namespace pi.LTCGI
             }
 
             #if BAKERY_INCLUDED
+            if (ResetLightMesh)
+            {
+                var lm = this.GetComponent<BakeryLightMesh>();
+                if (lm != null)
+                {
+                    lm.color = lightMeshColor;
+                    lm.intensity = lightMeshIntensity;
+                }
+            }
             if (RemoveBakeryLightMesh)
             {
                 var lm = this.GetComponent<BakeryLightMesh>();
