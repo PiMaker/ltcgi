@@ -198,6 +198,7 @@ namespace pi.LTCGI
             }
 
             bakeInProgress = true;
+            EditorSceneManager.MarkSceneDirty(gameObject.scene);
             EditorSceneManager.SaveOpenScenes();
             EditorUtility.ClearProgressBar();
 
