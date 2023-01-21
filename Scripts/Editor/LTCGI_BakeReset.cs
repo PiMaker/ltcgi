@@ -17,6 +17,7 @@ namespace pi.LTCGI
         public Material[] Materials;
         public StaticEditorFlags Flags;
         public ShadowCastingMode ShadowCastingMode;
+        public bool RendererEnabled;
 
         public bool RemoveBakeryLightMesh;
 
@@ -32,6 +33,7 @@ namespace pi.LTCGI
                 rend.sharedMaterials = Materials;
                 rend.shadowCastingMode = ShadowCastingMode;
                 GameObjectUtility.SetStaticEditorFlags(this.gameObject, Flags);
+                rend.enabled = RendererEnabled;
             }
 
             #if BAKERY_INCLUDED

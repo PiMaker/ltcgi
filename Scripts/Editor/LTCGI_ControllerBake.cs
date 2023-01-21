@@ -174,11 +174,13 @@ namespace pi.LTCGI
                     r.Materials = rend.sharedMaterials;
                     r.Flags = flags;
                     r.ShadowCastingMode = rend.shadowCastingMode;
+                    r.RendererEnabled = rend.enabled;
                     if (rend.shadowCastingMode == ShadowCastingMode.Off || rend.shadowCastingMode == ShadowCastingMode.ShadowsOnly)
                     {
                         rend.shadowCastingMode = ShadowCastingMode.On;
                     }
                     rend.sharedMaterials = new Material[] { mat };
+                    rend.enabled = true;
                     GameObjectUtility.SetStaticEditorFlags(rend.gameObject, flags | StaticEditorFlags.ContributeGI);
                 };
 
