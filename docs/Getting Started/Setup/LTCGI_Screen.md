@@ -12,7 +12,11 @@ It must be placed on an object containing a `Mesh Filter` (generally in combinat
 
 To create a light source, place a 4-vertex mesh into your scene (Unity's built-in Quad will do) and add the component in the inspector window. If you have completed the previous step and are using an LTCGI-enabled material, you should see the mesh start to emit white light.
 
+> ⚠️ Note that disabling GameObjects or components with a screen or emitter on them is **not supported**, neither in editor nor in-game! Check "Basic Toggle" to see how you can enable or disable LTCGI globally. Setting the color to Black (0,0,0) will disable a single screen entirely, such that it can be re-enabled via `_SetColor` using the [UdonSharp API](/Advanced/Udon_Sharp_API).
+
 If it doesn't immediately work, try hitting "CTRL-S" to save your scene. This will force an LTCGI update as well, it's generally a good idea to keep hitting that while working on ~~an LTCGI project~~ any Unity project. Backups as well, people!
+
+
 
 <video controls loop width="100%">
   <source src="/vid/create_quad_1.webm"/>
