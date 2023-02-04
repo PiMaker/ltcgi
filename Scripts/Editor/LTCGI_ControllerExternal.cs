@@ -5,8 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.Rendering;
-using UnityEditor.Build.Reporting;
 #if VRC_SDK_VRCSDK2 || UDONSHARP
 using VRC.SDKBase.Editor.BuildPipeline;
 #endif
@@ -63,6 +61,8 @@ namespace pi.LTCGI
             rightAlignedLabel.alignment = TextAnchor.MiddleRight;
             GUILayout.Label(VERSION, rightAlignedLabel);
 
+            LTCGIDocsHelper.DrawHelpButton("https://ltcgi.dev/Getting%20Started/Setup/Controller");
+
             if (PrefabUtility.IsPartOfPrefabAsset(target))
             {
                 var large = new GUIStyle(EditorStyles.wordWrappedLabel);
@@ -85,6 +85,8 @@ namespace pi.LTCGI
             EditorGUILayout.PropertyField(serializedObject.FindProperty("PrecomputeOnBuild"));
 
             EditorGUILayout.Separator();
+
+            LTCGIDocsHelper.DrawHelpButton("https://ltcgi.dev/Advanced/Shadowmaps", "Shadowmap Baking");
 
             if (!LTCGI_Controller.Singleton.bakeInProgress && GUILayout.Button("Bake Shadowmap"))
             {
@@ -399,6 +401,28 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
                 File.WriteAllLines(configPath, config);
                 AssetDatabase.Refresh();
             }
+        }
+    }
+
+    public static class LTCGIDocsHelper
+    {
+        public static void DrawHelpButton(string url, string name = "Help &")
+        {
+            EditorGUILayout.Space();
+            var bigButton = new GUIStyle(GUI.skin.button);
+            bigButton.fixedHeight = 30.0f;
+            bigButton.fontStyle = FontStyle.Bold;
+            bigButton.fontSize = 14;
+            bigButton.normal.textColor = Color.white;
+            bigButton.hover.textColor = Color.white;
+            var resetCol = GUI.backgroundColor;
+            GUI.backgroundColor = Color.blue;
+            if (GUILayout.Button($"Open {name} Documentation", bigButton))
+            {
+                System.Diagnostics.Process.Start(url);
+            }
+            GUI.backgroundColor = resetCol;
+            EditorGUILayout.Space();
         }
     }
 

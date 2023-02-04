@@ -201,6 +201,8 @@ namespace pi.LTCGI
                 EditorGUILayout.Space();
             }
 
+            LTCGIDocsHelper.DrawHelpButton("https://ltcgi.dev/Getting%20Started/Setup/LTCGI_Screen");
+
             serializedObject.Update();
 
             GUILayout.Label("Area light shape:");

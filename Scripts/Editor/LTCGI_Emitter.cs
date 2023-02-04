@@ -41,6 +41,8 @@ namespace pi.LTCGI
             style.fixedHeight = 150;
             GUI.Box(GUILayoutUtility.GetRect(300, 150, style), Logo, style);
 
+            LTCGIDocsHelper.DrawHelpButton("https://ltcgi.dev/Advanced/LTCGI_Emitter");
+
             var emitter = (LTCGI_Emitter)target;
             serializedObject.Update();
 
