@@ -152,10 +152,10 @@ namespace pi.LTCGI
             EditorUtility.DisplayProgressBar("Preparing LTCGI bake", "Making LTCGI_Screens emissive", 0.5f);
 
             // make screen emissive
-            var allScreens = gameObject.scene.GetRootGameObjects().SelectMany(go => go.GetComponentsInChildren<LTCGI_Screen>(true));
+            var allScreens = GameObject.FindObjectsOfType<LTCGI_Screen>();
             foreach (var scr in allScreens)
             {
-                if (scr.LightmapChannel == 0 || (!scr.gameObject.activeSelf && (!scr.TryGetComponent(out LTCGI_BakeReset bakeReset) || !bakeReset.Reenable))) continue;
+                if (scr.LightmapChannel == 0 || !scr.enabled) continue;
                 var intens = LightmapIntensity * scr.LightmapIntensity;
                 var mat = new Material(Shader.Find("Standard"));
                 var col = scr.LightmapChannel == 1 ? new Color(intens, 0, 0, 1) : (
@@ -174,7 +174,6 @@ namespace pi.LTCGI
                     if (rend.TryGetComponent(out BakeryLightMesh lightMesh))
                     {
                         rend.gameObject.SetActive(true);
-                        r.Reenable = false;
                         r.ResetLightMesh = true;
                         r.lightMeshColor = lightMesh.color;
                         r.lightMeshIntensity = lightMesh.intensity;
