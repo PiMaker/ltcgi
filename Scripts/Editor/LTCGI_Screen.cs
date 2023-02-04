@@ -197,7 +197,8 @@ namespace pi.LTCGI
             if (!screen.enabled || !screen.gameObject.activeInHierarchy)
             {
                 EditorGUILayout.Space();
-                EditorGUILayout.HelpBox("This component is disabled, or the GameObject not active! This will cause it to not bake a lightmap, and can cause issues at runtime. If you want this renderer to start disabled, set it's color to Black (0,0,0) or visit https://ltcgi.dev/Getting%20Started/Setup/Basic_Toggle to see how you can toggle LTCGI globally.", MessageType.Error, true);
+                EditorGUILayout.HelpBox("This component is disabled, or the GameObject not active! This will cause it to not bake a lightmap, and can cause issues at runtime. If you want this renderer to start disabled, set it's color to Black (0,0,0) or visit https://ltcgi.dev/ to see how you can toggle LTCGI globally.", MessageType.Error, true);
+                LTCGIDocsHelper.DrawHelpButton("https://ltcgi.dev/Getting%20Started/Setup/Basic_Toggle", "LTCGI Toggle");
                 EditorGUILayout.Space();
             }
 
