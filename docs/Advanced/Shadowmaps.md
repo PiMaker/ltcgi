@@ -24,6 +24,10 @@ To include your screen (or emitter!) component in shadowmap calculations, you ne
 
 See also the "Intensity" and "Multiplier" settings on the LTCGI Controller object.
 
+### Light Mesh Support
+
+LTCGI v1.0.2 and higher support baking with Bakery "Light Mesh" components. Simply put a Light Mesh component on the same GameObject as an `LTCGI_Screen` component and it will bake using its settings instead of a normal emissive material. Depending on your scene, this _may_ result in better or worse baking results. YMMV.
+
 ## Start the Bake
 
 Use the "Bake Shadowmap" or "Bake Shadowmap and Normal Lightmap" buttons on the Controller to start a bake. The latter will follow the shadowmap bake with a normal one. This is something you need to do anyway, unless you want to visualize the shadowmaps, as they will otherwise be shown instead of your normal lightmaps in the scene.
