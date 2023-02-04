@@ -152,10 +152,10 @@ namespace pi.LTCGI
             EditorUtility.DisplayProgressBar("Preparing LTCGI bake", "Making LTCGI_Screens emissive", 0.5f);
 
             // make screen emissive
-            var allScreens = GameObject.FindObjectsOfType<LTCGI_Screen>();
+            var allScreens = gameObject.scene.GetRootGameObjects().SelectMany(go => go.GetComponentsInChildren<LTCGI_Screen>(true));
             foreach (var scr in allScreens)
             {
-                if (scr.LightmapChannel == 0) continue;
+                if (scr.LightmapChannel == 0 || (!scr.gameObject.activeSelf && (!scr.TryGetComponent(out LTCGI_BakeReset bakeReset) || !bakeReset.Reenable))) continue;
                 var intens = LightmapIntensity * scr.LightmapIntensity;
                 var mat = new Material(Shader.Find("Standard"));
                 var col = scr.LightmapChannel == 1 ? new Color(intens, 0, 0, 1) : (
@@ -170,16 +170,31 @@ namespace pi.LTCGI
                 Action<Renderer> handleRenderer = (rend) => {
                     var flags = GameObjectUtility.GetStaticEditorFlags(rend.gameObject);
                     var r = resetter(rend.gameObject);
-                    r.ResetData = true;
-                    r.Materials = rend.sharedMaterials;
-                    r.Flags = flags;
-                    r.ShadowCastingMode = rend.shadowCastingMode;
-                    if (rend.shadowCastingMode == ShadowCastingMode.Off || rend.shadowCastingMode == ShadowCastingMode.ShadowsOnly)
+                    #if BAKERY_INCLUDED
+                    if (rend.TryGetComponent(out BakeryLightMesh lightMesh))
                     {
-                        rend.shadowCastingMode = ShadowCastingMode.On;
+                        rend.gameObject.SetActive(true);
+                        r.Reenable = false;
+                        r.ResetLightMesh = true;
+                        r.lightMeshColor = lightMesh.color;
+                        r.lightMeshIntensity = lightMesh.intensity;
+                        lightMesh.color = new Color(col.r / intens, col.g / intens, col.b / intens, 1);
+                        lightMesh.intensity = intens;
                     }
-                    rend.sharedMaterials = new Material[] { mat };
-                    GameObjectUtility.SetStaticEditorFlags(rend.gameObject, flags | StaticEditorFlags.ContributeGI);
+                    else
+                    #endif
+                    {
+                        r.ResetData = true;
+                        r.Materials = rend.sharedMaterials;
+                        r.Flags = flags;
+                        r.ShadowCastingMode = rend.shadowCastingMode;
+                        if (rend.shadowCastingMode == ShadowCastingMode.Off || rend.shadowCastingMode == ShadowCastingMode.ShadowsOnly)
+                        {
+                            rend.shadowCastingMode = ShadowCastingMode.On;
+                        }
+                        rend.sharedMaterials = new Material[] { mat };
+                        GameObjectUtility.SetStaticEditorFlags(rend.gameObject, flags | StaticEditorFlags.ContributeGI);
+                    }
                 };
 
                 LTCGI_Emitter emitter;
