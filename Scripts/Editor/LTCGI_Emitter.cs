@@ -41,9 +41,18 @@ namespace pi.LTCGI
             style.fixedHeight = 150;
             GUI.Box(GUILayoutUtility.GetRect(300, 150, style), Logo, style);
 
+            var emitter = (LTCGI_Emitter)target;
+
+            if (!emitter.enabled || !emitter.gameObject.activeInHierarchy)
+            {
+                EditorGUILayout.Space();
+                EditorGUILayout.HelpBox("This component is disabled, or the GameObject not active! This will cause it to not bake a lightmap, and can cause issues at runtime. If you want this renderer to start disabled, set it's color to Black (0,0,0) or visit https://ltcgi.dev/ to see how you can toggle LTCGI globally.", MessageType.Error, true);
+                LTCGIDocsHelper.DrawHelpButton("https://ltcgi.dev/Getting%20Started/Setup/Basic_Toggle", "LTCGI Toggle");
+                EditorGUILayout.Space();
+            }
+
             LTCGIDocsHelper.DrawHelpButton("https://ltcgi.dev/Advanced/LTCGI_Emitter");
 
-            var emitter = (LTCGI_Emitter)target;
             serializedObject.Update();
 
             var emissiveRenderers = serializedObject.FindProperty("EmissiveRenderers");
