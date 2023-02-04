@@ -161,8 +161,8 @@ namespace pi.LTCGI
                 _LTCGI_UVs = new Vector2[MAX_SOURCES][];
             }
 
-            HasDynamicScreens = false;
-            HasCylinders = false;
+            var dynamics = false;
+            var cylinders = false;
 
             // construct data
             var screens = GameObject
@@ -218,7 +218,7 @@ namespace pi.LTCGI
                         s.CylinderAngle
                     );
 
-                    HasCylinders = true;
+                    cylinders = true;
                 }
                 else
                 {
@@ -328,7 +328,7 @@ namespace pi.LTCGI
 
                     if (s.Dynamic)
                     {
-                        HasDynamicScreens = true;
+                        dynamics = true;
                     }
                 }
 
@@ -361,6 +361,12 @@ namespace pi.LTCGI
                 var col = s.enabled && s.gameObject.activeInHierarchy ? s.Color : Color.black;
                 float fflags = BitConverter.ToSingle(BitConverter.GetBytes(flags), 0);
                 _LTCGI_ExtraData[i] = new Vector4(col.linear.r, col.linear.g, col.linear.b, fflags);
+            }
+
+            if (!fast)
+            {
+                HasCylinders = cylinders;
+                HasDynamicScreens = dynamics;
             }
 
             /*_LTCGI_LightmapMult = new Vector4(
