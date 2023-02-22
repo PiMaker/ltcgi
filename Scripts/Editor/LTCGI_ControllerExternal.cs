@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEditor.Build.Reporting;
 #if VRC_SDK_VRCSDK2 || UDONSHARP
 using VRC.SDKBase.Editor.BuildPipeline;
 #endif
