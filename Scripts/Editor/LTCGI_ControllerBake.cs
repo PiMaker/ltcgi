@@ -206,8 +206,15 @@ namespace pi.LTCGI
                 }
                 else
                 {
-                    var rend = scr.gameObject.GetComponent<MeshRenderer>();
-                    handleRenderer(rend);
+                    if (scr.gameObject.TryGetComponent<MeshRenderer>(out MeshRenderer rend))
+                    {
+                        handleRenderer(rend);
+                    }
+                    else
+                    {
+                        /* There is no mesh renderer on this object */
+                        Debug.LogWarning("LTCGI: An object with an LTCGI_Screen component has no mesh renderer, it will not contribute shadows to this bake", scr.gameObject);
+                    }
                 }
             }
 
