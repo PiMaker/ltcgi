@@ -129,7 +129,7 @@ namespace pi.LTCGI
                 .Concat(GameObject.FindObjectsOfType<BakeryDirectLight>().Select(x => x.gameObject));
             foreach (var light in allBakeryLights)
             {
-                if (light.activeSelf)
+                if (light.activeSelf && (light.GetType() != typeof(BakeryLightMesh) || !light.TryGetComponent<LTCGI_Screen>(out _)))
                 {
                     light.SetActive(false);
                     var r = resetter(light.gameObject);
