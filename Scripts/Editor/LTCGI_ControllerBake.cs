@@ -103,12 +103,13 @@ namespace pi.LTCGI
             }
 
             var bakeResets = new Dictionary<GameObject, LTCGI_BakeReset>();
-            Func<GameObject, LTCGI_BakeReset> resetter = obj => {
+            LTCGI_BakeReset resetter(GameObject obj)
+            {
                 if (bakeResets.ContainsKey(obj)) return bakeResets[obj];
                 var bakeReset = obj.gameObject.AddComponent<LTCGI_BakeReset>();
                 bakeResets.Add(obj, bakeReset);
                 return bakeReset;
-            };
+            }
 
             var allLights = GameObject.FindObjectsOfType<Light>();
             foreach (var light in allLights)
@@ -129,7 +130,7 @@ namespace pi.LTCGI
                 .Concat(GameObject.FindObjectsOfType<BakeryDirectLight>().Select(x => x.gameObject));
             foreach (var light in allBakeryLights)
             {
-                if (light.activeSelf && (light.GetType() != typeof(BakeryLightMesh) || !light.TryGetComponent<LTCGI_Screen>(out _)))
+                if (light.activeSelf && (!light.TryGetComponent<BakeryLightMesh>(out _) || !light.TryGetComponent<LTCGI_Screen>(out _)))
                 {
                     light.SetActive(false);
                     var r = resetter(light.gameObject);
