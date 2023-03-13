@@ -158,7 +158,9 @@
 #endif
 ) {
     if (_LTCGI_GlobalDisable) {
+#ifndef LTCGI_SPECULAR_OFF
         totalSpecularIntensity = 0;
+#endif
         return;
     }
 
