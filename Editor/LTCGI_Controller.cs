@@ -81,12 +81,20 @@ namespace pi.LTCGI
                 }
             }
 
-            var pathToScript = GetCurrentFileName();
-            if (!pathToScript.EndsWith(Path.Combine("Assets", "_pi_", "_LTCGI", "Scripts", "Editor", "LTCGI_Controller.cs")))
-            {
-                Debug.LogError("Invalid script path: " + pathToScript);
-                EditorUtility.DisplayDialog("LTCGI", "ERROR: Wrong path to 'LTCGI_Controller.cs' detected. Please do *not* move the LTCGI folder! Try reimporting the LTCGI package to fix.", "OK");
-            }
+            // god I hate this part, Unity dumb dumb
+            if (!AssetDatabase.IsValidFolder("Assets\\Gizmos"))
+                AssetDatabase.CreateFolder("Assets", "Gizmos");
+            if (!File.Exists("Assets\\Gizmos\\LTCGI_Screen_Gizmo.png"))
+                File.Copy("Packages\\at.pimaker.ltcgi\\LTCGI_Screen_Gizmo.png", "Assets\\Gizmos\\LTCGI_Screen_Gizmo.png", true);
+            
+            if (!AssetDatabase.IsValidFolder("Assets\\_pi_"))
+                AssetDatabase.CreateFolder("Assets", "_pi_");
+            if (!AssetDatabase.IsValidFolder("Assets\\_pi_\\_LTCGI"))
+                AssetDatabase.CreateFolder("Assets\\_pi_", "_LTCGI");
+            if (!AssetDatabase.IsValidFolder("Assets\\_pi_\\_LTCGI\\Shaders"))
+                AssetDatabase.CreateFolder("Assets\\_pi_\\_LTCGI", "Shaders");
+            if (!File.Exists("Assets\\_pi_\\_LTCGI\\Shaders\\LTCGI.cginc"))
+                File.WriteAllText("Assets\\_pi_\\_LTCGI\\Shaders\\LTCGI.cginc", "#include \"Packages\\at.pimaker.ltcgi\\Shaders\\LTCGI.cginc\"");
 
             EditorApplication.playModeStateChanged += (change) => {
                 if (change == PlayModeStateChange.ExitingEditMode)
@@ -96,7 +104,7 @@ namespace pi.LTCGI
             };
 
             // workaround a dumb thing
-            AssetDatabase.ImportAsset("Assets/_pi_/_LTCGI/Scripts/LTCGI_AssemblyUdon.asset", ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport | ImportAssetOptions.ImportRecursive);
+            //AssetDatabase.ImportAsset("Assets/_pi_/_LTCGI/Scripts/LTCGI_AssemblyUdon.asset", ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport | ImportAssetOptions.ImportRecursive);
         }
 
         private string GetCurrentFileName([System.Runtime.CompilerServices.CallerFilePath] string fileName = null)
@@ -424,7 +432,7 @@ namespace pi.LTCGI
                 {
                     try
                     {
-                        _LTCGI_LOD_arrays[lod] = AssetDatabase.LoadAssetAtPath<Texture2DArray>("Assets/_pi_/_LTCGI/Generated/lod-" + curscene + "-" + lod + ".asset");
+                        _LTCGI_LOD_arrays[lod] = AssetDatabase.LoadAssetAtPath<Texture2DArray>("Assets/LTCGI-Generated/lod-" + curscene + "-" + lod + ".asset");
                         if (_LTCGI_LOD_arrays[lod] == null) throw new Exception();
                     }
                     catch
@@ -728,7 +736,7 @@ namespace pi.LTCGI
         private Texture2D WriteStaticUniform(LTCGI_Screen[] screens, bool fast)
         {
             var curscene = EditorSceneManager.GetActiveScene().name;
-            var path = @"Assets\_pi_\_LTCGI\Generated\StaticUniform-" + curscene + ".exr";
+            var path = @"Assets\LTCGI-Generated\StaticUniform-" + curscene + ".exr";
 
             if (fast)
             {
@@ -763,8 +771,8 @@ namespace pi.LTCGI
 
             tex.Apply();
 
-            if (!AssetDatabase.IsValidFolder("Assets/_pi_/_LTCGI/Generated"))
-                AssetDatabase.CreateFolder("Assets/_pi_/_LTCGI", "Generated");
+            if (!AssetDatabase.IsValidFolder("Assets/LTCGI-Generated"))
+                AssetDatabase.CreateFolder("Assets", "LTCGI-Generated");
             var exr = tex.EncodeToEXR(Texture2D.EXRFlags.OutputAsFloat);
 
             var existed = File.Exists(path);

@@ -68,7 +68,7 @@ namespace pi.LTCGI
                 {
                     try
                     {
-                        AssetDatabase.DeleteAsset("Assets/_pi_/_LTCGI/Generated/lod-" + curscene + "-" + lod + ".asset");
+                        AssetDatabase.DeleteAsset("Assets/LTCGI-Generated/lod-" + curscene + "-" + lod + ".asset");
                     }
                     catch {}
                 }
@@ -122,9 +122,9 @@ namespace pi.LTCGI
                     }
 
                     // Save as asset
-                    if (!AssetDatabase.IsValidFolder("Assets/_pi_/_LTCGI/Generated"))
-                        AssetDatabase.CreateFolder("Assets/_pi_/_LTCGI", "Generated");
-                    AssetDatabase.CreateAsset(texture2DArray, "Assets/_pi_/_LTCGI/Generated/lod-" + curscene + "-" + lod + ".asset");
+                    if (!AssetDatabase.IsValidFolder("Assets/LTCGI-Generated"))
+                        AssetDatabase.CreateFolder("Assets", "LTCGI-Generated");
+                    AssetDatabase.CreateAsset(texture2DArray, "Assets/LTCGI-Generated/lod-" + curscene + "-" + lod + ".asset");
 
                     EditorUtility.DisplayProgressBar("LTCGI: Precomputing Static Textures", "Generating Texture Arrays...", 0.5f + 0.5f * (lod / 3.0f));
                 }

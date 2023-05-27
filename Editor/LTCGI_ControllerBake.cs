@@ -224,8 +224,8 @@ namespace pi.LTCGI
             EditorSceneManager.SaveOpenScenes();
             EditorUtility.ClearProgressBar();
 
-            if (!AssetDatabase.IsValidFolder("Assets/_pi_/_LTCGI/Generated"))
-                AssetDatabase.CreateFolder("Assets/_pi_/_LTCGI", "Generated");
+            if (!AssetDatabase.IsValidFolder("Assets/LTCGI-Generated"))
+                AssetDatabase.CreateFolder("Assets", "LTCGI-Generated");
 
             /*prevLightmapData = Lightmapping.lightingDataAsset;
             Lightmapping.lightingDataAsset = null;
@@ -324,15 +324,15 @@ namespace pi.LTCGI
 
             // move away calculated lightmap assets
             var curscene = EditorSceneManager.GetActiveScene().name;
-            AssetDatabase.DeleteAsset("Assets/_pi_/_LTCGI/Generated/Lightmaps-" + curscene);
-            AssetDatabase.CreateFolder("Assets/_pi_/_LTCGI/Generated", "Lightmaps-" + curscene);
+            AssetDatabase.DeleteAsset("Assets/LTCGI-Generated/Lightmaps-" + curscene);
+            AssetDatabase.CreateFolder("Assets/LTCGI-Generated", "Lightmaps-" + curscene);
             for (int i = 0; i < LightmapSettings.lightmaps.Length; i++)
             {
                 LightmapData lm = LightmapSettings.lightmaps[i];
                 EditorUtility.DisplayProgressBar("Finishing LTCGI bake", "Copying calculated lightmaps", i/((float)LightmapSettings.lightmaps.Length-1.0f));
                 var tex = lm.lightmapColor;
                 var path = AssetDatabase.GetAssetPath(tex);
-                AssetDatabase.CopyAsset(path, "Assets/_pi_/_LTCGI/Generated/Lightmaps-" + curscene + "/" + System.IO.Path.GetFileName(path));
+                AssetDatabase.CopyAsset(path, "Assets/LTCGI-Generated/Lightmaps-" + curscene + "/" + System.IO.Path.GetFileName(path));
             }
             AssetDatabase.Refresh();
 
@@ -345,7 +345,7 @@ namespace pi.LTCGI
                 EditorUtility.DisplayProgressBar("Finishing LTCGI bake", "Caching lightmaps", i/((float)LightmapSettings.lightmaps.Length-1.0f));
                 var tex = LightmapSettings.lightmaps[i].lightmapColor;
                 var path = AssetDatabase.GetAssetPath(tex);
-                var tex2 = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/_pi_/_LTCGI/Generated/Lightmaps-" + curscene + "/" + System.IO.Path.GetFileName(path));
+                var tex2 = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/LTCGI-Generated/Lightmaps-" + curscene + "/" + System.IO.Path.GetFileName(path));
                 SetTextureImporterToLightmap(tex2);
                 _LTCGI_Lightmaps[i] = tex2;
             }
@@ -388,7 +388,9 @@ namespace pi.LTCGI
             EditorUtility.DisplayProgressBar("Finishing LTCGI bake", "Resetting configuration", 1.0f);
             ResetConfiguration();
             bakeInProgress = false;
+
             AssetDatabase.SaveAssets();
+            EditorSceneManager.MarkAllScenesDirty();
             EditorSceneManager.SaveOpenScenes();
 
             /*Lightmapping.lightingDataAsset = prevLightmapData;

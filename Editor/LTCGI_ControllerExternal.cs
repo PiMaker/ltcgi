@@ -69,31 +69,6 @@ namespace pi.LTCGI
             bool revertButtonPressed = false;
 
             var resetCol = GUI.backgroundColor;
-            if (_configChanged)
-            {
-                using (new GUILayout.HorizontalScope())
-                {
-                    var bigButton = new GUIStyle(GUI.skin.button);
-                    bigButton.fixedHeight = 40.0f;
-                    bigButton.fontStyle = FontStyle.Bold;
-                    bigButton.fontSize = 18;
-                    bigButton.normal.textColor = Color.white;
-                    bigButton.hover.textColor = Color.white;
-                    resetCol = GUI.backgroundColor;
-                    GUI.backgroundColor = Color.red;
-                    if (GUILayout.Button("Apply", bigButton))
-                    {
-                        applyButtonPressed = true;
-                    }
-                    GUI.backgroundColor = Color.blue;
-                    if (GUILayout.Button("Revert", bigButton))
-                    {
-                        revertButtonPressed = true;
-                    }
-                    GUI.backgroundColor = resetCol;
-                }
-            }
-
 
             LTCGIDocsHelper.DrawHelpButton("https://ltcgi.dev/Getting%20Started/Setup/Controller");
 
@@ -204,6 +179,31 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
             EditorGUILayout.Space(); EditorGUILayout.Space(); EditorGUILayout.Space();
             GUILayout.Label("Global Shader Options", header);
             EditorGUILayout.Space();
+
+            if (_configChanged)
+            {
+                using (new GUILayout.HorizontalScope())
+                {
+                    var bigButton = new GUIStyle(GUI.skin.button);
+                    bigButton.fixedHeight = 40.0f;
+                    bigButton.fontStyle = FontStyle.Bold;
+                    bigButton.fontSize = 18;
+                    bigButton.normal.textColor = Color.white;
+                    bigButton.hover.textColor = Color.white;
+                    resetCol = GUI.backgroundColor;
+                    GUI.backgroundColor = Color.red;
+                    if (GUILayout.Button("Apply", bigButton))
+                    {
+                        applyButtonPressed = true;
+                    }
+                    GUI.backgroundColor = Color.blue;
+                    if (GUILayout.Button("Revert", bigButton))
+                    {
+                        revertButtonPressed = true;
+                    }
+                    GUI.backgroundColor = resetCol;
+                }
+            }
 
             RecalculateAutoConfig(target as LTCGI_Controller);
 
@@ -345,18 +345,12 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
         {
             if (configPath == null || !File.Exists(configPath))
             {
-                // FIXME: make more robust
-                var guids = AssetDatabase.FindAssets("LTCGI_config");
-                if (guids.Length < 1)
+                configPath = AssetDatabase.GUIDToAssetPath("01c8aa443e7001b45b28cfe65d1c6786");
+                if (string.IsNullOrEmpty(configPath))
                 {
-                    Debug.LogError($"Could not find LTCGI_config.cginc ({guids.Length})! Please reimport package.");
+                    Debug.LogError("LTCGI: Could not find config file! Please don't change the GUID or move the meta file!");
                     return;
                 }
-                else if (guids.Length > 1)
-                {
-                    Debug.LogWarning("LTCGI_config.cginc found more than once - this is not recommended!");
-                }
-                configPath = AssetDatabase.GUIDToAssetPath(guids[0]);
             }
 
             var config = File.ReadAllLines(configPath);
