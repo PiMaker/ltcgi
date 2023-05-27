@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using UnityEditor.Build.Reporting;
 #if VRC_SDK_VRCSDK2 || UDONSHARP
 using VRC.SDKBase.Editor.BuildPipeline;
 #endif
@@ -51,6 +50,8 @@ namespace pi.LTCGI
             }
         }
 
+        private bool _configChanged = false;
+
         public override void OnInspectorGUI()
         {
             GUIStyle style = new GUIStyle(EditorStyles.label);
@@ -61,6 +62,37 @@ namespace pi.LTCGI
             var rightAlignedLabel = new GUIStyle(EditorStyles.label);
             rightAlignedLabel.alignment = TextAnchor.MiddleRight;
             GUILayout.Label(VERSION, rightAlignedLabel);
+
+
+            bool applyButtonPressed = false;
+            bool revertButtonPressed = false;
+
+            var resetCol = GUI.backgroundColor;
+            if (_configChanged)
+            {
+                using (new GUILayout.HorizontalScope())
+                {
+                    var bigButton = new GUIStyle(GUI.skin.button);
+                    bigButton.fixedHeight = 40.0f;
+                    bigButton.fontStyle = FontStyle.Bold;
+                    bigButton.fontSize = 18;
+                    bigButton.normal.textColor = Color.white;
+                    bigButton.hover.textColor = Color.white;
+                    resetCol = GUI.backgroundColor;
+                    GUI.backgroundColor = Color.red;
+                    if (GUILayout.Button("Apply", bigButton))
+                    {
+                        applyButtonPressed = true;
+                    }
+                    GUI.backgroundColor = Color.blue;
+                    if (GUILayout.Button("Revert", bigButton))
+                    {
+                        revertButtonPressed = true;
+                    }
+                    GUI.backgroundColor = resetCol;
+                }
+            }
+
 
             LTCGIDocsHelper.DrawHelpButton("https://ltcgi.dev/Getting%20Started/Setup/Controller");
 
@@ -102,7 +134,6 @@ namespace pi.LTCGI
                 LTCGI_Controller.Singleton.BakeComplete();
             }
 
-            var resetCol = GUI.backgroundColor;
             GUI.backgroundColor = Color.red;
             if (LTCGI_Controller.Singleton.bakeMaterialReset_key != null && GUILayout.Button("DEBUG: Force Settings Reset after Bake"))
             {
@@ -280,31 +311,18 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
                     resetDesc = true;
                 }
             }
-            if (configChangedValues.Count > 0)
+
+            _configChanged = configChangedValues.Count > 0;
+
+            if (applyButtonPressed)
             {
-                using (new GUILayout.HorizontalScope())
-                {
-                    var bigButton = new GUIStyle(GUI.skin.button);
-                    bigButton.fixedHeight = 40.0f;
-                    bigButton.fontStyle = FontStyle.Bold;
-                    bigButton.fontSize = 18;
-                    bigButton.normal.textColor = Color.white;
-                    bigButton.hover.textColor = Color.white;
-                    resetCol = GUI.backgroundColor;
-                    GUI.backgroundColor = Color.red;
-                    if (GUILayout.Button("Apply", bigButton))
-                    {
-                        File.WriteAllLines(configPath, config);
-                        AssetDatabase.Refresh();
-                        configChangedValues = new Dictionary<string, object>();
-                    }
-                    GUI.backgroundColor = Color.blue;
-                    if (GUILayout.Button("Revert", bigButton))
-                    {
-                        configChangedValues = new Dictionary<string, object>();
-                    }
-                    GUI.backgroundColor = resetCol;
-                }
+                File.WriteAllLines(configPath, config);
+                AssetDatabase.Refresh();
+                configChangedValues = new Dictionary<string, object>();
+            }
+            if (revertButtonPressed)
+            {
+                configChangedValues = new Dictionary<string, object>();
             }
 
             EditorGUILayout.Space(); EditorGUILayout.Space(); EditorGUILayout.Space();
@@ -321,7 +339,7 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
                 LTCGI_Controller.Singleton.UpdateMaterials();
             }
         }
-
+        
         public static void RecalculateAutoConfig(LTCGI_Controller controller)
         {
             if (configPath == null || !File.Exists(configPath))
