@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
+using UnityEditor.Build.Reporting;
 #if VRC_SDK_VRCSDK2 || UDONSHARP
 using VRC.SDKBase.Editor.BuildPipeline;
 #endif
@@ -320,7 +321,7 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
                 AssetDatabase.Refresh();
                 configChangedValues = new Dictionary<string, object>();
             }
-            if (revertButtonPressed)
+            else if (revertButtonPressed)
             {
                 configChangedValues = new Dictionary<string, object>();
             }
