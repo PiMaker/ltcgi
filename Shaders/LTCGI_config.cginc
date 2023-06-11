@@ -79,7 +79,7 @@ const float LUT_BIAS = 0.5/LUT_SIZE;
 #ifdef LTCGI_AUDIOLINK
 #ifndef AUDIOLINK_WIDTH
 #ifndef AUDIOLINK_CGINC_INCLUDED
-#include "not-available"
+#include "Packages/com.llealloo.audiolink/Runtime/Shaders/AudioLink.cginc"
 #define AUDIOLINK_CGINC_INCLUDED
 #endif
 #endif
@@ -89,8 +89,19 @@ const float LUT_BIAS = 0.5/LUT_SIZE;
 #define LTCGI_STATIC_UNIFORMS
 
 // Enable support for cylindrical screens.
-//#define LTCGI_CYLINDER
+#define LTCGI_CYLINDER
 
+// Activate avatar mode, which overrides certain configs from above.
+//#define LTCGI_AVATAR_MODE
+
+#ifdef LTCGI_AVATAR_MODE
+#define LTCGI_TOGGLEABLE_SPEC_DIFF_OFF
+#define LTCGI_DIFFUSE_OFF
+#undef LTCGI_SPECULAR_OFF
+#undef LTCGI_STATIC_UNIFORMS
+#define LTCGI_CYLINDER
+#undef LTCGI_BICUBIC_LIGHTMAP
+#endif
 
 #ifdef SHADER_TARGET_SURFACE_ANALYSIS
 #undef LTCGI_STATIC_UNIFORMS

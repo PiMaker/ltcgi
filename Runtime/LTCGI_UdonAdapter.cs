@@ -5,6 +5,11 @@ using UnityEngine;
 using UdonSharp;
 using VRC.SDKBase;
 using VRC.Udon;
+using GlobalShader = VRC.SDKBase.VRCShader;
+#endif
+
+#if !UDONSHARP
+using GlobalShader = UnityEngine.Shader;
 #endif
 
 #if UDONSHARP
@@ -26,6 +31,7 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
     public Texture2D[] _LTCGI_Lightmaps;
     public Vector4[] _LTCGI_LightmapST;
     public float[] _LTCGI_Mask;
+    public float[] _LTCGI_MaskAvatars;
     public Vector4 _LTCGI_LightmapMult;
     public GameObject[] _Screens;
     public Texture2D _LTCGI_lut1, _LTCGI_lut2;
@@ -40,12 +46,10 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
     public Texture2D _LTCGI_static_uniforms;
     public Transform[] _LTCGI_ScreenTransforms;
     public int _LTCGI_ScreenCount;
+    public int _LTCGI_ScreenCountMaskedAvatars;
     public int[] _LTCGI_ScreenCountMasked;
     public int _LTCGI_ScreenCountDynamic;
     public CustomRenderTexture BlurCRTInput;
-    public Material ProjectorMaterial;
-    private Material[] mats;
-    private int mi;
 
     private bool disabled = false;
 
@@ -82,39 +86,46 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
             _LTCGI_Vertices_3t[i] = CalcTransform(_LTCGI_Vertices_3[i], transform);
         }
 
+        // Set global material properties (anything not overridden below is for avatar support)
+        for (int j = 0; j < _LTCGI_LODs.Length; j++)
+            if (_LTCGI_LODs[j] != null)
+                GlobalShader.SetGlobalTexture(GlobalShader.PropertyToID("_Udon_LTCGI_Texture_LOD" + j), _LTCGI_LODs[j]);
+
+        if (_LTCGI_Static_LODs_0 != null)
+        {
+            GlobalShader.SetGlobalTexture(GlobalShader.PropertyToID("_Udon_LTCGI_Texture_LOD0_arr"), _LTCGI_Static_LODs_0);
+            GlobalShader.SetGlobalTexture(GlobalShader.PropertyToID("_Udon_LTCGI_Texture_LOD1_arr"), _LTCGI_Static_LODs_1);
+            GlobalShader.SetGlobalTexture(GlobalShader.PropertyToID("_Udon_LTCGI_Texture_LOD2_arr"), _LTCGI_Static_LODs_2);
+            GlobalShader.SetGlobalTexture(GlobalShader.PropertyToID("_Udon_LTCGI_Texture_LOD3_arr"), _LTCGI_Static_LODs_3);
+        }
+
+        GlobalShader.SetGlobalTexture(GlobalShader.PropertyToID("_Udon_LTCGI_lut1"), _LTCGI_lut1);
+        GlobalShader.SetGlobalTexture(GlobalShader.PropertyToID("_Udon_LTCGI_lut2"), _LTCGI_lut2);
+
+        GlobalShader.SetGlobalFloatArray(GlobalShader.PropertyToID("_Udon_LTCGI_Mask"), _LTCGI_MaskAvatars);
+        GlobalShader.SetGlobalInteger(GlobalShader.PropertyToID("_Udon_LTCGI_ScreenCount"), _LTCGI_ScreenCountMaskedAvatars);
+
+        GlobalShader.SetGlobalFloat(GlobalShader.PropertyToID("_Udon_LTCGI_GlobalDisable"), 0.0f);
+
+        if (_LTCGI_static_uniforms != null)
+            GlobalShader.SetGlobalTexture(GlobalShader.PropertyToID("_Udon_LTCGI_static_uniforms"), _LTCGI_static_uniforms);
+
+        // Set per world-renderer overrides
+        var maskSubset = new float[_LTCGI_ScreenCount];
         for (int i = 0; i < _Renderers.Length; i++)
         {
             var r = _Renderers[i];
             var block = new MaterialPropertyBlock();
             if (r.HasPropertyBlock())
                 r.GetPropertyBlock(block);
-            for (int j = 0; j < _LTCGI_LODs.Length; j++)
-            {
-                if (_LTCGI_LODs[j] != null)
-                {
-                    block.SetTexture("_LTCGI_Texture_LOD" + j, _LTCGI_LODs[j]);
-                }
-            }
-            if (_LTCGI_Static_LODs_0 != null)
-            {
-                block.SetTexture("_LTCGI_Texture_LOD0_arr", _LTCGI_Static_LODs_0);
-                block.SetTexture("_LTCGI_Texture_LOD1_arr", _LTCGI_Static_LODs_1);
-                block.SetTexture("_LTCGI_Texture_LOD2_arr", _LTCGI_Static_LODs_2);
-                block.SetTexture("_LTCGI_Texture_LOD3_arr", _LTCGI_Static_LODs_3);
-            }
-            block.SetTexture("_LTCGI_lut1", _LTCGI_lut1);
-            block.SetTexture("_LTCGI_lut2", _LTCGI_lut2);
-            var maskSubset = new float[_LTCGI_ScreenCount];
+
             Array.Copy(_LTCGI_Mask, i * _LTCGI_ScreenCount, maskSubset, 0, _LTCGI_ScreenCount);
-            block.SetFloatArray("_LTCGI_Mask", maskSubset);
-            block.SetInt("_LTCGI_ScreenCount", _LTCGI_ScreenCountMasked[i]);
+            block.SetFloatArray("_Udon_LTCGI_Mask", maskSubset);
+            block.SetInt("_Udon_LTCGI_ScreenCount", _LTCGI_ScreenCountMasked[i]);
+
             if (_LTCGI_Lightmaps[i] != null)
-                block.SetTexture("_LTCGI_Lightmap", _LTCGI_Lightmaps[i]);
-            block.SetVector("_LTCGI_LightmapMult", _LTCGI_LightmapMult);
-
-            if (_LTCGI_static_uniforms != null)
-                block.SetTexture("_LTCGI_static_uniforms", _LTCGI_static_uniforms);
-
+                block.SetTexture("_Udon_LTCGI_Lightmap", _LTCGI_Lightmaps[i]);
+            block.SetVector("_Udon_LTCGI_LightmapMult", _LTCGI_LightmapMult);
             var lmst = _LTCGI_LightmapST[i];
             if (DEBUG_ReverseUnityLightmapST)
             {
@@ -124,65 +135,21 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
                 lmst.z -= r.lightmapScaleOffset.z;
                 lmst.w -= r.lightmapScaleOffset.w;
             }
-            block.SetVector("_LTCGI_LightmapST", lmst);
+            block.SetVector("_Udon_LTCGI_LightmapST", lmst);
 
             r.SetPropertyBlock(block);
         }
 
-        if (ProjectorMaterial != null)
-        {
-            for (int j = 0; j < _LTCGI_LODs.Length; j++)
-            {
-                if (_LTCGI_LODs[j] != null)
-                {
-                    ProjectorMaterial.SetTexture("_LTCGI_Texture_LOD" + j, _LTCGI_LODs[j]);
-                }
-            }
-            if (_LTCGI_Static_LODs_0 != null)
-            {
-                ProjectorMaterial.SetTexture("_LTCGI_Texture_LOD0_arr", _LTCGI_Static_LODs_0);
-                ProjectorMaterial.SetTexture("_LTCGI_Texture_LOD1_arr", _LTCGI_Static_LODs_1);
-                ProjectorMaterial.SetTexture("_LTCGI_Texture_LOD2_arr", _LTCGI_Static_LODs_2);
-                ProjectorMaterial.SetTexture("_LTCGI_Texture_LOD3_arr", _LTCGI_Static_LODs_3);
-            }
-            ProjectorMaterial.SetTexture("_LTCGI_lut1", _LTCGI_lut1);
-            ProjectorMaterial.SetTexture("_LTCGI_lut2", _LTCGI_lut2);
-            ProjectorMaterial.SetFloatArray("_LTCGI_Mask", new float[_LTCGI_ScreenCount]);
-            ProjectorMaterial.SetInt("_LTCGI_ScreenCount", _LTCGI_ScreenCount);
-
-            mats = new Material[_Renderers.Length + 1];
-            mats[0] = ProjectorMaterial;
-            mi = 1;
-        }
-        else
-        {
-            mats = new Material[_Renderers.Length];
-            mi = 0;
-        }
-
-        foreach (var r in _Renderers)
-        {
-            foreach (var m in r.sharedMaterials)
-            {
-                if (Array.IndexOf(mats, m) < 0)
-                {
-                    mats[mi] = m;
-                    mi++;
-                    if (mi == mats.Length)
-                    {
-                        var tmp = new Material[mats.Length * 2];
-                        Array.Copy(mats, tmp, mats.Length);
-                        mats = tmp;
-                    }
-                }
-            }
-        }
-
+        // Set initial vertex positions and extra data
         Update();
 
         stopwatch.Stop();
 
-        Debug.Log($"LTCGI adapter started for {_LTCGI_ScreenCount} ({_LTCGI_ScreenCountDynamic} dynamic) screens, {_Renderers.Length} renderers, {mi} materials, took: {stopwatch.ElapsedMilliseconds}ms");
+        var vrc = false;
+#if UDONSHARP
+        vrc = true;
+#endif
+        Debug.Log($"LTCGI adapter started for {_LTCGI_ScreenCount} ({_LTCGI_ScreenCountDynamic} dynamic) screens, {_Renderers.Length} renderers, GlobalShader mode, vrc: {vrc}, took: {stopwatch.ElapsedMilliseconds}ms");
 
         if (_LTCGI_ScreenCountDynamic == 0 || _Renderers.Length == 0)
         {
@@ -202,6 +169,7 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
     {
         if (disabled) return;
 
+        // update vertex data
         for (int i = 0; i < _LTCGI_ScreenCountDynamic /* only run for dynamic screens */; i++)
         {
             var transform = _LTCGI_ScreenTransforms[i];
@@ -211,27 +179,11 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
             _LTCGI_Vertices_3t[i] = CalcTransform(_LTCGI_Vertices_3[i], transform);
         }
 
-        for (int i = 0; i < mi; i++)
-        {
-            mats[i].SetVectorArray("_LTCGI_ExtraData", _LTCGI_ExtraData);
-            mats[i].SetVectorArray("_LTCGI_Vertices_0", _LTCGI_Vertices_0t);
-            mats[i].SetVectorArray("_LTCGI_Vertices_1", _LTCGI_Vertices_1t);
-            mats[i].SetVectorArray("_LTCGI_Vertices_2", _LTCGI_Vertices_2t);
-            mats[i].SetVectorArray("_LTCGI_Vertices_3", _LTCGI_Vertices_3t);
-        }
-
-        var block = new MaterialPropertyBlock();
-        for (int i = 0; i < _DynamicRenderers.Length; i++)
-        {
-            var r = _DynamicRenderers[i];
-            r.GetPropertyBlock(block); // we know it has one at this point
-            block.SetVectorArray("_LTCGI_ExtraData", _LTCGI_ExtraData);
-            block.SetVectorArray("_LTCGI_Vertices_0", _LTCGI_Vertices_0t);
-            block.SetVectorArray("_LTCGI_Vertices_1", _LTCGI_Vertices_1t);
-            block.SetVectorArray("_LTCGI_Vertices_2", _LTCGI_Vertices_2t);
-            block.SetVectorArray("_LTCGI_Vertices_3", _LTCGI_Vertices_3t);
-            r.SetPropertyBlock(block);
-        }
+        GlobalShader.SetGlobalVectorArray(GlobalShader.PropertyToID("_Udon_LTCGI_ExtraData"), _LTCGI_ExtraData);
+        GlobalShader.SetGlobalVectorArray(GlobalShader.PropertyToID("_Udon_LTCGI_Vertices_0"), _LTCGI_Vertices_0t);
+        GlobalShader.SetGlobalVectorArray(GlobalShader.PropertyToID("_Udon_LTCGI_Vertices_1"), _LTCGI_Vertices_1t);
+        GlobalShader.SetGlobalVectorArray(GlobalShader.PropertyToID("_Udon_LTCGI_Vertices_2"), _LTCGI_Vertices_2t);
+        GlobalShader.SetGlobalVectorArray(GlobalShader.PropertyToID("_Udon_LTCGI_Vertices_3"), _LTCGI_Vertices_3t);
     }
 
     // See the docs for more info:
@@ -277,18 +229,7 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
     public void _SetVideoTexture(Texture texture)
     {
         BlurCRTInput.material.SetTexture("_MainTex", texture);
-        if (ProjectorMaterial != null)
-        {
-            ProjectorMaterial.SetTexture("_LTCGI_Texture_LOD0", texture);
-        }
-        for (int i = 0; i < _Renderers.Length; i++)
-        {
-            var r = _Renderers[i];
-            var block = new MaterialPropertyBlock();
-            r.GetPropertyBlock(block);
-            block.SetTexture("_LTCGI_Texture_LOD0", texture);
-            r.SetPropertyBlock(block);
-        }
+        GlobalShader.SetGlobalTexture(GlobalShader.PropertyToID("_Udon_LTCGI_Texture_LOD0"), texture);
     }
 
     private uint getFlags(int screen)
@@ -321,24 +262,7 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
     public void _SetGlobalState(bool enabled)
     {
         float fstate = enabled ? 0.0f : 1.0f;
-        for (int i = 0; i < mi; i++)
-        {
-            mats[i].SetFloat("_LTCGI_GlobalDisable", fstate);
-        }
-
-        var block = new MaterialPropertyBlock();
-        for (int i = 0; i < _DynamicRenderers.Length; i++)
-        {
-            var r = _DynamicRenderers[i];
-            if (r.HasPropertyBlock())
-                r.GetPropertyBlock(block);
-            else
-                block = new MaterialPropertyBlock();
-            block.SetFloat("_LTCGI_GlobalDisable", fstate);
-            r.SetPropertyBlock(block);
-        }
-
-        disabled = !enabled;
+        GlobalShader.SetGlobalFloat(GlobalShader.PropertyToID("_Udon_LTCGI_GlobalDisable"), fstate);
     }
 
 

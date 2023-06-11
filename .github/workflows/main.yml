@@ -31,6 +31,13 @@ jobs:
       - name: "Put into Assets/ folder"
         run: mkdir -p Assets/_pi_ && mv at.pimaker.ltcgi/~Adapters Assets/_pi_/_LTCGI-Adapters
 
+      - name: "Rename disabled assets"
+        run: |
+          mv Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.asset_disabled Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.asset
+          mv Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.asset_disabled.meta Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.asset.meta
+          mv Assets/_pi_/_LTCGI-Adapters/LTCGI_USharpVideoAdapter.asset_disabled Assets/_pi_/_LTCGI-Adapters/LTCGI_USharpVideoAdapter.asset
+          mv Assets/_pi_/_LTCGI-Adapters/LTCGI_USharpVideoAdapter.asset_disabled.meta Assets/_pi_/_LTCGI-Adapters/LTCGI_USharpVideoAdapter.asset.meta
+
       - name: "Inspect structure"
         run: ls -R Assets/
       

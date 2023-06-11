@@ -409,6 +409,17 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
                         }
                     }
                 }
+
+                if (line.EndsWith("#define LTCGI_AVATAR_MODE"))
+                {
+                    var enabledInConfig = !line.StartsWith("//");
+                    var enabledByProject = LTCGI_Controller.RuntimeMode == LTCGI_Controller.LTCGIRuntimeMode.VRChatAvatar;
+                    if (enabledInConfig != enabledByProject)
+                    {
+                        config[i] = (enabledByProject ? "" : "//") + "#define LTCGI_AVATAR_MODE";
+                        changed = true;
+                    }
+                }
             }
             if (changed)
             {

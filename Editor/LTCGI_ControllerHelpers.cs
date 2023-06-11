@@ -41,6 +41,27 @@ namespace pi.LTCGI
             }
         }
 
+        public enum LTCGIRuntimeMode
+        {
+            Standalone,
+            VRChatWorld,
+            VRChatAvatar,
+        }
+        public static LTCGIRuntimeMode RuntimeMode
+        {
+            get
+            {
+                #if VRC_SDK_VRCSDK3
+                    if (System.IO.File.Exists("Packages\\com.vrchat.avatars"))
+                        return LTCGIRuntimeMode.VRChatAvatar;
+                    else
+                        return LTCGIRuntimeMode.VRChatWorld;
+                #else
+                    return LTCGIRuntimeMode.Standalone;
+                #endif
+            }
+        }
+
         private float[] GetMaskForRenderer(LTCGI_Screen[] screens, Renderer r)
         {
             Func<bool, float> b = cond => cond ? 1.0f : 0.0f;

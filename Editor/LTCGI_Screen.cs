@@ -50,6 +50,9 @@ namespace pi.LTCGI
         [Range(0.0f, Mathf.PI*2.0f)]
         public float CylinderAngle;
 
+        [Tooltip("If this renderer should affect avatars that use a supported LTCGI shader.")]
+        public bool AffectAvatars = false;
+
         private Vector3 prevPos, prevScale, prevRot;
 
         private bool update = false;
@@ -135,7 +138,7 @@ namespace pi.LTCGI
     [CanEditMultipleObjects]
     public class LTCGI_ScreenEditor : Editor
     {
-        protected SerializedProperty colorProp, sidedProp, dynamicProp, indexProp, colormodeProp, specProp, diffProp, lmProp, singleUVProp, rendererModeProp, rendererListProp, rendererDistProp, diffModeProp, diffuseFromLmProp, flipProp, lmIntensProp, alBandProp;
+        protected SerializedProperty colorProp, sidedProp, dynamicProp, indexProp, colormodeProp, specProp, diffProp, lmProp, singleUVProp, rendererModeProp, rendererListProp, rendererDistProp, diffModeProp, diffuseFromLmProp, flipProp, lmIntensProp, alBandProp, affectAvatarsProp;
         protected SerializedProperty cylProp, cylBaseProp, cylHeightProp, cylAngleProp, cylRadiusProp, cylSizeProp;
 
         protected static Texture Logo;
@@ -174,6 +177,7 @@ namespace pi.LTCGI
             lmIntensProp = serializedObject.FindProperty("LightmapIntensity");
             flipProp = serializedObject.FindProperty("FlipUV");
             alBandProp = serializedObject.FindProperty("AudioLinkBand");
+            affectAvatarsProp = serializedObject.FindProperty("AffectAvatars");
 
             cylProp = serializedObject.FindProperty("Cylinder");
             cylAngleProp = serializedObject.FindProperty("CylinderAngle");
@@ -307,6 +311,7 @@ namespace pi.LTCGI
                 EditorGUILayout.PropertyField(sidedProp);
             }
             EditorGUILayout.PropertyField(flipProp);
+            EditorGUILayout.PropertyField(affectAvatarsProp);
 
             EditorGUILayout.Separator();
             DrawColorModeSelector(true);
