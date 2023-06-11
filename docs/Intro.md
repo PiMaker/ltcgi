@@ -29,6 +29,8 @@ For VRChat, you can install LTCGI via the [Creator Companion](https://vcc.docs.v
 
 ## ⬇️ **[Creator Companion/VPM Repository](https://vpm.pimaker.at/)**
 
+(LTCGI works in avatar and world projects! But you _will_ need a supported shader in either case.)
+
 For **standalone Unity**, you can import LTCGI as a [git package](https://docs.unity3d.com/2019.4/Documentation/Manual/upm-ui-giturl.html) with the URL: `https://github.com/PiMaker/ltcgi.git`
 
 ## About this Page

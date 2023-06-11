@@ -55,6 +55,7 @@ You need to ensure that the mesh itself looks the same as the light it emits you
 | Dynamic | Marks this screen as dynamic. Comes with slight performance overhead, but allows moving the screen and changing its color at runtime. |
 | Double Sided | If this screen emits light on both sides of the mesh. |
 | Flip UV | Workaround. Some models imported from Blender or other 3D software can have flipped reflections. If you notice this, you can set this flag to un-flip them. (If anyone can tell me why this happens and has a more permanent fix, please let me know!) |
+| Affect Avatars | If this screen should affect avatars that use an LTCGI-compatible shader. Note that distance or renderer masking does not apply to avatars, so use this setting to keep performance-impact on avatars to a minimum. |
 
 ### Color Mode
 
