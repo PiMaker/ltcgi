@@ -94,14 +94,4 @@ const float LUT_BIAS = 0.5/LUT_SIZE;
 // Activate avatar mode, which overrides certain configs from above.
 //#define LTCGI_AVATAR_MODE
 
-#ifdef LTCGI_AVATAR_MODE
-#undef LTCGI_TOGGLEABLE_SPEC_DIFF_OFF
-#undef LTCGI_STATIC_UNIFORMS
-#undef LTCGI_BICUBIC_LIGHTMAP
-#endif
-
-#ifdef SHADER_TARGET_SURFACE_ANALYSIS
-#undef LTCGI_STATIC_UNIFORMS
-#endif
-
 #endif

@@ -584,6 +584,7 @@ namespace pi.LTCGI
                 adapter.UpdateProxy();
                 #pragma warning restore 618
                 adapter._Renderers = cachedMeshRenderers.Where(cm => !IsEditorOnly(cm.gameObject)).ToArray();
+                adapter._LTCGI_DefaultLightmap = DefaultLightmap;
                 adapter._LTCGI_Lightmaps = cachedMeshRenderers
                     .Select(r => {
                         if (_LTCGI_Lightmaps == null) return DefaultLightmap;
@@ -607,7 +608,8 @@ namespace pi.LTCGI
                     Enumerable.Range(0, adapter._Renderers.Length)
                     .SelectMany(i => mask2d[i])
                     .ToArray();
-                var avatarMask = screens.Select(x => x.AffectAvatars ? 1.0f : 0.0f);
+                // mask is reversed! 1 = not visible, 0 = visible
+                var avatarMask = screens.Select(x => x.AffectAvatars ? 0.0f : 1.0f);
                 adapter._LTCGI_MaskAvatars = avatarMask.ToArray();
                 adapter._Screens = screens.Select(x => x?.gameObject).ToArray();
                 adapter._LTCGI_LODs = new Texture[4];
@@ -640,49 +642,13 @@ namespace pi.LTCGI
                 adapter._LTCGI_static_uniforms = staticUniformTex;
                 adapter._LTCGI_ScreenCount = screens.Length;
                 adapter._LTCGI_ScreenCountDynamic = screenCountDynamic;
+                // masked counts must include all masked screens up to the last non-masked one!
                 adapter._LTCGI_ScreenCountMasked = 
                     mask2d.Select(mask =>
                         Math.Max(adapter._LTCGI_ScreenCountDynamic,
                             Array.FindLastIndex(mask, m => m == 0.0f) + 1)).ToArray();
-                adapter._LTCGI_ScreenCountMaskedAvatars = screens.Count(x => x.AffectAvatars);
+                adapter._LTCGI_ScreenCountMaskedAvatars = Array.FindLastIndex(screens, x => x.AffectAvatars) + 1;
                 adapter.BlurCRTInput = LOD1s;
-
-                // calculate which renderers can use the shared material update method
-                var dynr = DynamicRenderers.ToList();
-                var mats = new Dictionary<Material, (int, float[], Renderer)>();
-                for (int i = 0; i < cachedMeshRenderers.Length; i++)
-                {
-                    var r = cachedMeshRenderers[i];
-                    if (IsEditorOnly(r.gameObject)) continue;
-                    foreach (var m in r.sharedMaterials)
-                    {
-                        if (m == null) continue;
-                        var data = (adapter._LTCGI_ScreenCountMasked[i], mask2d[i], r);
-                        if (mats.ContainsKey(m))
-                        {
-                            var prev = mats[m];
-                            if (prev.Item1 != data.Item1 || !prev.Item2.SequenceEqual(data.Item2))
-                            {
-                                // two renderers share material, but have different masks,
-                                // so at least one of them needs to use a MPB
-                                // Debug.Log($"Cannot use shared material update for {m.name} on {r.name} and {prev.Item3.name} because " +
-                                //     $"this({data.Item1} # {data.Item2.Aggregate("", (p, x) => p + (p == "" ? "" : ", ") + x.ToString())}) != " +
-                                //     $"prev({prev.Item1} # {prev.Item2.Aggregate("", (p, x) => p + (p == "" ? "" : ", ") + x.ToString())})");
-                                dynr.Add(r);
-                                if (!dynr.Contains(prev.Item3))
-                                {
-                                    dynr.Add(prev.Item3);
-                                }
-                                break;
-                            }
-                        }
-                        else
-                        {
-                            mats.Add(m, data);
-                        }
-                    }
-                }
-                adapter._DynamicRenderers = dynr.ToArray();
 
                 #pragma warning disable 618
                 adapter.ApplyProxyModifications();

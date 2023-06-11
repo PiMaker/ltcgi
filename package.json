@@ -1,7 +1,7 @@
 {
   "name": "at.pimaker.ltcgi",
   "displayName": "LTCGI",
-  "version": "1.2.3",
+  "version": "1.2.4",
   "description": "Optimized plug-and-play realtime area lighting using the linearly transformed cosine algorithm for Unity/VRChat. ",
   "dependencies": {},
   "gitDependencies": {},

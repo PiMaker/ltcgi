@@ -51,7 +51,7 @@ namespace pi.LTCGI
         public float CylinderAngle;
 
         [Tooltip("If this renderer should affect avatars that use a supported LTCGI shader.")]
-        public bool AffectAvatars = false;
+        public bool AffectAvatars = true;
 
         private Vector3 prevPos, prevScale, prevRot;
 

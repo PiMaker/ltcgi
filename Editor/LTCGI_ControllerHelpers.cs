@@ -64,6 +64,7 @@ namespace pi.LTCGI
 
         private float[] GetMaskForRenderer(LTCGI_Screen[] screens, Renderer r)
         {
+            // mask is reversed! 1 = not visible, 0 = visible
             Func<bool, float> b = cond => cond ? 1.0f : 0.0f;
             return Enumerable.Range(0, screens.Length)
                 .Select(si => {

@@ -27,7 +27,7 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
 
     [Header("Internal Data (auto-generated, do not edit!)")]
     public Renderer[] _Renderers;
-    public Renderer[] _DynamicRenderers;
+    public Texture2D _LTCGI_DefaultLightmap;
     public Texture2D[] _LTCGI_Lightmaps;
     public Vector4[] _LTCGI_LightmapST;
     public float[] _LTCGI_Mask;
@@ -50,8 +50,6 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
     public int[] _LTCGI_ScreenCountMasked;
     public int _LTCGI_ScreenCountDynamic;
     public CustomRenderTexture BlurCRTInput;
-
-    private bool disabled = false;
 
     void Start()
     {
@@ -103,12 +101,18 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
         GlobalShader.SetGlobalTexture(GlobalShader.PropertyToID("_Udon_LTCGI_lut2"), _LTCGI_lut2);
 
         GlobalShader.SetGlobalFloatArray(GlobalShader.PropertyToID("_Udon_LTCGI_Mask"), _LTCGI_MaskAvatars);
-        GlobalShader.SetGlobalFloat(GlobalShader.PropertyToID("_Udon_LTCGI_ScreenCount"), _LTCGI_ScreenCountMaskedAvatars);
+        #if UDONSHARP
+        GlobalShader.SetGlobalInteger(GlobalShader.PropertyToID("_Udon_LTCGI_ScreenCount"), _LTCGI_ScreenCountMaskedAvatars);
+        #else
+        GlobalShader.SetGlobalInt(GlobalShader.PropertyToID("_Udon_LTCGI_ScreenCount"), _LTCGI_ScreenCountMaskedAvatars);
+        #endif
 
         GlobalShader.SetGlobalFloat(GlobalShader.PropertyToID("_Udon_LTCGI_GlobalEnable"), 1.0f);
 
         if (_LTCGI_static_uniforms != null)
             GlobalShader.SetGlobalTexture(GlobalShader.PropertyToID("_Udon_LTCGI_static_uniforms"), _LTCGI_static_uniforms);
+        if (_LTCGI_DefaultLightmap != null)
+            GlobalShader.SetGlobalTexture(GlobalShader.PropertyToID("_Udon_LTCGI_Lightmap"), _LTCGI_DefaultLightmap);
 
         // Set per world-renderer overrides
         var maskSubset = new float[_LTCGI_ScreenCount];
@@ -145,11 +149,11 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
 
         stopwatch.Stop();
 
-        var vrc = false;
+        var udon = false;
 #if UDONSHARP
-        vrc = true;
+        udon = true;
 #endif
-        Debug.Log($"LTCGI adapter started for {_LTCGI_ScreenCount} ({_LTCGI_ScreenCountDynamic} dynamic) screens, {_Renderers.Length} renderers, GlobalShader mode, vrc: {vrc}, took: {stopwatch.ElapsedMilliseconds}ms");
+        Debug.Log($"LTCGI adapter started for {_LTCGI_ScreenCount} ({_LTCGI_ScreenCountDynamic} dynamic) screens, {_Renderers.Length} renderers, GlobalShader mode, udon: {udon}, took: {stopwatch.ElapsedMilliseconds}ms");
 
         if (_LTCGI_ScreenCountDynamic == 0 || _Renderers.Length == 0)
         {
@@ -167,8 +171,6 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
 
     void Update()
     {
-        if (disabled) return;
-
         // update vertex data
         for (int i = 0; i < _LTCGI_ScreenCountDynamic /* only run for dynamic screens */; i++)
         {
