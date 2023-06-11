@@ -13,6 +13,14 @@ Alternatively, join the [demo world](https://vrchat.com/home/launch?worldId=wrld
 
 [Read the FAQ](https://ltcgi.dev/FAQ) before asking for help anywhere! Once you've done that, feel free to join my Discord and ask for help: https://discord.gg/r38vJd2DuJ
 
+## Download
+
+For VRChat, you can install LTCGI via the [Creator Companion](https://vcc.docs.vrchat.com/) from my VPM repository:
+
+### ⬇️ **[Creator Companion/VPM Repository](https://vpm.pimaker.at/)**
+
+For **standalone Unity**, you can import LTCGI as a [git package](https://docs.unity3d.com/2019.4/Documentation/Manual/upm-ui-giturl.html) with the URL: `https://github.com/PiMaker/ltcgi.git`
+
 ## Supported shaders
 
 To use LTCGI, all objects that should receive lighting must use a compatible shader. Currently compatible ones are listed below. If you implement LTCGI into your shader, feel free to send a PR to be included.
