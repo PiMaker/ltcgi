@@ -105,7 +105,7 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
         GlobalShader.SetGlobalFloatArray(GlobalShader.PropertyToID("_Udon_LTCGI_Mask"), _LTCGI_MaskAvatars);
         GlobalShader.SetGlobalFloat(GlobalShader.PropertyToID("_Udon_LTCGI_ScreenCount"), _LTCGI_ScreenCountMaskedAvatars);
 
-        GlobalShader.SetGlobalFloat(GlobalShader.PropertyToID("_Udon_LTCGI_GlobalDisable"), 0.0f);
+        GlobalShader.SetGlobalFloat(GlobalShader.PropertyToID("_Udon_LTCGI_GlobalEnable"), 1.0f);
 
         if (_LTCGI_static_uniforms != null)
             GlobalShader.SetGlobalTexture(GlobalShader.PropertyToID("_Udon_LTCGI_static_uniforms"), _LTCGI_static_uniforms);
@@ -261,8 +261,8 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
 
     public void _SetGlobalState(bool enabled)
     {
-        float fstate = enabled ? 0.0f : 1.0f;
-        GlobalShader.SetGlobalFloat(GlobalShader.PropertyToID("_Udon_LTCGI_GlobalDisable"), fstate);
+        float fstate = enabled ? 1.0f : 0.0f;
+        GlobalShader.SetGlobalFloat(GlobalShader.PropertyToID("_Udon_LTCGI_GlobalEnable"), fstate);
     }
 
 

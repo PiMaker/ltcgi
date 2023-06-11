@@ -157,7 +157,7 @@
     , inout half3 specular, out float totalSpecularIntensity
 #endif
 ) {
-    if (_Udon_LTCGI_GlobalDisable) {
+    if (_Udon_LTCGI_GlobalEnable == 0.0f) {
 #ifndef LTCGI_SPECULAR_OFF
         totalSpecularIntensity = 0;
 #endif

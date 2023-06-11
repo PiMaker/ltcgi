@@ -540,6 +540,8 @@ namespace pi.LTCGI
                 }
             }
 
+            Shader.SetGlobalFloat("_Udon_LTCGI_GlobalEnable", 1.0f);
+
             if (!fast && this != null && this.gameObject != null)
             {
                 #if UDONSHARP

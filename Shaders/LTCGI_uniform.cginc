@@ -143,6 +143,6 @@ uniform float3 _Udon_LTCGI_LightmapMult;
 uniform float4 _Udon_LTCGI_LightmapST;
 
 // global toggle
-uniform float _Udon_LTCGI_GlobalDisable;
+uniform float _Udon_LTCGI_GlobalEnable;
 
 #endif
