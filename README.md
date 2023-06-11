@@ -17,9 +17,11 @@ Alternatively, join the [demo world](https://vrchat.com/home/launch?worldId=wrld
 
 For VRChat, you can install LTCGI via the [Creator Companion](https://vcc.docs.vrchat.com/) from my VPM repository:
 
-### ⬇️ **[Creator Companion/VPM Repository](https://vpm.pimaker.at/)**
+### ⬇️ **[Creator Companion/VPM Install](https://vpm.pimaker.at/)**
 
 For **standalone Unity**, you can import LTCGI as a [git package](https://docs.unity3d.com/2019.4/Documentation/Manual/upm-ui-giturl.html) with the URL: `https://github.com/PiMaker/ltcgi.git`
+
+**Adapters** for various VRChat video players are still distributed as unitypackages from the [Releases tab](https://github.com/pimaker/ltcgi/releases).
 
 ## Supported shaders
 
