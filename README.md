@@ -2,7 +2,7 @@
 
 LTCGI is an optimized plug-and-play realtime area light solution using the [linearly transformed cosine algorithm](#LTC) for standalone Unity and VRChat. Free to use with [attribution](#Attribution). It can utilize the Unity build-in lightmapper or [Bakery](https://assetstore.unity.com/packages/tools/level-design/bakery-gpu-lightmapper-122218) for realistic shadows on static objects.
 
-![screenshot of standalone demo app](https://raw.githubusercontent.com/PiMaker/ltcgi/main/Screenshots/demoapp.jpg)
+![screenshot of standalone demo app](~Screenshots/demoapp.jpg)
 
 # Check out the [**official website**](https://ltcgi.dev) for documentation and a "Getting Started" guide! (https://ltcgi.dev)
 
@@ -38,7 +38,7 @@ According to the [License](#License) you are free to use this in your world, but
 
 For your convenience, a prefab called `LTCGI Attribution` is provided in the package.
 
-![LTCGI Attribution Prefab](Screenshots/attribution.jpg)
+![LTCGI Attribution Prefab](~Screenshots/attribution.jpg)
 
 If you don't want to use it, instead display text similar to the following:
 
