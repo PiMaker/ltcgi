@@ -540,7 +540,7 @@ namespace pi.LTCGI
                 }
             }
 
-            Shader.SetGlobalFloat("_Udon_LTCGI_GlobalEnable", 1.0f);
+            Shader.SetGlobalFloat("_Udon_LTCGI_GlobalEnable", screens.Length > 0 ? 1.0f : 0.0f);
 
             if (!fast && this != null && this.gameObject != null)
             {

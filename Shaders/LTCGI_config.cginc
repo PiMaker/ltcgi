@@ -74,7 +74,7 @@ static float LUT_SCALE = (LUT_SIZE - 1.0)/LUT_SIZE;
 const float LUT_BIAS = 0.5/LUT_SIZE;
 
 // will be set automatically if audiolink is available
-#define LTCGI_AUDIOLINK
+//#define LTCGI_AUDIOLINK
 
 #ifdef LTCGI_AUDIOLINK
 #ifndef AUDIOLINK_WIDTH
