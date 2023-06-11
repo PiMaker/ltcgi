@@ -8,7 +8,7 @@ sidebar_position: 1
 
 LTCGI is an optimized plug-and-play realtime area light solution using the [linearly transformed cosine algorithm](#LTC) for standalone Unity and VRChat. Free to use with [attribution](#Attribution). It can utilize the Unity build-in lightmapper or [Bakery](https://assetstore.unity.com/packages/tools/level-design/bakery-gpu-lightmapper-122218) for realistic shadows on static objects.
 
-![screenshot of standalone demo app](https://raw.githubusercontent.com/PiMaker/ltcgi/main/Screenshots/demoapp.jpg)
+![screenshot of standalone demo app](https://raw.githubusercontent.com/PiMaker/ltcgi/main/~Screenshots/demoapp.jpg)
 
 You can [download](https://github.com/PiMaker/ltcgi/raw/main/DemoApp.zip) the standalone demo app pictured above to try it out for yourself.  
 Alternatively, join the [demo world](https://vrchat.com/home/launch?worldId=wrld_aa2627ec-c63a-4db2-aa3e-9078d41c6d9c) in VRChat.
@@ -45,9 +45,9 @@ Read the [FAQ](/FAQ) before asking for help anywhere!
 
 ## More glamour shots
 
-![](https://github.com/PiMaker/ltcgi/raw/main/Screenshots/demo.gif)
+![](https://github.com/PiMaker/ltcgi/raw/main/~Screenshots/demo.gif)
 
 ![](img/vket_booth.jpg)
 
-![](https://github.com/PiMaker/ltcgi/raw/main/Screenshots/collage4.jpg)
-![](https://github.com/PiMaker/ltcgi/raw/main/Screenshots/collage2.jpg)
+![](https://github.com/PiMaker/ltcgi/raw/main/~Screenshots/collage4.jpg)
+![](https://github.com/PiMaker/ltcgi/raw/main/~Screenshots/collage2.jpg)
