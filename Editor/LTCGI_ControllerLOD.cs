@@ -81,8 +81,8 @@ namespace pi.LTCGI
             {
                 // Create LODs by applying blur shader
                 var inputLods = new Texture2D[StaticTextures.Length, 4];
-                var width = StaticTextures.Max(x => x.width);
-                var height = StaticTextures.Max(x => x.height);
+                var width = Mathf.ClosestPowerOfTwo(StaticTextures.Max(x => x.width));
+                var height = Mathf.ClosestPowerOfTwo(StaticTextures.Max(x => x.height));
                 for (int i = 0; i < StaticTextures.Length; i++)
                 {
                     var lods = CreateLODs(StaticTextures[i], width, height);

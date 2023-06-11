@@ -386,12 +386,8 @@ namespace pi.LTCGI
             _LTCGI_LightmapIndex_val = rival.ToArray();
 
             EditorUtility.DisplayProgressBar("Finishing LTCGI bake", "Resetting configuration", 1.0f);
-            ResetConfiguration();
             bakeInProgress = false;
-
-            AssetDatabase.SaveAssets();
-            EditorSceneManager.MarkAllScenesDirty();
-            EditorSceneManager.SaveOpenScenes();
+            ResetConfiguration();
 
             /*Lightmapping.lightingDataAsset = prevLightmapData;
             LightmapSettings.lightmapsMode = prevLightmapMode;
@@ -465,9 +461,16 @@ namespace pi.LTCGI
             var resetters = GetAllBakeResets();
             foreach (LTCGI_BakeReset r in resetters)
             {
-                r.ApplyReset();
-                DestroyImmediate(r);
+                if (r)
+                {
+                    r.ApplyReset();
+                    DestroyImmediate(r);
+                }
             }
+
+            AssetDatabase.SaveAssets();
+            EditorSceneManager.MarkAllScenesDirty();
+            EditorSceneManager.SaveOpenScenes();
         }
     }
     #endif
