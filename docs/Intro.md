@@ -21,9 +21,15 @@ The 'Getting Started' row on the left is a good place to start reading. Follow t
 
 I also recommend reading _at least_ the [Performance Optimization](/Advanced/Performance_Optimization) section from the Advanced row.
 
-## ⬇️ **Download**
+## **Download**
 
-**Check the [Releases Tab](https://github.com/pimaker/ltcgi/releases) over on GitHub for the latest version!** Make sure you grab a **[compatible shader](https://github.com/PiMaker/ltcgi#supported-shaders)** as well while you're there!
+Make sure you grab a **[compatible shader](https://github.com/PiMaker/ltcgi#supported-shaders)** first! The built-in shaders can be used for testing, but should not be used in production.
+
+For VRChat, you can install LTCGI via the [Creator Companion](https://vcc.docs.vrchat.com/) from my VPM repository:
+
+## ⬇️ **[Creator Companion/VPM Repository](https://vpm.pimaker.at/)**
+
+For **standalone Unity**, you can import LTCGI as a [git package](https://docs.unity3d.com/2019.4/Documentation/Manual/upm-ui-giturl.html) with the URL: `https://github.com/PiMaker/ltcgi.git`
 
 ## About this Page
 
