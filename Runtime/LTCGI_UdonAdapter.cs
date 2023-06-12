@@ -52,6 +52,12 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
     public int _LTCGI_ScreenCountDynamic;
     public CustomRenderTexture BlurCRTInput;
 
+    private int prop_Udon_LTCGI_ExtraData;
+    private int prop_Udon_LTCGI_Vertices_0;
+    private int prop_Udon_LTCGI_Vertices_1;
+    private int prop_Udon_LTCGI_Vertices_2;
+    private int prop_Udon_LTCGI_Vertices_3;
+
     void Start()
     {
         Debug.Log("LTCGI adapter start");
@@ -88,10 +94,13 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
 
     public void _Initialize()
     {
-        _LTCGI_Vertices_0t = new Vector4[_LTCGI_Vertices_0.Length];
-        _LTCGI_Vertices_1t = new Vector4[_LTCGI_Vertices_1.Length];
-        _LTCGI_Vertices_2t = new Vector4[_LTCGI_Vertices_2.Length];
-        _LTCGI_Vertices_3t = new Vector4[_LTCGI_Vertices_3.Length];
+        if (_LTCGI_Vertices_0t == null || _LTCGI_Vertices_0t.Length != _LTCGI_Vertices_0.Length)
+        {
+            _LTCGI_Vertices_0t = new Vector4[_LTCGI_ScreenCount];
+            _LTCGI_Vertices_1t = new Vector4[_LTCGI_ScreenCount];
+            _LTCGI_Vertices_2t = new Vector4[_LTCGI_ScreenCount];
+            _LTCGI_Vertices_3t = new Vector4[_LTCGI_ScreenCount];
+        }
 
         for (int i = 0; i < _LTCGI_ScreenCount; i++)
         {
@@ -162,11 +171,17 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
             r.SetPropertyBlock(block);
         }
 
-        GlobalShader.SetGlobalVectorArray(GlobalShader.PropertyToID("_Udon_LTCGI_ExtraData"), _LTCGI_ExtraData);
-        GlobalShader.SetGlobalVectorArray(GlobalShader.PropertyToID("_Udon_LTCGI_Vertices_0"), _LTCGI_Vertices_0t);
-        GlobalShader.SetGlobalVectorArray(GlobalShader.PropertyToID("_Udon_LTCGI_Vertices_1"), _LTCGI_Vertices_1t);
-        GlobalShader.SetGlobalVectorArray(GlobalShader.PropertyToID("_Udon_LTCGI_Vertices_2"), _LTCGI_Vertices_2t);
-        GlobalShader.SetGlobalVectorArray(GlobalShader.PropertyToID("_Udon_LTCGI_Vertices_3"), _LTCGI_Vertices_3t);
+        prop_Udon_LTCGI_ExtraData = GlobalShader.PropertyToID("_Udon_LTCGI_ExtraData");
+        prop_Udon_LTCGI_Vertices_0 = GlobalShader.PropertyToID("_Udon_LTCGI_Vertices_0");
+        prop_Udon_LTCGI_Vertices_1 = GlobalShader.PropertyToID("_Udon_LTCGI_Vertices_1");
+        prop_Udon_LTCGI_Vertices_2 = GlobalShader.PropertyToID("_Udon_LTCGI_Vertices_2");
+        prop_Udon_LTCGI_Vertices_3 = GlobalShader.PropertyToID("_Udon_LTCGI_Vertices_3");
+
+        GlobalShader.SetGlobalVectorArray(prop_Udon_LTCGI_ExtraData, _LTCGI_ExtraData);
+        GlobalShader.SetGlobalVectorArray(prop_Udon_LTCGI_Vertices_0, _LTCGI_Vertices_0t);
+        GlobalShader.SetGlobalVectorArray(prop_Udon_LTCGI_Vertices_1, _LTCGI_Vertices_1t);
+        GlobalShader.SetGlobalVectorArray(prop_Udon_LTCGI_Vertices_2, _LTCGI_Vertices_2t);
+        GlobalShader.SetGlobalVectorArray(prop_Udon_LTCGI_Vertices_3, _LTCGI_Vertices_3t);
     }
 
     private Vector4 CalcTransform(Vector4 i, Transform t)
@@ -188,11 +203,11 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
             _LTCGI_Vertices_3t[i] = CalcTransform(_LTCGI_Vertices_3[i], transform);
         }
 
-        GlobalShader.SetGlobalVectorArray(GlobalShader.PropertyToID("_Udon_LTCGI_ExtraData"), _LTCGI_ExtraData);
-        GlobalShader.SetGlobalVectorArray(GlobalShader.PropertyToID("_Udon_LTCGI_Vertices_0"), _LTCGI_Vertices_0t);
-        GlobalShader.SetGlobalVectorArray(GlobalShader.PropertyToID("_Udon_LTCGI_Vertices_1"), _LTCGI_Vertices_1t);
-        GlobalShader.SetGlobalVectorArray(GlobalShader.PropertyToID("_Udon_LTCGI_Vertices_2"), _LTCGI_Vertices_2t);
-        GlobalShader.SetGlobalVectorArray(GlobalShader.PropertyToID("_Udon_LTCGI_Vertices_3"), _LTCGI_Vertices_3t);
+        GlobalShader.SetGlobalVectorArray(prop_Udon_LTCGI_ExtraData, _LTCGI_ExtraData);
+        GlobalShader.SetGlobalVectorArray(prop_Udon_LTCGI_Vertices_0, _LTCGI_Vertices_0t);
+        GlobalShader.SetGlobalVectorArray(prop_Udon_LTCGI_Vertices_1, _LTCGI_Vertices_1t);
+        GlobalShader.SetGlobalVectorArray(prop_Udon_LTCGI_Vertices_2, _LTCGI_Vertices_2t);
+        GlobalShader.SetGlobalVectorArray(prop_Udon_LTCGI_Vertices_3, _LTCGI_Vertices_3t);
     }
 
     // See the docs for more info:
