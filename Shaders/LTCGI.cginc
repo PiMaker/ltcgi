@@ -4,11 +4,9 @@
 #include "LTCGI_config.cginc"
 
 #ifdef LTCGI_AVATAR_MODE
-    #undef LTCGI_TOGGLEABLE_SPEC_DIFF_OFF
     #undef LTCGI_STATIC_UNIFORMS
     #undef LTCGI_BICUBIC_LIGHTMAP
     #define LTCGI_ALWAYS_LTC_DIFFUSE
-    #define LTCGI_CYLINDER
 #endif
 
 #ifdef LTCGI_TOGGLEABLE_SPEC_DIFF_OFF

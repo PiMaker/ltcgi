@@ -99,11 +99,11 @@ ltcgi_flags ltcgi_parse_flags(uint val, bool noLmDiff)
 
     #ifdef LTCGI_ALWAYS_LTC_DIFFUSE
     ret.diffFromLm  = false;
-    ret.diffuse     = true;
     #else
     ret.diffFromLm  = !noLmDiff && (val & 2) == 2;
-    ret.diffuse     = (val & 8) == 8;
     #endif
+
+    ret.diffuse     = (val & 8) == 8;
 
     ret.specular    = (val & 4) == 4;
     ret.texindex    = (val & 0xf0) >> 4;
