@@ -162,7 +162,7 @@ float3 LTCGI_sample(float2 uv, uint lod, uint idx, float blend)
             if (idx == 0)
             {
                 #ifndef SHADER_TARGET_SURFACE_ANALYSIS
-                return premul_alpha(_Udon_LTCGI_Texture_LOD0.SampleLevel(sampler_LTCGI_trilinear_clamp_sampler, uv, lod));
+                return premul_alpha(_Udon_LTCGI_Texture_LOD0.SampleLevel(LTCGI_SAMPLER, uv, lod));
                 #else
                 return 0;
                 #endif
@@ -188,11 +188,11 @@ float3 LTCGI_sample(float2 uv, uint lod, uint idx, float blend)
         switch (lod)
         {
             case 1:
-                return _Udon_LTCGI_Texture_LOD1.SampleLevel(sampler_LTCGI_trilinear_clamp_sampler, ruv, 0).rgb;
+                return _Udon_LTCGI_Texture_LOD1.SampleLevel(LTCGI_SAMPLER, ruv, 0).rgb;
             case 2:
-                return _Udon_LTCGI_Texture_LOD2.SampleLevel(sampler_LTCGI_trilinear_clamp_sampler, ruv, 0).rgb;
+                return _Udon_LTCGI_Texture_LOD2.SampleLevel(LTCGI_SAMPLER, ruv, 0).rgb;
             default:
-                return _Udon_LTCGI_Texture_LOD3.SampleLevel(sampler_LTCGI_trilinear_clamp_sampler, ruv, blend*0.72).rgb;
+                return _Udon_LTCGI_Texture_LOD3.SampleLevel(LTCGI_SAMPLER, ruv, blend*0.72).rgb;
         }
         #else
         return 0;

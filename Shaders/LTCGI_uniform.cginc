@@ -1,9 +1,17 @@
 #ifndef LTCGI_UNIFORM_INCLUDED
 #define LTCGI_UNIFORM_INCLUDED
 
+// global sampler (trilinear)
+#ifndef LTCGI_SAMPLER
+SamplerState sampler_LTCGI_trilinear_clamp_sampler;
+#define LTCGI_SAMPLER sampler_LTCGI_trilinear_clamp_sampler
+#endif
+
 // LUTs
-uniform sampler2D _Udon_LTCGI_lut2;
-uniform sampler2D _Udon_LTCGI_lut1;
+#ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
+uniform Texture2D<float4> _Udon_LTCGI_lut2;
+uniform Texture2D<float4> _Udon_LTCGI_lut1;
+#endif
 
 #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
 uniform Texture2D<float4> _Udon_LTCGI_static_uniforms;
@@ -117,9 +125,6 @@ ltcgi_flags ltcgi_parse_flags(uint val, bool noLmDiff)
 
     return ret;
 }
-
-// LOD sampler (trilinear)
-uniform SamplerState sampler_LTCGI_trilinear_clamp_sampler;
 
 // video input
 #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER

@@ -68,11 +68,11 @@ float4 LTCGI_SampleShadowmap(float2 lmuv)
         float4 _Udon_LTCGI_Lightmap_TexelSize = float4(width, height, 1.0/width, 1.0/height);
 
         return LTCGI_SampleTexture2DBicubicFilter(
-            _Udon_LTCGI_Lightmap, sampler_LTCGI_trilinear_clamp_sampler,
+            _Udon_LTCGI_Lightmap, LTCGI_SAMPLER,
             lmuv, _Udon_LTCGI_Lightmap_TexelSize
         );
     #else
-        return _Udon_LTCGI_Lightmap.Sample(sampler_LTCGI_trilinear_clamp_sampler, lmuv);
+        return _Udon_LTCGI_Lightmap.Sample(LTCGI_SAMPLER, lmuv);
     #endif
 }
 

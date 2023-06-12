@@ -202,8 +202,10 @@
         return;
     #endif
 
+    #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
     // sample BDRF approximation from lookup texture
-    float4 t = tex2Dlod(_Udon_LTCGI_lut1, float4(uv, 0, 0));
+    float4 t = _Udon_LTCGI_lut1.SampleLevel(LTCGI_SAMPLER, uv, 0);
+    #endif
     float3x3 Minv = float3x3(
         float3(  1,   0, t.w),
         float3(  0, t.z,   0),
@@ -223,7 +225,9 @@
 
     // specular brightness
     #ifndef LTCGI_SPECULAR_OFF
-        float spec_amp = tex2Dlod(_Udon_LTCGI_lut2, float4(uv, 0, 0)).x;
+    #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
+        float spec_amp = _Udon_LTCGI_lut2.SampleLevel(LTCGI_SAMPLER, uv, 0).x;
+    #endif
     #endif
 
     #ifdef LTCGI_VISUALIZE_SCREEN_COUNT
