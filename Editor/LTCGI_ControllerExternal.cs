@@ -80,6 +80,15 @@ namespace pi.LTCGI
                 return;
             }
 
+            #if !UDONSHARP
+            if (LTCGI_Controller.RuntimeMode == LTCGI_Controller.LTCGIRuntimeMode.VRChatWorld)
+            {
+                const string msg = "LTCGI for VRChat requires at least UdonSharp 1.0 to be installed in your project!";
+                Debug.LogError(msg);
+                EditorGUILayout.HelpBox(msg, MessageType.Error);
+            }
+            #endif
+
             serializedObject.Update();
 
             if (GUILayout.Button("Force Update"))

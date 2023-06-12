@@ -77,14 +77,6 @@ namespace pi.LTCGI
                         UpdateMaterials();
                     }
                 };
-                #if !UDONSHARP
-                if (RuntimeMode == LTCGIRuntimeMode.VRChatWorld)
-                {
-                    const string msg = "LTCGI requires at least UdonSharp 1.0 to be installed in your project!";
-                    Debug.LogError(msg);
-                    EditorUtility.DisplayDialog("LTCGI Error", msg, "Sure thing, I'll install it!");
-                }
-                #endif
                 Debug.Log($"LTCGI Controller Singleton initialized (Mode: {RuntimeMode})");
 
                 var ctrls = GameObject.FindObjectsOfType<LTCGI_Controller>().Length;
@@ -100,6 +92,11 @@ namespace pi.LTCGI
             if (!File.Exists("Assets\\Gizmos\\LTCGI_Screen_Gizmo.png"))
                 File.Copy("Packages\\at.pimaker.ltcgi\\LTCGI_Screen_Gizmo.png", "Assets\\Gizmos\\LTCGI_Screen_Gizmo.png", true);
             
+            CreateShaderRedirectFile();
+        }
+
+        private static void CreateShaderRedirectFile()
+        {
             if (!AssetDatabase.IsValidFolder("Assets\\_pi_"))
                 AssetDatabase.CreateFolder("Assets", "_pi_");
             if (!AssetDatabase.IsValidFolder("Assets\\_pi_\\_LTCGI"))
@@ -108,9 +105,6 @@ namespace pi.LTCGI
                 AssetDatabase.CreateFolder("Assets\\_pi_\\_LTCGI", "Shaders");
             if (!File.Exists("Assets\\_pi_\\_LTCGI\\Shaders\\LTCGI.cginc"))
                 File.WriteAllText("Assets\\_pi_\\_LTCGI\\Shaders\\LTCGI.cginc", "#include \"Packages\\at.pimaker.ltcgi\\Shaders\\LTCGI.cginc\"");
-
-            // workaround a dumb thing
-            //AssetDatabase.ImportAsset("Assets/_pi_/_LTCGI/Scripts/LTCGI_AssemblyUdon.asset", ImportAssetOptions.ForceUpdate | ImportAssetOptions.ForceSynchronousImport | ImportAssetOptions.ImportRecursive);
         }
 
         public static bool MatLTCGIenabled(Material mat)
@@ -121,17 +115,6 @@ namespace pi.LTCGI
             if (tag == "ALWAYS") return true;
             return mat.GetFloat(tag) != 0;
         }
-
-        /*private float calcUV(Vector2 uv)
-        {
-            uv *= 0xffff;
-            uv.x = Mathf.Clamp(uv.x, 0, 0xffff);
-            uv.y = Mathf.Clamp(uv.y, 0, 0xffff);
-            UInt32 map = 0;
-            map |= ((UInt32)uv.x) & 0xffff;
-            map |= (((UInt32)uv.y) & 0xffff) << 16;
-            return BitConverter.ToSingle(BitConverter.GetBytes(map), 0);
-        }*/
 
         [MenuItem("Tools/LTCGI/Force Material Update")]
         public static void UpdateMaterialsMenu() => Singleton?.UpdateMaterials();
@@ -149,6 +132,8 @@ namespace pi.LTCGI
             #if DEBUG_LOG
             Debug.Log($"LTCGI: beginning update ({(fast ? "fast" : "full")})");
             #endif
+
+            CreateShaderRedirectFile();
             
             if (_LTCGI_ExtraData == null)
                 fast = false;
@@ -446,7 +431,6 @@ namespace pi.LTCGI
 
             // write out uniforms into data texture
             var staticUniformTex = WriteStaticUniform(screens, fast);
-
             var screenCountDynamic = screens.TakeWhile(x => x.Dynamic).Count();
 
             for (int i = 0; i < cachedMeshRenderers.Length; i++)
@@ -457,92 +441,11 @@ namespace pi.LTCGI
                     UpdateMaterials(false);
                     return;
                 }
-                var found = false;
-                // set material props directly too (we need the adapter to have it serialized though)
-                foreach (var mat in r.sharedMaterials)
-                {
-                    if (MatLTCGIenabled(mat))
-                    {
-                        found = true;
-                        break;
-                    }
-                }
-                if (found)
-                {
-                    var prop = new MaterialPropertyBlock();
-                    r.GetPropertyBlock(prop);
-
-                    var lmfound = false;
-                    if (_LTCGI_LightmapData_key != null)
-                    {
-                        var lidx2 = Array.IndexOf(_LTCGI_LightmapData_key, r);
-                        if (lidx2 >= 0)
-                        {
-                            var lidx = _LTCGI_LightmapIndex_val[lidx2];
-                            if (_LTCGI_Lightmaps != null && lidx != 0xFFFE && lidx >= 0 && lidx < _LTCGI_Lightmaps.Length && _LTCGI_Lightmaps[lidx] != null)
-                            {
-                                prop.SetTexture("_Udon_LTCGI_Lightmap", _LTCGI_Lightmaps[lidx]);
-                                lmfound = true;
-                            }
-                        }
-                    }
-                    if (!lmfound)
-                    {
-                        prop.SetTexture("_Udon_LTCGI_Lightmap", DefaultLightmap);
-                    }
-
-                    if (_LTCGI_LightmapData_key != null && _LTCGI_LightmapData_key.Length > 0)
-                    {
-                        var idx = Array.IndexOf(_LTCGI_LightmapData_key, r);
-                        if (idx >= 0)
-                        {
-                            prop.SetVector("_Udon_LTCGI_LightmapST", _LTCGI_LightmapOffsets_val[idx]);
-                        }
-                    }
-
-                    // Video and LUTs
-                    if (VideoTexture != null)
-                    {
-                        prop.SetTexture("_Udon_LTCGI_Texture_LOD0", VideoTexture);
-                        prop.SetTexture("_Udon_LTCGI_Texture_LOD1", LOD1);
-                        prop.SetTexture("_Udon_LTCGI_Texture_LOD2", LOD2);
-                        prop.SetTexture("_Udon_LTCGI_Texture_LOD3", LOD3);
-                    }
-                    prop.SetTexture("_Udon_LTCGI_lut1", LUT1);
-                    prop.SetTexture("_Udon_LTCGI_lut2", LUT2);
-
-                    if (screens.Length > 0)
-                    {
-                        prop.SetVectorArray("_Udon_LTCGI_Vertices_0", _LTCGI_Vertices_0t);
-                        prop.SetVectorArray("_Udon_LTCGI_Vertices_1", _LTCGI_Vertices_1t);
-                        prop.SetVectorArray("_Udon_LTCGI_Vertices_2", _LTCGI_Vertices_2t);
-                        prop.SetVectorArray("_Udon_LTCGI_Vertices_3", _LTCGI_Vertices_3t);
-                        if (staticUniformTex != null)
-                            prop.SetTexture("_Udon_LTCGI_static_uniforms", staticUniformTex);
-                        prop.SetVectorArray("_Udon_LTCGI_ExtraData", _LTCGI_ExtraData);
-                        prop.SetVector("_Udon_LTCGI_LightmapMult", _LTCGI_LightmapMult);
-                        var mask = GetMaskForRenderer(screens, r);
-                        prop.SetFloatArray("_Udon_LTCGI_Mask", mask);
-                        prop.SetInt("_Udon_LTCGI_ScreenCount", Math.Max(screenCountDynamic,
-                                Array.FindLastIndex(mask, m => m == 0.0f) + 1));
-                        prop.SetMatrixArray("_Udon_LTCGI_ScreenTransforms",
-                            _LTCGI_ScreenTransforms.Take(screens.Length).Select(x => x == null ? Matrix4x4.identity : x.localToWorldMatrix).ToArray());
-                    }
-
-                    if (_LTCGI_LOD_arrays != null)
-                    {
-                        prop.SetTexture("_Udon_LTCGI_Texture_LOD0_arr", _LTCGI_LOD_arrays[0]);
-                        prop.SetTexture("_Udon_LTCGI_Texture_LOD1_arr", _LTCGI_LOD_arrays[1]);
-                        prop.SetTexture("_Udon_LTCGI_Texture_LOD2_arr", _LTCGI_LOD_arrays[2]);
-                        prop.SetTexture("_Udon_LTCGI_Texture_LOD3_arr", _LTCGI_LOD_arrays[3]);
-                    }
-                    r.SetPropertyBlock(prop);
-                }
             }
 
             Shader.SetGlobalFloat("_Udon_LTCGI_GlobalEnable", screens.Length > 0 ? 1.0f : 0.0f);
 
-            if (!fast && this != null && this.gameObject != null)
+            if (this != null && this.gameObject != null)
             {
                 #if UDONSHARP
                 LTCGI_UdonAdapter adapter;
@@ -654,6 +557,8 @@ namespace pi.LTCGI
                 adapter.ApplyProxyModifications();
                 #pragma warning restore 618
 
+                adapter._Initialize();
+
                 #if DEBUG_LOG
                     Debug.Log("LTCGI: updated UdonSharp adapter");
                 #endif
@@ -669,47 +574,55 @@ namespace pi.LTCGI
             #endif
         }
 
-        private Texture2D WriteStaticUniform(LTCGI_Screen[] screens, bool fast)
+        private static Texture2D staticUniformTemp = null;
+        private Texture2D WriteStaticUniform(LTCGI_Screen[] screens, bool fast, LTCGI_Screen fastScreen = null)
         {
             var curscene = EditorSceneManager.GetActiveScene().name;
             var path = @"Assets\LTCGI-Generated\StaticUniform-" + curscene + ".exr";
 
-            if (fast)
+            if (staticUniformTemp == null)
             {
-                return AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+                staticUniformTemp = new Texture2D(6, MAX_SOURCES, UnityEngine.Experimental.Rendering.GraphicsFormat.R16G16B16A16_SFloat, UnityEngine.Experimental.Rendering.TextureCreationFlags.None);
+                fast = false;
             }
 
-            var tex = new Texture2D(6, MAX_SOURCES, UnityEngine.Experimental.Rendering.GraphicsFormat.R16G16B16A16_SFloat, UnityEngine.Experimental.Rendering.TextureCreationFlags.None);
             for (int i = 0; i < MAX_SOURCES; i++)
             {
+                if (fast && fastScreen != null && i < screens.Length && screens[i] != fastScreen)
+                    continue;
                 if (i >= screens.Length)
                 {
-                    for (int w = 0; w < tex.width; w++)
+                    for (int w = 0; w < staticUniformTemp.width; w++)
                     {
-                        tex.SetPixel(w, i, Color.black);
+                        staticUniformTemp.SetPixel(w, i, Color.black);
                     }
                 }
                 else
                 {
-                    tex.SetPixel(0, i, (Color)_LTCGI_Vertices_0t[i]);
-                    tex.SetPixel(1, i, (Color)_LTCGI_Vertices_1t[i]);
-                    tex.SetPixel(2, i, (Color)_LTCGI_Vertices_2t[i]);
-                    tex.SetPixel(3, i, (Color)_LTCGI_Vertices_3t[i]);
+                    staticUniformTemp.SetPixel(0, i, (Color)_LTCGI_Vertices_0t[i]);
+                    staticUniformTemp.SetPixel(1, i, (Color)_LTCGI_Vertices_1t[i]);
+                    staticUniformTemp.SetPixel(2, i, (Color)_LTCGI_Vertices_2t[i]);
+                    staticUniformTemp.SetPixel(3, i, (Color)_LTCGI_Vertices_3t[i]);
                     if (_LTCGI_UVs[i] != null && _LTCGI_UVs[i].Length == 4)
                     {
-                        tex.SetPixel(4, i, (Color)new Vector4(
+                        staticUniformTemp.SetPixel(4, i, (Color)new Vector4(
                             _LTCGI_UVs[i][0].x, _LTCGI_UVs[i][0].y, _LTCGI_UVs[i][1].x, _LTCGI_UVs[i][1].y));
-                        tex.SetPixel(5, i, (Color)new Vector4(
+                        staticUniformTemp.SetPixel(5, i, (Color)new Vector4(
                             _LTCGI_UVs[i][2].x, _LTCGI_UVs[i][2].y, _LTCGI_UVs[i][3].x, _LTCGI_UVs[i][3].y));
                     }
                 }
             }
 
-            tex.Apply();
+            staticUniformTemp.Apply();
+
+            if (fast)
+            {
+                return staticUniformTemp;
+            }
 
             if (!AssetDatabase.IsValidFolder("Assets/LTCGI-Generated"))
                 AssetDatabase.CreateFolder("Assets", "LTCGI-Generated");
-            var exr = tex.EncodeToEXR(Texture2D.EXRFlags.OutputAsFloat);
+            var exr = staticUniformTemp.EncodeToEXR(Texture2D.EXRFlags.OutputAsFloat);
 
             var existed = File.Exists(path);
             byte[] prev = new byte[0];

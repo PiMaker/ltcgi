@@ -5,10 +5,11 @@ using UnityEngine;
 using UdonSharp;
 using VRC.SDKBase;
 using VRC.Udon;
-using GlobalShader = VRC.SDKBase.VRCShader;
 #endif
 
-#if !UDONSHARP
+#if COMPILER_UDONSHARP
+using GlobalShader = VRC.SDKBase.VRCShader;
+#else
 using GlobalShader = UnityEngine.Shader;
 #endif
 
@@ -55,9 +56,6 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
     {
         Debug.Log("LTCGI adapter start");
 
-        var stopwatch = new System.Diagnostics.Stopwatch();
-        stopwatch.Start();
-
         if (DEBUG_ReverseUnityLightmapST)
         {
             Debug.LogWarning("WARNING: LTCGI DEBUG_ReverseUnityLightmapST is active! This is probably not what you want!");
@@ -70,6 +68,26 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
             return;
         }
 
+        var stopwatch = new System.Diagnostics.Stopwatch();
+        stopwatch.Start();
+        _Initialize();
+        stopwatch.Stop();
+
+        var udon = false;
+#if UDONSHARP
+        udon = true;
+#endif
+        Debug.Log($"LTCGI adapter started for {_LTCGI_ScreenCount} ({_LTCGI_ScreenCountDynamic} dynamic) screens, {_Renderers.Length} renderers, GlobalShader mode, udon: {udon}, took: {stopwatch.ElapsedMilliseconds}ms");
+
+        if (_LTCGI_ScreenCountDynamic == 0 || _Renderers.Length == 0)
+        {
+            Debug.Log("LTCGI adapter going to sleep 😴");
+            this.enabled = false;
+        }
+    }
+
+    public void _Initialize()
+    {
         _LTCGI_Vertices_0t = new Vector4[_LTCGI_Vertices_0.Length];
         _LTCGI_Vertices_1t = new Vector4[_LTCGI_Vertices_1.Length];
         _LTCGI_Vertices_2t = new Vector4[_LTCGI_Vertices_2.Length];
@@ -101,7 +119,7 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
         GlobalShader.SetGlobalTexture(GlobalShader.PropertyToID("_Udon_LTCGI_lut2"), _LTCGI_lut2);
 
         GlobalShader.SetGlobalFloatArray(GlobalShader.PropertyToID("_Udon_LTCGI_Mask"), _LTCGI_MaskAvatars);
-        #if UDONSHARP
+        #if COMPILER_UDONSHARP
         GlobalShader.SetGlobalInteger(GlobalShader.PropertyToID("_Udon_LTCGI_ScreenCount"), _LTCGI_ScreenCountMaskedAvatars);
         #else
         GlobalShader.SetGlobalInt(GlobalShader.PropertyToID("_Udon_LTCGI_ScreenCount"), _LTCGI_ScreenCountMaskedAvatars);
@@ -144,22 +162,11 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
             r.SetPropertyBlock(block);
         }
 
-        // Set initial vertex positions and extra data
-        Update();
-
-        stopwatch.Stop();
-
-        var udon = false;
-#if UDONSHARP
-        udon = true;
-#endif
-        Debug.Log($"LTCGI adapter started for {_LTCGI_ScreenCount} ({_LTCGI_ScreenCountDynamic} dynamic) screens, {_Renderers.Length} renderers, GlobalShader mode, udon: {udon}, took: {stopwatch.ElapsedMilliseconds}ms");
-
-        if (_LTCGI_ScreenCountDynamic == 0 || _Renderers.Length == 0)
-        {
-            Debug.Log("LTCGI adapter going to sleep 😴");
-            this.enabled = false;
-        }
+        GlobalShader.SetGlobalVectorArray(GlobalShader.PropertyToID("_Udon_LTCGI_ExtraData"), _LTCGI_ExtraData);
+        GlobalShader.SetGlobalVectorArray(GlobalShader.PropertyToID("_Udon_LTCGI_Vertices_0"), _LTCGI_Vertices_0t);
+        GlobalShader.SetGlobalVectorArray(GlobalShader.PropertyToID("_Udon_LTCGI_Vertices_1"), _LTCGI_Vertices_1t);
+        GlobalShader.SetGlobalVectorArray(GlobalShader.PropertyToID("_Udon_LTCGI_Vertices_2"), _LTCGI_Vertices_2t);
+        GlobalShader.SetGlobalVectorArray(GlobalShader.PropertyToID("_Udon_LTCGI_Vertices_3"), _LTCGI_Vertices_3t);
     }
 
     private Vector4 CalcTransform(Vector4 i, Transform t)
