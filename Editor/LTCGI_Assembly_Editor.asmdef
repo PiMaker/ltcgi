@@ -5,6 +5,8 @@
         "VRC.SDK3.Editor",
         "VRC.SDKBase",
         "VRC.SDKBase.Editor",
+        "VRC.Udon",
+        "VRC.Udon.Editor",
         "LTCGI_Assembly",
         "UdonSharp.Lib",
         "UdonSharp.Editor",

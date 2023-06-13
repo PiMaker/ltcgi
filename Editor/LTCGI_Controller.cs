@@ -570,6 +570,11 @@ namespace pi.LTCGI
             LTCGI_ControllerEditor.RecalculateAutoConfig(this);
 
             #if DEBUG_LOG
+                Debug.Log("LTCGI: updating video player adapters");
+            #endif
+            LTCGI_Controller.DetectAndEnableAdaptersForAvailableVideoplayers();
+
+            #if DEBUG_LOG
                 Debug.Log("LTCGI: update done!");
             #endif
         }

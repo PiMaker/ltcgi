@@ -3,6 +3,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using UdonSharp;
+using UdonSharpEditor;
 using UnityEditor;
 using UnityEngine;
 #endif
@@ -13,6 +15,9 @@ namespace pi.LTCGI
     public partial class LTCGI_Controller
     {
         public GameObject ConfiguredAdapter;
+
+        private const string PROTV_ADAPTER_VERSION = "1.0.0";
+        private const string UDONSHARP_ADAPTER_VERSION = "1.0.0";
 
         internal static List<ILTCGI_AutoSetup> wizards;
         internal static List<ILTCGI_AutoSetup> Wizards
@@ -73,6 +78,72 @@ namespace pi.LTCGI
                     LTCGI_Controller.Singleton.UpdateMaterials();
                     return;
                 }
+            }
+        }
+
+        internal static void DetectAndEnableAdaptersForAvailableVideoplayers()
+        {
+            if (!AssetDatabase.IsValidFolder("Assets/_pi_"))
+                AssetDatabase.CreateFolder("Assets", "_pi_");
+            if (!AssetDatabase.IsValidFolder("Assets/_pi_/_LTCGI-Adapters"))
+                AssetDatabase.CreateFolder("Assets/_pi_", "_LTCGI-Adapters");
+            if (!AssetDatabase.IsValidFolder("Assets/_pi_/_LTCGI-Adapters/Editor"))
+                AssetDatabase.CreateFolder("Assets/_pi_/_LTCGI-Adapters", "Editor");
+
+            var changed = false;
+
+            // ProTv
+            if (AssetDatabase.IsValidFolder("Assets/ArchiTechAnon/ProTV") && (!System.IO.File.Exists("Assets/_pi_/_LTCGI-Adapters/protv_adapter_version.txt") || System.IO.File.ReadAllText("Assets/_pi_/_LTCGI-Adapters/protv_adapter_version.txt") != PROTV_ADAPTER_VERSION))
+            {
+                EditorUtility.DisplayDialog("LTCGI", "ProTv detected, enabling ProTv adapter.", "OK");
+
+                System.IO.File.WriteAllText("Assets/_pi_/_LTCGI-Adapters/protv_adapter_version.txt", PROTV_ADAPTER_VERSION);
+
+                System.IO.File.Copy("Packages/at.pimaker.ltcgi/~Adapters/LTCGI_ProTvAdapter.cs_disabled", "Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.cs", true);
+                System.IO.File.Copy("Packages/at.pimaker.ltcgi/~Adapters/LTCGI_ProTvAdapter.cs_disabled.meta", "Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.cs.meta", true);
+                System.IO.File.Copy("Packages/at.pimaker.ltcgi/~Adapters/LTCGI_ProTvAdapter.asset_disabled", "Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.asset", true);
+                System.IO.File.Copy("Packages/at.pimaker.ltcgi/~Adapters/LTCGI_ProTvAdapter.asset_disabled.meta", "Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.asset.meta", true);
+                System.IO.File.Copy("Packages/at.pimaker.ltcgi/~Adapters/Editor/LTCGI_ProTvAdapterAutoSetup.cs", "Assets/_pi_/_LTCGI-Adapters/Editor/LTCGI_ProTvAdapterAutoSetup.cs", true);
+
+                AssetDatabase.ImportAsset("Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.asset", ImportAssetOptions.ForceSynchronousImport);
+                AssetDatabase.Refresh();
+
+                UdonSharpProgramAsset adapter = AssetDatabase.LoadAssetAtPath<UdonSharpProgramAsset>("Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.asset");
+                adapter.sourceCsScript = AssetDatabase.LoadAssetAtPath<MonoScript>("Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.cs");
+                adapter.ApplyProgram();
+                EditorUtility.SetDirty(adapter);
+
+                changed = true;
+            }
+
+            // USharpVideo
+            if (AssetDatabase.IsValidFolder("Assets/USharpVideo") && (!System.IO.File.Exists("Assets/_pi_/_LTCGI-Adapters/usharpvideo_adapter_version.txt") || System.IO.File.ReadAllText("Assets/_pi_/_LTCGI-Adapters/usharpvideo_adapter_version.txt") != UDONSHARP_ADAPTER_VERSION))
+            {
+                EditorUtility.DisplayDialog("LTCGI", "USharpVideo detected, enabling USharpVideo adapter.", "OK");
+
+                System.IO.File.WriteAllText("Assets/_pi_/_LTCGI-Adapters/usharpvideo_adapter_version.txt", UDONSHARP_ADAPTER_VERSION);
+
+                System.IO.File.Copy("Packages/at.pimaker.ltcgi/~Adapters/LTCGI_USharpVideoAdapter.cs_disabled", "Assets/_pi_/_LTCGI-Adapters/LTCGI_USharpVideoAdapter.cs", true);
+                System.IO.File.Copy("Packages/at.pimaker.ltcgi/~Adapters/LTCGI_USharpVideoAdapter.cs_disabled.meta", "Assets/_pi_/_LTCGI-Adapters/LTCGI_USharpVideoAdapter.cs.meta", true);
+                System.IO.File.Copy("Packages/at.pimaker.ltcgi/~Adapters/LTCGI_USharpVideoAdapter.asset_disabled", "Assets/_pi_/_LTCGI-Adapters/LTCGI_USharpVideoAdapter.asset", true);
+                System.IO.File.Copy("Packages/at.pimaker.ltcgi/~Adapters/LTCGI_USharpVideoAdapter.asset_disabled.meta", "Assets/_pi_/_LTCGI-Adapters/LTCGI_USharpVideoAdapter.asset.meta", true);
+                System.IO.File.Copy("Packages/at.pimaker.ltcgi/~Adapters/Editor/LTCGI_USharpVideoAdapterAutoSetup.cs", "Assets/_pi_/_LTCGI-Adapters/Editor/LTCGI_USharpVideoAdapterAutoSetup.cs", true);
+
+                AssetDatabase.ImportAsset("Assets/_pi_/_LTCGI-Adapters/LTCGI_USharpVideoAdapter.asset", ImportAssetOptions.ForceSynchronousImport);
+                AssetDatabase.Refresh();
+
+                UdonSharpProgramAsset adapter = AssetDatabase.LoadAssetAtPath<UdonSharpProgramAsset>("Assets/_pi_/_LTCGI-Adapters/LTCGI_USharpVideoAdapter.asset");
+                adapter.sourceCsScript = AssetDatabase.LoadAssetAtPath<MonoScript>("Assets/_pi_/_LTCGI-Adapters/LTCGI_USharpVideoAdapter.cs");
+                adapter.ApplyProgram();
+                EditorUtility.SetDirty(adapter);
+
+                changed = true;
+            }
+
+            if (changed)
+            {
+                AssetDatabase.SaveAssets();
+                UdonSharp.Compiler.UdonSharpCompilerV1.CompileSync();
             }
         }
     }

@@ -35,7 +35,7 @@ namespace pi.LTCGI
                     EditorGUILayout.LabelField("Detected Pro TVs in scene:");
                     first = false;
                 }
-                if (GUILayout.Button($"Auto-Configure '{player.gameObject.transform.GetHierarchyPath()}'"))
+                if (GUILayout.Button($"Auto-Configure '{VRC.Core.ExtensionMethods.GetHierarchyPath(player.gameObject.transform)}'"))
                 {
                     var adapter = new GameObject("LTCGI_ProTvAdapter");
                     adapter.transform.parent = controller.transform;
@@ -47,8 +47,8 @@ namespace pi.LTCGI
                     script.UpdateProxy();
                     #pragma warning restore 618
                     script.Tv = player;
-                    script.SharedMaterial = AssetDatabase.LoadAssetAtPath<Material>("Assets/_pi_/_LTCGI/Adapters/LTCGI_AvProBlit_Material.mat");
-                    script.BlitCRT = AssetDatabase.LoadAssetAtPath<CustomRenderTexture>("Assets/_pi_/_LTCGI/Adapters/LTCGI_BlitCRT.asset");
+                    script.SharedMaterial = AssetDatabase.LoadAssetAtPath<Material>(AssetDatabase.GUIDToAssetPath("77ef72900fca1b14b867f03b4d1f4ed5") /* LTCGI_AvProBlit_Material.mat */);
+                    script.BlitCRT = AssetDatabase.LoadAssetAtPath<CustomRenderTexture>(AssetDatabase.GUIDToAssetPath("802e4542fd374664aa4d0858e525b454") /* LTCGI_BlitCRT.asset */);
                     script.AvProBranding = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/ArchiTechAnon/ProTV/Images/ProTVLogo_16x9.png");
 
                     controller.VideoTexture = script.BlitCRT;

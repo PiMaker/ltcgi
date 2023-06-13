@@ -30,7 +30,7 @@ namespace pi.LTCGI
                     EditorGUILayout.LabelField("Detected U# Video Players in scene:");
                     first = false;
                 }
-                if (GUILayout.Button($"Auto-Configure '{player.gameObject.transform.GetHierarchyPath()}'"))
+                if (GUILayout.Button($"Auto-Configure '{VRC.Core.ExtensionMethods.GetHierarchyPath(player.gameObject.transform)}'"))
                 {
                     var adapter = new GameObject("LTCGI_USharpVideoAdapter");
                     adapter.transform.parent = controller.transform;
@@ -42,7 +42,7 @@ namespace pi.LTCGI
                     script.UpdateProxy();
                     #pragma warning restore 618
                     script.VideoPlayer = player;
-                    script.CRT = AssetDatabase.LoadAssetAtPath<CustomRenderTexture>("Assets/_pi_/_LTCGI/Adapters/LTCGI_BlitCRT.asset");
+                    script.CRT = AssetDatabase.LoadAssetAtPath<CustomRenderTexture>(AssetDatabase.GUIDToAssetPath("802e4542fd374664aa4d0858e525b454") /* LTCGI_BlitCRT.asset */);
 
                     controller.VideoTexture = script.CRT;
 
@@ -56,7 +56,7 @@ namespace pi.LTCGI
                     }
                     else
                     {
-                        script.StandbyTexture = AssetDatabase.LoadAssetAtPath<Texture2D>("Assets/_pi_/_LTCGI/Adapters/black1px.png");
+                        script.StandbyTexture = AssetDatabase.LoadAssetAtPath<Texture2D>(AssetDatabase.GUIDToAssetPath("68718da77206620438ca14e29cefa6fb") /* black1px.png */);
                     }
                     #pragma warning disable 618
                     script.ApplyProxyModifications();
