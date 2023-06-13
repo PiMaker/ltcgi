@@ -99,11 +99,11 @@ namespace pi.LTCGI
 
                 System.IO.File.WriteAllText("Assets/_pi_/_LTCGI-Adapters/protv_adapter_version.txt", PROTV_ADAPTER_VERSION);
 
-                System.IO.File.Copy("Packages/at.pimaker.ltcgi/~Adapters/LTCGI_ProTvAdapter.cs_disabled", "Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.cs", true);
-                System.IO.File.Copy("Packages/at.pimaker.ltcgi/~Adapters/LTCGI_ProTvAdapter.cs_disabled.meta", "Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.cs.meta", true);
-                System.IO.File.Copy("Packages/at.pimaker.ltcgi/~Adapters/LTCGI_ProTvAdapter.asset_disabled", "Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.asset", true);
-                System.IO.File.Copy("Packages/at.pimaker.ltcgi/~Adapters/LTCGI_ProTvAdapter.asset_disabled.meta", "Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.asset.meta", true);
-                System.IO.File.Copy("Packages/at.pimaker.ltcgi/~Adapters/Editor/LTCGI_ProTvAdapterAutoSetup.cs", "Assets/_pi_/_LTCGI-Adapters/Editor/LTCGI_ProTvAdapterAutoSetup.cs", true);
+                System.IO.File.Copy("Packages/at.pimaker.ltcgi/Adapters/LTCGI_ProTvAdapter.cs_disabled", "Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.cs", true);
+                System.IO.File.Copy("Packages/at.pimaker.ltcgi/Adapters/LTCGI_ProTvAdapter.cs_disabled.meta", "Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.cs.meta", true);
+                System.IO.File.Copy("Packages/at.pimaker.ltcgi/Adapters/LTCGI_ProTvAdapter.asset_disabled", "Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.asset", true);
+                System.IO.File.Copy("Packages/at.pimaker.ltcgi/Adapters/LTCGI_ProTvAdapter.asset_disabled.meta", "Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.asset.meta", true);
+                System.IO.File.Copy("Packages/at.pimaker.ltcgi/Adapters/Editor/LTCGI_ProTvAdapterAutoSetup.cs_disabled", "Assets/_pi_/_LTCGI-Adapters/Editor/LTCGI_ProTvAdapterAutoSetup.cs", true);
 
                 AssetDatabase.ImportAsset("Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.asset", ImportAssetOptions.ForceSynchronousImport);
                 AssetDatabase.Refresh();
@@ -123,11 +123,11 @@ namespace pi.LTCGI
 
                 System.IO.File.WriteAllText("Assets/_pi_/_LTCGI-Adapters/usharpvideo_adapter_version.txt", UDONSHARP_ADAPTER_VERSION);
 
-                System.IO.File.Copy("Packages/at.pimaker.ltcgi/~Adapters/LTCGI_USharpVideoAdapter.cs_disabled", "Assets/_pi_/_LTCGI-Adapters/LTCGI_USharpVideoAdapter.cs", true);
-                System.IO.File.Copy("Packages/at.pimaker.ltcgi/~Adapters/LTCGI_USharpVideoAdapter.cs_disabled.meta", "Assets/_pi_/_LTCGI-Adapters/LTCGI_USharpVideoAdapter.cs.meta", true);
-                System.IO.File.Copy("Packages/at.pimaker.ltcgi/~Adapters/LTCGI_USharpVideoAdapter.asset_disabled", "Assets/_pi_/_LTCGI-Adapters/LTCGI_USharpVideoAdapter.asset", true);
-                System.IO.File.Copy("Packages/at.pimaker.ltcgi/~Adapters/LTCGI_USharpVideoAdapter.asset_disabled.meta", "Assets/_pi_/_LTCGI-Adapters/LTCGI_USharpVideoAdapter.asset.meta", true);
-                System.IO.File.Copy("Packages/at.pimaker.ltcgi/~Adapters/Editor/LTCGI_USharpVideoAdapterAutoSetup.cs", "Assets/_pi_/_LTCGI-Adapters/Editor/LTCGI_USharpVideoAdapterAutoSetup.cs", true);
+                System.IO.File.Copy("Packages/at.pimaker.ltcgi/Adapters/LTCGI_USharpVideoAdapter.cs_disabled", "Assets/_pi_/_LTCGI-Adapters/LTCGI_USharpVideoAdapter.cs", true);
+                System.IO.File.Copy("Packages/at.pimaker.ltcgi/Adapters/LTCGI_USharpVideoAdapter.cs_disabled.meta", "Assets/_pi_/_LTCGI-Adapters/LTCGI_USharpVideoAdapter.cs.meta", true);
+                System.IO.File.Copy("Packages/at.pimaker.ltcgi/Adapters/LTCGI_USharpVideoAdapter.asset_disabled", "Assets/_pi_/_LTCGI-Adapters/LTCGI_USharpVideoAdapter.asset", true);
+                System.IO.File.Copy("Packages/at.pimaker.ltcgi/Adapters/LTCGI_USharpVideoAdapter.asset_disabled.meta", "Assets/_pi_/_LTCGI-Adapters/LTCGI_USharpVideoAdapter.asset.meta", true);
+                System.IO.File.Copy("Packages/at.pimaker.ltcgi/Adapters/Editor/LTCGI_USharpVideoAdapterAutoSetup.cs_disabled", "Assets/_pi_/_LTCGI-Adapters/Editor/LTCGI_USharpVideoAdapterAutoSetup.cs", true);
 
                 AssetDatabase.ImportAsset("Assets/_pi_/_LTCGI-Adapters/LTCGI_USharpVideoAdapter.asset", ImportAssetOptions.ForceSynchronousImport);
                 AssetDatabase.Refresh();
