@@ -12,7 +12,7 @@
 /// Disable the ability to toggle specular/diffuse on or off per screen.
 //#define LTCGI_TOGGLEABLE_SPEC_DIFF_OFF
 
-/// Always use LTC diffuse mode, never lightmapped diffuse.
+/// Only use LTC diffuse mode, never lightmapped diffuse.
 /// This disables lightmaps entirely.
 //#define LTCGI_ALWAYS_LTC_DIFFUSE
 
@@ -31,29 +31,11 @@
 /// Fall back to LTC diffuse (from LM diffuse) on objects that are not marked static.
 #define LTCGI_LTC_DIFFUSE_FALLBACK
 
-/// Allow specular intensities greater than 1.
-#define LTCGI_ALLOW_HDR_SPECULAR
-
 /// Approximation to ignore diffuse light for far away
 /// lights, increase MULT or disable if you notice artifacting
 #define LTCGI_DISTANCE_FADE_APPROX
 /// Distance at which diffuse from screens will be ignored.
 #define LTCGI_DISTANCE_FADE_APPROX_MULT 50
-/// [DEBUG] Visualize distance fade error with red pixels.
-//#define LTCGI_DISTANCE_FADE_APPROX_ERROR_VISUALIZE
-
-/// [DEBUG] Visualize screen count per pixel for debugging.
-/// (black = 0, red = 1, green = 2, blue >= 3)
-//#define LTCGI_VISUALIZE_SCREEN_COUNT
-
-/// [DEBUG] Visualize texture sample UVs in .rg space.
-//#define LTCGI_VISUALIZE_SAMPLE_UV
-
-/// [DEBUG] Show raw LTCGI shadowmap.
-//#define LTCGI_SHOW_SHADOWMAP
-
-/// [DEBUG] Show LTCGI shadowmap UV.
-//#define LTCGI_SHOW_SHADOWMAP_UV
 
 
 // disabled editor from here on out

@@ -252,15 +252,6 @@ float3 LTCGI_trilinear(float2 uv, float d, uint idx)
     GENERIC HELPERS
 */
 
-float LTCGI_invlerp(float from, float to, float value){
-    return (value - from) / (to - from);
-}
-
-float LTCGI_remap(float origFrom, float origTo, float targetFrom, float targetTo, float value){
-    float rel = LTCGI_invlerp(origFrom, origTo, value);
-    return lerp(targetFrom, targetTo, rel);
-}
-
 bool LTCGI_tri_ray(float3 orig, float3 dir, float3 v0, float3 v1, float3 v2, out float2 bary) {
     float3 v0v1 = v1 - v0;
     float3 v0v2 = v2 - v0;

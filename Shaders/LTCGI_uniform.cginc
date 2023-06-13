@@ -73,24 +73,6 @@ uniform bool _Udon_LTCGI_Mask[MAX_SOURCES];
 //   b15=lightmap diffuse only
 // (color black = fully disabled)
 uniform float4 _Udon_LTCGI_ExtraData[MAX_SOURCES];
-struct ltcgi_flags
-{
-    bool doublesided;
-    bool diffFromLm;
-    bool specular;
-    bool diffuse;
-    uint texindex;
-    uint colormode;
-    uint lmch, lmidx;
-    bool cylinder;
-    uint alBand;
-    bool lmdOnly;
-};
-
-#define LTCGI_COLORMODE_STATIC 0
-#define LTCGI_COLORMODE_TEXTURE 1
-#define LTCGI_COLORMODE_SINGLEUV 2
-#define LTCGI_COLORMODE_AUDIOLINK 3
 
 ltcgi_flags ltcgi_parse_flags(uint val, bool noLmDiff)
 {

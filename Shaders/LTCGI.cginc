@@ -14,6 +14,11 @@
     #undef LTCGI_SPECULAR_OFF
 #endif
 
+#if defined(LTCGI_V2_CUSTOM_INPUT) || defined(LTCGI_V2_DIFFUSE_CALLBACK) || defined(LTCGI_V2_SPECULAR_CALLBACK)
+    #define LTCGI_API_V2
+#endif
+
+#include "LTCGI_structs.cginc"
 #include "LTCGI_uniform.cginc"
 #include "LTCGI_functions.cginc"
 #include "LTCGI_shadowmap.cginc"
@@ -23,52 +28,47 @@
 #endif
 
 // Main function - this calculates the approximated model for one pixel and one light
-/* private */ float LTCGI_Evaluate(
-    float3 Lw[4], float3 worldNorm, float3 viewDir, float3x3 Minv, uint i, float roughness, bool isTri,
-    float2 uvStart, float2 uvEnd, const bool diffuse, ltcgi_flags flags, inout float3 color
-) {
+ltcgi_output LTCGI_Evaluate(ltcgi_input input, float3 worldNorm, float3 viewDir, float3x3 Minv, float roughness, const bool diffuse) {
+    ltcgi_output output;
+    output.input = input;
+    output.color = input.rawColor; // copy for colormode static
+    output.intensity = 0;
+
     // diffuse distance fade
     #ifdef LTCGI_DISTANCE_FADE_APPROX
-        #ifdef LTCGI_DISTANCE_FADE_APPROX_ERROR_VISUALIZE
-            bool distFadeError = false;
-        #endif
         if (diffuse) // static branch, specular does not directly fade with distance
         {
-            if (!flags.lmdOnly) {
+            if (!input.flags.lmdOnly) {
                 // very approximate lol
-                float3 ctr = (Lw[0] + Lw[1])/2;
+                float3 ctr = (input.Lw[0] + input.Lw[1])/2;
                 float dist = length(ctr);
                 if (dist > LTCGI_DISTANCE_FADE_APPROX_MULT)
                 {
-                    #ifdef LTCGI_DISTANCE_FADE_APPROX_ERROR_VISUALIZE
-                        distFadeError = true;
-                    #else
-                        return 0;
-                    #endif
+                    return output;
                 }
             }
         }
     #endif
 
-    #define RET1_IF_LMDIFF [branch] if (/*const*/ diffuse && flags.diffFromLm) return 1;
+    #define RET1_IF_LMDIFF [branch] if (/*const*/ diffuse && input.flags.diffFromLm) { output.intensity = 1.0f; return output; }
 
-    if (flags.colormode == LTCGI_COLORMODE_SINGLEUV) {
-        float2 uv = uvStart;
+    if (input.flags.colormode == LTCGI_COLORMODE_SINGLEUV) {
+        float2 uv = input.uvStart;
         if (uv.x < 0) uv.xy = uv.yx;
         // TODO: make more configurable?
         #ifdef LTCGI_VISUALIZE_SAMPLE_UV
-            color = float3(uv.xy, 0);
+            output.color = float3(uv.xy, 0);
         #else
-            color *= LTCGI_sample(LTCGI_inset_uv(uv), 1, flags.texindex, 0);
+            output.color *= LTCGI_sample(LTCGI_inset_uv(uv), 1, input.flags.texindex, 0);
         #endif
 
         RET1_IF_LMDIFF
     }
 
     #ifdef LTCGI_AUDIOLINK
-        if (flags.colormode == LTCGI_COLORMODE_AUDIOLINK) {
-            float al = AudioLinkData(ALPASS_AUDIOLINK + uint2(0, flags.alBand)).r;
-            color *= al;
+        if (input.flags.colormode == LTCGI_COLORMODE_AUDIOLINK) {
+            float al = AudioLinkData(ALPASS_AUDIOLINK + uint2(0, input.flags.alBand)).r;
+            output.color *= al;
 
             RET1_IF_LMDIFF
         }
@@ -77,46 +77,42 @@
     // create LTC polygon array
     // note the order of source verts (keyword: winding order)
     float3 L[5];
-    L[0] = mul(Minv, Lw[0]);
-    L[1] = mul(Minv, Lw[1]);
-    L[2] = isTri ? L[1] : mul(Minv, Lw[3]);
-    L[3] = mul(Minv, Lw[2]);
+    L[0] = mul(Minv, input.Lw[0]);
+    L[1] = mul(Minv, input.Lw[1]);
+    L[2] = input.isTri ? L[1] : mul(Minv, input.Lw[3]);
+    L[3] = mul(Minv, input.Lw[2]);
     L[4] = 0;
 
     // get texture coords (before clipping!)
     [branch]
-    if (flags.colormode == LTCGI_COLORMODE_TEXTURE) {
+    if (input.flags.colormode == LTCGI_COLORMODE_TEXTURE) {
         float3 RN;
-        float2 uv = LTCGI_calculateUV(i, flags, L, isTri, uvStart, uvEnd, RN);
+        float2 uv = LTCGI_calculateUV(input.i, input.flags, L, input.isTri, input.uvStart, input.uvEnd, RN);
         float planeAreaSquared = dot(RN, RN);
         float planeDistxPlaneArea = dot(RN, L[0]);
 
         float3 sampled;
-        #ifdef LTCGI_VISUALIZE_SAMPLE_UV
-            sampled = float3(uv.xy, 0);
-        #else
-            [branch]
-            if (diffuse) { // static branch
-                sampled =
-                    LTCGI_sample(uv, 3, flags.texindex, 10) * 0.75 +
-                    LTCGI_sample(uv, 3, flags.texindex, 100) * 0.25;
-            } else {
-                float d = abs(planeDistxPlaneArea) / planeAreaSquared;
-                d *= LTCGI_UV_BLUR_DISTANCE;
-                d = log(d) / log(3.0);
+        [branch]
+        if (diffuse) { // static branch
+            sampled =
+                LTCGI_sample(uv, 3, input.flags.texindex, 10) * 0.75 +
+                LTCGI_sample(uv, 3, input.flags.texindex, 100) * 0.25;
+        } else {
+            float d = abs(planeDistxPlaneArea) / planeAreaSquared;
+            d *= LTCGI_UV_BLUR_DISTANCE;
+            d = log(d) / log(3.0);
 
-                // a rough material must never show a perfect reflection,
-                // since our LOD0 texture is not prefiltered (and thus cannot
-                // depict any blur correctly) - without this there is artifacting
-                // on the border of LOD0 and LOD1
-                d = clamp(d, saturate(roughness * 5.75), 1000);
+            // a rough material must never show a perfect reflection,
+            // since our LOD0 texture is not prefiltered (and thus cannot
+            // depict any blur correctly) - without this there is artifacting
+            // on the border of LOD0 and LOD1
+            d = clamp(d, saturate(roughness * 5.75), 1000);
 
-                sampled = LTCGI_trilinear(uv, d, flags.texindex);
-            }
-        #endif
+            sampled = LTCGI_trilinear(uv, d, input.flags.texindex);
+        }
 
         // colorize output
-        color *= sampled;
+        output.color *= sampled;
     }
 
     RET1_IF_LMDIFF
@@ -127,7 +123,7 @@
 
     // early out if everything was clipped below horizon
     if (n == 0)
-        return float3(0, 0, 0);
+        return output;
 
     L[0] = normalize(L[0]);
     L[1] = normalize(L[1]);
@@ -144,35 +140,27 @@
         sum += LTCGI_IntegrateEdge(a, b).z;
     }
 
-    #ifdef LTCGI_DISTANCE_FADE_APPROX
-    #ifdef LTCGI_DISTANCE_FADE_APPROX_ERROR_VISUALIZE
-        if (diffuse && abs(sum) > 0.005 && distFadeError)
-        {
-            // debug distance fade failure cases
-            color = float3(1, 0, 0);
-            return 1;
-        }
-    #endif
-    #endif
-
-    // doublesided is accounted for with optimization at the start
-    // return flags.doublesided ? abs(sum) : max(0, sum);
-    return abs(sum);
+    // doublesided is accounted for with optimization at the start, so return abs
+    output.intensity = abs(sum);
+    return output;
 }
 
 // Calculate light contribution for all lights,
 // call this from your shader and use the "diffuse" and "specular" outputs
 // lmuv is the raw lightmap UV coordinate (e.g. UV1)
-/* public */ void LTCGI_Contribution(
-    float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv, inout half3 diffuse
-#ifndef LTCGI_SPECULAR_OFF
-    , inout half3 specular, out float totalSpecularIntensity
+void LTCGI_Contribution(
+#ifdef LTCGI_API_V2
+    inout LTCGI_V2_CUSTOM_INPUT data,
+#endif
+    float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv
+#ifndef LTCGI_API_V2
+    , inout half3 diffuse, inout half3 specular, out float totalSpecularIntensity, out float totalDiffuseIntensity
 #endif
 ) {
-    if (_Udon_LTCGI_GlobalEnable == 0.0f) {
-#ifndef LTCGI_SPECULAR_OFF
+    #ifndef LTCGI_API_V2
         totalSpecularIntensity = 0;
-#endif
+    #endif
+    if (_Udon_LTCGI_GlobalEnable == 0.0f) {
         return;
     }
 
@@ -187,18 +175,6 @@
 
     // calculate LTCGI custom lightmap UV and sample
     float3 lms = LTCGI_SampleShadowmap(lmuv);
-
-    #ifdef LTCGI_SHOW_SHADOWMAP
-        diffuse += lms;
-        totalSpecularIntensity = 0;
-        return;
-    #endif
-
-    #ifdef LTCGI_SHOW_SHADOWMAP_UV
-        diffuse = float3(lmuv.xy, 0);
-        totalSpecularIntensity = 0;
-        return;
-    #endif
 
     #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
     // sample BDRF approximation from lookup texture
@@ -228,14 +204,6 @@
     #endif
     #endif
 
-    #ifdef LTCGI_VISUALIZE_SCREEN_COUNT
-        uint ccc = 0;
-    #endif
-
-    #ifndef LTCGI_SPECULAR_OFF
-        totalSpecularIntensity = 0;
-    #endif
-
     bool noLm = false;
     #ifdef LTCGI_LTC_DIFFUSE_FALLBACK
     #ifndef SHADER_TARGET_SURFACE_ANALYSIS
@@ -256,6 +224,11 @@
         if (!any(color)) continue;
 
         ltcgi_flags flags = ltcgi_parse_flags(asuint(extra.w), noLm);
+        
+        #ifdef LTCGI_ALWAYS_LTC_DIFFUSE
+            // can't honor a lightmap-only light in this mode
+            if (flags.lmdOnly) continue;
+        #endif
 
         #ifdef LTCGI_TOGGLEABLE_SPEC_DIFF_OFF
             // compile branches below away statically
@@ -273,8 +246,8 @@
         }
 
         // skip single-sided lights that face the other way
+        float3 screenNorm = cross(Lw[1] - Lw[0], Lw[2] - Lw[0]);
         if (!flags.doublesided) {
-            float3 screenNorm = cross(Lw[1] - Lw[0], Lw[2] - Lw[0]);
             if (dot(screenNorm, Lw[0]) < 0)
                 continue;
         }
@@ -285,9 +258,15 @@
             if (lm < 0.001) continue;
         }
 
-        #ifdef LTCGI_VISUALIZE_SCREEN_COUNT
-            ccc++;
-        #endif
+        ltcgi_input input;
+        input.i = i;
+        input.Lw = Lw;
+        input.isTri = isTri;
+        input.uvStart = uvStart;
+        input.uvEnd = uvEnd;
+        input.rawColor = color;
+        input.flags = flags;
+        input.screenNormal = screenNorm;
 
         // diffuse lighting
         #ifndef LTCGI_DIFFUSE_OFF
@@ -301,8 +280,16 @@
                     else
                         lmd = smoothstep(0.0, LTCGI_SPECULAR_LIGHTMAP_STEP, saturate(lm - LTCGI_LIGHTMAP_CUTOFF));
                 }
-                float diff = LTCGI_Evaluate(Lw, worldNorm, viewDir, identityBrdf, i, roughness, isTri, uvStart, uvEnd, true, flags, color);
-                diffuse += (diff * color * lmd);
+                ltcgi_output diff = LTCGI_Evaluate(input, worldNorm, viewDir, identityBrdf, roughness, true);
+                diff.intensity *= lmd;
+
+                #ifdef LTCGI_API_V2
+                    LTCGI_V2_DIFFUSE_CALLBACK(data, diff);
+                #else
+                    // simply accumulate all lights
+                    diffuse += (diff.intensity * diff.color);
+                    totalDiffuseIntensity += diff.intensity;
+                #endif
             }
         #endif
 
@@ -311,55 +298,46 @@
             [branch]
             if (flags.specular)
             {
-                // reset color
-                #ifdef LTCGI_ALLOW_HDR_SPECULAR
-                    color = extra.rgb;
-                #else
-                    color = saturate(extra.rgb);
-                #endif
+                ltcgi_output spec = LTCGI_Evaluate(input, worldNorm, viewDir, Minv, roughness, false);
+                spec.intensity *= spec_amp * smoothstep(0.0, LTCGI_SPECULAR_LIGHTMAP_STEP, saturate(lm - LTCGI_LIGHTMAP_CUTOFF));
 
-                float spec = LTCGI_Evaluate(Lw, worldNorm, viewDir, Minv, i, roughness, isTri, uvStart, uvEnd, false, flags, color);
-                spec *= spec_amp * smoothstep(0.0, LTCGI_SPECULAR_LIGHTMAP_STEP, saturate(lm - LTCGI_LIGHTMAP_CUTOFF));
-                #ifndef LTCGI_SPECULAR_OFF
-                    totalSpecularIntensity += spec;
+                #ifdef LTCGI_API_V2
+                    LTCGI_V2_SPECULAR_CALLBACK(data, spec);
+                #else
+                    // simply accumulate all lights
+                    specular += spec.intensity * spec.color;
+                    totalSpecularIntensity += spec.intensity;
                 #endif
-                specular += spec * color;
             }
         #endif
     }
-
-    #ifdef LTCGI_VISUALIZE_SCREEN_COUNT
-        diffuse = float3(ccc == 1, ccc == 2, ccc > 2);
-    #endif
 }
 
 // COMPATIBILITY FALLBACKS
 
-#ifdef LTCGI_SPECULAR_OFF
+#ifndef LTCGI_API_V2
 
-/* public */ void LTCGI_Contribution(
-    float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv, inout half3 diffuse, inout half3 specular_UNUSED
+void LTCGI_Contribution(
+    float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv, inout half3 diffuse
 ) {
-    LTCGI_Contribution(worldPos, worldNorm, viewDir, roughness, lmuv, diffuse);
+    half3 _u1;
+    float _u2, _u3;
+    LTCGI_Contribution(worldPos, worldNorm, viewDir, roughness, lmuv, diffuse, _u1, _u2, _u3);
 }
 
-/* public */ void LTCGI_Contribution(
-    float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv, inout half3 diffuse, inout half3 specular_UNUSED, out float totalSpecularIntensity
-) {
-    totalSpecularIntensity = 0;
-    LTCGI_Contribution(worldPos, worldNorm, viewDir, roughness, lmuv, diffuse);
-}
-
-#else
-
-/* public */ void LTCGI_Contribution(
+void LTCGI_Contribution(
     float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv, inout half3 diffuse, inout half3 specular
 ) {
-    float tsi;
-    LTCGI_Contribution(worldPos, worldNorm, viewDir, roughness, lmuv, diffuse, specular, tsi);
+    float _u1, _u2;
+    LTCGI_Contribution(worldPos, worldNorm, viewDir, roughness, lmuv, diffuse, specular, _u1, _u2);
 }
 
-#endif
+void LTCGI_Contribution(
+    float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv, inout half3 diffuse, inout half3 specular, out float totalSpecularIntensity
+) {
+    float _u1;
+    LTCGI_Contribution(worldPos, worldNorm, viewDir, roughness, lmuv, diffuse, specular, totalSpecularIntensity, _u1);
+}
 
 #endif
 
@@ -407,3 +385,5 @@ OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
 OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
 */
+
+#endif
