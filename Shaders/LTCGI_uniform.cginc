@@ -124,7 +124,9 @@ UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_Udon_LTCGI_Texture_LOD3_arr);
 
 // lightmap
 #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
+#ifndef LTCGI_ALWAYS_LTC_DIFFUSE
 uniform Texture2D<float4> _Udon_LTCGI_Lightmap;
+#endif
 #endif
 uniform float3 _Udon_LTCGI_LightmapMult;
 uniform float4 _Udon_LTCGI_LightmapST;

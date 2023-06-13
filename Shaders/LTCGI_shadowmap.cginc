@@ -57,22 +57,22 @@ float4 LTCGI_SampleShadowmap(float2 lmuv)
 {
     #ifdef LTCGI_ALWAYS_LTC_DIFFUSE
         return 1;
-    #endif
-
-    lmuv = lmuv * _Udon_LTCGI_LightmapST.xy + _Udon_LTCGI_LightmapST.zw;
-
-    #ifdef LTCGI_BICUBIC_LIGHTMAP
-        float width, height;
-        _Udon_LTCGI_Lightmap.GetDimensions(width, height);
-
-        float4 _Udon_LTCGI_Lightmap_TexelSize = float4(width, height, 1.0/width, 1.0/height);
-
-        return LTCGI_SampleTexture2DBicubicFilter(
-            _Udon_LTCGI_Lightmap, LTCGI_SAMPLER,
-            lmuv, _Udon_LTCGI_Lightmap_TexelSize
-        );
     #else
-        return _Udon_LTCGI_Lightmap.Sample(LTCGI_SAMPLER, lmuv);
+        lmuv = lmuv * _Udon_LTCGI_LightmapST.xy + _Udon_LTCGI_LightmapST.zw;
+
+        #ifdef LTCGI_BICUBIC_LIGHTMAP
+            float width, height;
+            _Udon_LTCGI_Lightmap.GetDimensions(width, height);
+
+            float4 _Udon_LTCGI_Lightmap_TexelSize = float4(width, height, 1.0/width, 1.0/height);
+
+            return LTCGI_SampleTexture2DBicubicFilter(
+                _Udon_LTCGI_Lightmap, LTCGI_SAMPLER,
+                lmuv, _Udon_LTCGI_Lightmap_TexelSize
+            );
+        #else
+            return _Udon_LTCGI_Lightmap.Sample(LTCGI_SAMPLER, lmuv);
+        #endif
     #endif
 }
 
