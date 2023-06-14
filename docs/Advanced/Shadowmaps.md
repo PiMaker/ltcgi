@@ -56,7 +56,7 @@ The LTCGI Controller has a few advanced debug options you can check out as well:
 
 Don't forget to hit "Apply" after changing them, and make sure to reset them after testing.
 
-You can also check the generated lightmaps in `_pi_\_LTCGI\Generated\Lightmaps-{your-scene-name}`. These should look like normal lightmaps casting light outwards from your screens.
+You can also check the generated lightmaps in `_pi_\_LTCGI-Generated\Lightmaps-{your-scene-name}`. These should look like normal lightmaps casting light outwards from your screens.
 
 During the bake your screens should show up in either Red, Green or Blue, depending on which lightmap channel they are set to.
 

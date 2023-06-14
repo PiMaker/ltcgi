@@ -10,7 +10,7 @@ To do so, the [UdonSharp API](/Advanced/Udon_Sharp_API) has a function `_SetGlob
 
 The LTCGI unitypackage contains an example script (also listed below) that shows how to use this. Note that because the function has a parameter, it can not be called from Udon-Graph at this time.
 
-You can find a **prefab** using this toggle on an interactable cube in the `_pi_/_LTCGI` folder called `LTCGI Global Toggle Example.prefab`. This can also be used to start LTCGI in disabled state.
+You can find a **prefab** using this toggle on an interactable cube in the `Packages/LTCGI` folder called `LTCGI Global Toggle Example.prefab`. This can also be used to start LTCGI in disabled state.
 
 > ⚠️ Note that disabling GameObjects or components with a screen or emitter on them is **not supported**, neither in editor nor in-game!
 
@@ -21,8 +21,7 @@ You can find a **prefab** using this toggle on an interactable cube in the `_pi_
 ```csharp
 using UdonSharp;
 
-// NOTE: This script has to be in the "_LTCGI/Scripts" folder, *or* reference
-// the "LTCGI_AssemblyUdon" to allow it to use the "LTCGI_UdonAdapter" type!
+// NOTE: This script has to reference the "LTCGI_AssemblyUdon" to allow it to use the "LTCGI_UdonAdapter" type!
 
 [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
 public class LTCGI_ExampleToggle : UdonSharpBehaviour

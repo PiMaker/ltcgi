@@ -10,16 +10,6 @@ Before anything else, make sure your color space is set to linear:
 
 ## Installing LTCGI
 
-Download the latest version from the [Releases Tab](https://github.com/pimaker/ltcgi/releases) over on GitHub. You only need the `ltcgi_X.Y.Z.unitypackage` file for now.
-
-Then, simply install it into your project!
+For **standalone Unity**, you can import LTCGI as a [git package](https://docs.unity3d.com/2019.4/Documentation/Manual/upm-ui-giturl.html) with the URL: `https://github.com/PiMaker/ltcgi.git`
 
 > ⚠️ If you are importing LTCGI into an existing project, make sure you have a backup first!
-
-<video controls loop width="100%">
-  <source src="/vid/installing_unitypackage.webm"/>
-</video>
-
-## Upgrading LTCGI
-
-Download the new version and drop it into your project as described above. Note that this will reset your "Global Shader Options".

@@ -28,14 +28,8 @@ I do however very highly recommend ClientSim (previously CyanEmu), as it allows 
 
 ## Installing LTCGI
 
-Download the latest version from the [Releases Tab](https://github.com/pimaker/ltcgi/releases) over on GitHub. You only need the `ltcgi_X.Y.Z.unitypackage` file for now.
+You can install LTCGI via the [Creator Companion](https://vcc.docs.vrchat.com/) as well, after adding my VPM repository:
 
-Then, simply install it into your project!
+## ⬇️ **[Creator Companion/VPM Repository](https://vpm.pimaker.at/)**
 
-<video controls loop width="100%">
-  <source src="/vid/installing_unitypackage.webm"/>
-</video>
-
-## Upgrading LTCGI
-
-Download the new version and drop it into your project as described above. Note that this will reset your "Global Shader Options".
+Then, simply install the latest version into your project! You can also upgrade via the Creator Companion at any time.
