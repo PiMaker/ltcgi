@@ -195,6 +195,13 @@ namespace pi.LTCGI
                         rend.sharedMaterials = new Material[] { mat };
                         GameObjectUtility.SetStaticEditorFlags(rend.gameObject, flags | StaticEditorFlags.ContributeGI);
                     }
+
+                    if (!rend.enabled)
+                    {
+                        Debug.LogWarning("LTCGI: An object with an LTCGI_Screen component has a disabled renderer, it will be forcibly enabled for the bake", rend.gameObject);
+                        rend.enabled = true;
+                        r.DisableRendererComponents = new Renderer[] { rend };
+                    }
                 };
 
                 LTCGI_Emitter emitter;

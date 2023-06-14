@@ -3,10 +3,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using UdonSharp;
-using UdonSharpEditor;
 using UnityEditor;
 using UnityEngine;
+#if UDONSHARP
+using UdonSharp;
+using UdonSharpEditor;
+#endif
 #endif
 
 namespace pi.LTCGI
@@ -83,6 +85,7 @@ namespace pi.LTCGI
 
         internal static void DetectAndEnableAdaptersForAvailableVideoplayers()
         {
+#if UDONSHARP
             if (!AssetDatabase.IsValidFolder("Assets/_pi_"))
                 AssetDatabase.CreateFolder("Assets", "_pi_");
             if (!AssetDatabase.IsValidFolder("Assets/_pi_/_LTCGI-Adapters"))
@@ -145,6 +148,7 @@ namespace pi.LTCGI
                 AssetDatabase.SaveAssets();
                 UdonSharp.Compiler.UdonSharpCompilerV1.CompileSync();
             }
+#endif
         }
     }
 

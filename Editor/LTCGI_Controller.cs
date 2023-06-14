@@ -557,7 +557,8 @@ namespace pi.LTCGI
                 adapter.ApplyProxyModifications();
                 #pragma warning restore 618
 
-                adapter._Initialize();
+                if (screens.Length > 0)
+                    adapter._Initialize();
 
                 #if DEBUG_LOG
                     Debug.Log("LTCGI: updated UdonSharp adapter");

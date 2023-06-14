@@ -12,6 +12,7 @@ namespace pi.LTCGI
     public class LTCGI_BakeReset : MonoBehaviour
     {
         public bool Reenable;
+        public Renderer[] DisableRendererComponents;
 
         public bool ResetData;
         public Material[] Materials;
@@ -21,8 +22,6 @@ namespace pi.LTCGI
         public bool ResetLightMesh;
         public Color lightMeshColor;
         public float lightMeshIntensity;
-
-        public bool RemoveBakeryLightMesh;
 
         internal void ApplyReset()
         {
@@ -48,15 +47,13 @@ namespace pi.LTCGI
                     lm.intensity = lightMeshIntensity;
                 }
             }
-            if (RemoveBakeryLightMesh)
-            {
-                var lm = this.GetComponent<BakeryLightMesh>();
-                if (lm != null)
-                {
-                    DestroyImmediate(lm);
-                }
-            }
             #endif
+
+            if (DisableRendererComponents != null)
+            {
+                foreach (var r in DisableRendererComponents)
+                    if (r) r.enabled = false;
+            }
         }
     }
     #endif
