@@ -107,6 +107,8 @@ namespace pi.LTCGI
                     script.ApplyProxyModifications();
                     #pragma warning restore 618
 
+                    script._SetOverlayEnabled();
+
                     var ltcgi = quad.AddComponent<LTCGI_Screen>();
                     ltcgi.ColorMode = ColorMode.Texture;
                     ltcgi.Specular = true;

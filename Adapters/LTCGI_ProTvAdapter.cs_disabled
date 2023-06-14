@@ -32,11 +32,16 @@ public class LTCGI_ProTvAdapter : UdonSharpBehaviour
     //public void _TvMediaEnd() => _TvStop();
     public void _TvStop()
     {
+        _SetOverlayEnabled();
+        changeRenderTexture(null);
+    }
+
+    public void _SetOverlayEnabled()
+    {
         SharedMaterial.SetTexture(MATERIAL_PARAM_OVERLAY_TEX, AvProBranding);
         SharedMaterial.SetFloat(MATERIAL_PARAM_OVERLAY_OPACITY, 1.0f);
         SharedMaterial.SetFloat(MATERIAL_PARAM_GAMMA, 0.0f);
         SharedMaterial.SetFloat(MATERIAL_PARAM_FLIPUV, 1.0f);
-        changeRenderTexture(null);
     }
 
     private void changeRenderTexture(VideoManagerV2 manager)
