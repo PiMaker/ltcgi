@@ -31,6 +31,7 @@ To use LTCGI, all objects that should receive lighting must use a compatible sha
 * [Silent's Filamented](https://gitlab.com/s-ilent/filamented)
 * [Mochie's Unity Shaders](https://github.com/MochiesCode/Mochies-Unity-Shaders)
 * [Hekky Shaders](https://github.com/hyblocker/hekky-shaders)
+* [z3y's Shaders](https://github.com/z3y/shaders)
 * Basic "Unlit" Test Shader (included)
 * Surface Shader (included)
 
