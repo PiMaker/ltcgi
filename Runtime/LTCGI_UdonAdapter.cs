@@ -42,7 +42,7 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
     public Texture2DArray _LTCGI_Static_LODs_2;
     public Texture2DArray _LTCGI_Static_LODs_3;
     public Vector4[] _LTCGI_Vertices_0, _LTCGI_Vertices_1, _LTCGI_Vertices_2, _LTCGI_Vertices_3;
-    public Vector4[] _LTCGI_Vertices_0t, _LTCGI_Vertices_1t, _LTCGI_Vertices_2t, _LTCGI_Vertices_3t;
+    private Vector4[] _LTCGI_Vertices_0t, _LTCGI_Vertices_1t, _LTCGI_Vertices_2t, _LTCGI_Vertices_3t;
     public Vector4[] _LTCGI_ExtraData;
     public Texture2D _LTCGI_static_uniforms;
     public Transform[] _LTCGI_ScreenTransforms;
@@ -83,7 +83,7 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
 #if UDONSHARP
         udon = true;
 #endif
-        Debug.Log($"LTCGI adapter started for {_LTCGI_ScreenCount} ({_LTCGI_ScreenCountDynamic} dynamic) screens, {_Renderers.Length} renderers, GlobalShader mode, udon: {udon}, took: {stopwatch.ElapsedMilliseconds}ms");
+        Debug.Log($"LTCGI adapter started for {_LTCGI_ScreenCount} ({_LTCGI_ScreenCountDynamic} dynamic) screens (max: {_LTCGI_Vertices_0t.Length}), {_Renderers.Length} renderers, GlobalShader mode, udon: {udon}, took: {stopwatch.ElapsedMilliseconds}ms");
 
         if (_LTCGI_ScreenCountDynamic == 0 || _Renderers.Length == 0)
         {
@@ -94,13 +94,13 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
 
     public void _Initialize()
     {
-        if (_LTCGI_Vertices_0t == null || _LTCGI_Vertices_0t.Length != _LTCGI_Vertices_0.Length)
-        {
-            _LTCGI_Vertices_0t = new Vector4[_LTCGI_ScreenCount];
-            _LTCGI_Vertices_1t = new Vector4[_LTCGI_ScreenCount];
-            _LTCGI_Vertices_2t = new Vector4[_LTCGI_ScreenCount];
-            _LTCGI_Vertices_3t = new Vector4[_LTCGI_ScreenCount];
-        }
+        // must be full length (16) otherwise Unity will allocate too little GPU memory and this may break between worlds that use different amounts of screens
+        // pretty cursed, but w/e, keep in mind that this means vrc worlds that adjust the max cap above 16 will most likely not work in-game
+        var maxScreens = _LTCGI_Vertices_0.Length;
+        _LTCGI_Vertices_0t = new Vector4[maxScreens];
+        _LTCGI_Vertices_1t = new Vector4[maxScreens];
+        _LTCGI_Vertices_2t = new Vector4[maxScreens];
+        _LTCGI_Vertices_3t = new Vector4[maxScreens];
 
         for (int i = 0; i < _LTCGI_ScreenCount; i++)
         {
