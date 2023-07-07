@@ -252,6 +252,19 @@ float3 LTCGI_trilinear(float2 uv, float d, uint idx)
     GENERIC HELPERS
 */
 
+// from: https://seblagarde.wordpress.com/2014/12/01/inverse-trigonometric-functions-gpu-optimization-for-amd-gcn-architecture/
+// max absolute error 9.0x10^-3
+// Eberly's polynomial degree 1 - respect bounds
+// 4 VGPR, 12 FR (8 FR, 1 QR), 1 scalar
+// input [-1, 1] and output [0, PI]
+float LTCGI_acos_fast(float inX) 
+{ 
+    float x = abs(inX); 
+    float res = -0.156583f * x + UNITY_HALF_PI; 
+    res *= sqrt(1.0f - x); 
+    return (inX >= 0) ? res : UNITY_PI - res; 
+}
+
 bool LTCGI_tri_ray(float3 orig, float3 dir, float3 v0, float3 v1, float3 v2, out float2 bary) {
     float3 v0v1 = v1 - v0;
     float3 v0v2 = v2 - v0;

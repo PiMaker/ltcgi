@@ -165,7 +165,7 @@ void LTCGI_Contribution(
     }
 
     // sample lookup tables
-    float theta = acos(dot(worldNorm, viewDir));
+    float theta = LTCGI_acos_fast(dot(worldNorm, viewDir));
     float2 uv = float2(roughness, theta/(0.5*UNITY_PI));
     uv = uv*LUT_SCALE + LUT_BIAS;
 
