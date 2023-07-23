@@ -168,8 +168,9 @@ Shader "LTCGI/Blur Prefilter"
             return i.rgb * i.a;
         }
 
-        half3 frag_blur(Texture2D<float4> tex, float2 iuv_sample, float2 iuv_calc, float2 dir)
+        void frag_blur(Texture2D<float4> tex, float2 iuv_sample, float2 iuv_calc, float2 dir, out half3 result)
         {
+            result = 0;
             half3 col = 0;
             float sum = 0;
 
@@ -181,7 +182,8 @@ Shader "LTCGI/Blur Prefilter"
             {
                 if (_OutsideBlurOnly)
                 {
-                    return alpha(tex.SampleLevel(_blur_trilinear_clamp_sampler, iuv_sample, _LOD));
+                    result = alpha(tex.SampleLevel(_blur_trilinear_clamp_sampler, iuv_sample, _LOD));
+                    return;
                 }
 
                 dirmod = 1;
@@ -211,7 +213,7 @@ Shader "LTCGI/Blur Prefilter"
             }
 
             col = col / sum;
-            return col;
+            result = col;
         }
         ENDCG
 		
@@ -228,7 +230,9 @@ Shader "LTCGI/Blur Prefilter"
                 float2 insCalc = float2(_InsetCalculate, _InsetCalculate) * dir.yx;
                 float2 uv_sample = (1 + insSample*2) * i.globalTexcoord.xy - insSample;
                 float2 uv_calc = (1 + insCalc*2) * i.globalTexcoord.xy - insCalc;
-                return half4(frag_blur(_MainTex, uv_sample, uv_calc, dir), 1);
+                half3 result;
+                frag_blur(_MainTex, uv_sample, uv_calc, dir, result);
+                return half4(result, 1);
             }
             ENDCG
         }
@@ -246,7 +250,9 @@ Shader "LTCGI/Blur Prefilter"
                 float2 insCalc = float2(_InsetCalculate, _InsetCalculate) * dir.yx;
                 float2 uv_sample = (1 + insSample*2) * i.globalTexcoord.xy - insSample;
                 float2 uv_calc = (1 + insCalc*2) * i.globalTexcoord.xy - insCalc;
-                return half4(frag_blur(_MainTex, uv_sample, uv_calc, dir), 1);
+                half3 result;
+                frag_blur(_MainTex, uv_sample, uv_calc, dir, result);
+                return half4(result, 1);
             }
             ENDCG
         }
