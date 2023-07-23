@@ -85,26 +85,51 @@ namespace pi.LTCGI
                     Debug.LogError("There must only be one LTCGI Controller per scene!");
                 }
             }
+            
+            MigratoryBirdsDontMigrateAsMuchAsWeDoButThisFunctionWillTakeCareOfItNonetheless();
+        }
+
+        public static void MigratoryBirdsDontMigrateAsMuchAsWeDoButThisFunctionWillTakeCareOfItNonetheless()
+        {
+            var hasChanges = false;
+            if (!AssetDatabase.IsValidFolder("Assets\\_pi_"))
+            {
+                AssetDatabase.CreateFolder("Assets", "_pi_");
+                hasChanges = true;
+            }
+            if (!AssetDatabase.IsValidFolder("Assets\\_pi_\\_LTCGI"))
+            {
+                AssetDatabase.CreateFolder("Assets\\_pi_", "_LTCGI");
+                hasChanges = true;
+            }
+            if (!AssetDatabase.IsValidFolder("Assets\\_pi_\\_LTCGI\\Shaders"))
+            {
+                AssetDatabase.CreateFolder("Assets\\_pi_\\_LTCGI", "Shaders");
+                hasChanges = true;
+            }
+            if (!File.Exists("Assets\\_pi_\\_LTCGI\\Shaders\\LTCGI.cginc"))
+            {
+                File.WriteAllText("Assets\\_pi_\\_LTCGI\\Shaders\\LTCGI.cginc", "#include \"Packages\\at.pimaker.ltcgi\\Shaders\\LTCGI.cginc\"");
+                hasChanges = true;
+            }
 
             // god I hate this part, Unity dumb dumb
             if (!AssetDatabase.IsValidFolder("Assets\\Gizmos"))
+            {
                 AssetDatabase.CreateFolder("Assets", "Gizmos");
+                hasChanges = true;
+            }
             if (!File.Exists("Assets\\Gizmos\\LTCGI_Screen_Gizmo.png"))
+            {
                 File.Copy("Packages\\at.pimaker.ltcgi\\LTCGI_Screen_Gizmo.png", "Assets\\Gizmos\\LTCGI_Screen_Gizmo.png", true);
-            
-            CreateShaderRedirectFile();
-        }
+                hasChanges = true;
+            }
 
-        private static void CreateShaderRedirectFile()
-        {
-            if (!AssetDatabase.IsValidFolder("Assets\\_pi_"))
-                AssetDatabase.CreateFolder("Assets", "_pi_");
-            if (!AssetDatabase.IsValidFolder("Assets\\_pi_\\_LTCGI"))
-                AssetDatabase.CreateFolder("Assets\\_pi_", "_LTCGI");
-            if (!AssetDatabase.IsValidFolder("Assets\\_pi_\\_LTCGI\\Shaders"))
-                AssetDatabase.CreateFolder("Assets\\_pi_\\_LTCGI", "Shaders");
-            if (!File.Exists("Assets\\_pi_\\_LTCGI\\Shaders\\LTCGI.cginc"))
-                File.WriteAllText("Assets\\_pi_\\_LTCGI\\Shaders\\LTCGI.cginc", "#include \"Packages\\at.pimaker.ltcgi\\Shaders\\LTCGI.cginc\"");
+            if (hasChanges)
+            {
+                Debug.Log("LTCGI Migration took place, refreshing asset database");
+                AssetDatabase.Refresh();
+            }
         }
 
         public static bool MatLTCGIenabled(Material mat)
@@ -133,7 +158,7 @@ namespace pi.LTCGI
             Debug.Log($"LTCGI: beginning update ({(fast ? "fast" : "full")})");
             #endif
 
-            CreateShaderRedirectFile();
+            MigratoryBirdsDontMigrateAsMuchAsWeDoButThisFunctionWillTakeCareOfItNonetheless();
             
             if (_LTCGI_ExtraData == null)
                 fast = false;

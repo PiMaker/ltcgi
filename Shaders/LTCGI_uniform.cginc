@@ -5,6 +5,7 @@
 #ifndef LTCGI_SAMPLER
 SamplerState sampler_LTCGI_trilinear_clamp_sampler;
 #define LTCGI_SAMPLER sampler_LTCGI_trilinear_clamp_sampler
+#define LTCGI_SAMPLER_RAW _LTCGI_trilinear_clamp_sampler
 #endif
 
 // LUTs
@@ -111,16 +112,20 @@ ltcgi_flags ltcgi_parse_flags(uint val, bool noLmDiff)
 // video input
 #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
 uniform Texture2D<float4> _Udon_LTCGI_Texture_LOD0;
+#ifndef LTCGI_FAST_SAMPLING
 uniform Texture2D<float4> _Udon_LTCGI_Texture_LOD1;
 uniform Texture2D<float4> _Udon_LTCGI_Texture_LOD2;
 uniform Texture2D<float4> _Udon_LTCGI_Texture_LOD3;
 #endif
+#endif
 
 // static textures
 UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_Udon_LTCGI_Texture_LOD0_arr);
+#ifndef LTCGI_FAST_SAMPLING
 UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_Udon_LTCGI_Texture_LOD1_arr);
 UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_Udon_LTCGI_Texture_LOD2_arr);
 UNITY_DECLARE_TEX2DARRAY_NOSAMPLER(_Udon_LTCGI_Texture_LOD3_arr);
+#endif
 
 // lightmap
 #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER

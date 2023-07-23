@@ -140,6 +140,27 @@ half3 premul_alpha(half4 i)
 
 void LTCGI_sample(float2 uv, uint lod, uint idx, float blend, out float3 result)
 {
+#ifdef LTCGI_FAST_SAMPLING
+    #ifndef SHADER_TARGET_SURFACE_ANALYSIS
+        blend *= 2.5f;
+        [branch]
+        if (idx == 0)
+        {
+            result = premul_alpha(_Udon_LTCGI_Texture_LOD0.SampleLevel(LTCGI_SAMPLER, uv, blend));
+        }
+        else
+        {
+            result = UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
+                    _Udon_LTCGI_Texture_LOD0_arr,
+                    LTCGI_SAMPLER_RAW,
+                    float3(uv, idx - 1),
+                    blend
+                ).rgb;
+        }
+    #else
+        result = 0;
+    #endif
+#else
     result = 0;
     #ifndef LTCGI_STATIC_TEXTURES
     idx = 0; // optimize away the branches below
@@ -174,7 +195,7 @@ void LTCGI_sample(float2 uv, uint lod, uint idx, float blend, out float3 result)
             {
                 result = premul_alpha(UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
                     _Udon_LTCGI_Texture_LOD0_arr,
-                    _LTCGI_trilinear_clamp_sampler,
+                    LTCGI_SAMPLER_RAW,
                     float3(uv, idx - 1),
                     lod
                 ));
@@ -214,7 +235,7 @@ void LTCGI_sample(float2 uv, uint lod, uint idx, float blend, out float3 result)
             case 1:
                 result = UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
                     _Udon_LTCGI_Texture_LOD1_arr,
-                    _LTCGI_trilinear_clamp_sampler,
+                    LTCGI_SAMPLER_RAW,
                     float3(ruv, idx - 1),
                     0
                 ).rgb;
@@ -222,7 +243,7 @@ void LTCGI_sample(float2 uv, uint lod, uint idx, float blend, out float3 result)
             case 2:
                 result = UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
                     _Udon_LTCGI_Texture_LOD2_arr,
-                    _LTCGI_trilinear_clamp_sampler,
+                    LTCGI_SAMPLER_RAW,
                     float3(ruv, idx - 1),
                     0
                 ).rgb;
@@ -230,17 +251,21 @@ void LTCGI_sample(float2 uv, uint lod, uint idx, float blend, out float3 result)
             default:
                 result = UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
                     _Udon_LTCGI_Texture_LOD3_arr,
-                    _LTCGI_trilinear_clamp_sampler,
+                    LTCGI_SAMPLER_RAW,
                     float3(ruv, idx - 1),
                     blend
                 ).rgb;
                 return;
         }
     }
+#endif
 }
 
 void LTCGI_trilinear(float2 uv, float d, uint idx, out float3 result)
 {
+#ifdef LTCGI_FAST_SAMPLING
+    LTCGI_sample(uv, 0, idx, d, result);
+#else
     uint low = (uint)d;
     uint high = low + 1;
 
@@ -261,6 +286,7 @@ void LTCGI_trilinear(float2 uv, float d, uint idx, out float3 result)
 
         result = lerp(high_sample, low_sample, amount);
     }
+#endif
 }
 
 /*

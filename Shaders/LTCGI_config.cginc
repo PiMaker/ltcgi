@@ -16,6 +16,14 @@
 /// This disables lightmaps entirely.
 //#define LTCGI_ALWAYS_LTC_DIFFUSE
 
+/// Double-sample screen texture for diffuse lighting to smooth resulting lighting
+/// a bit more with global screen color data. Slight performance cost.
+//#define LTCGI_BLENDED_DIFFUSE_SAMPLING
+
+/// Slightly simplified and thus faster sampling for reflections at the cost of quality.
+/// Consider using this if your scene looks about the same with this enabled.
+//#define LTCGI_FAST_SAMPLING
+
 /// Use bicubic filtering for LTCGI lightmap. Recommended on.
 #define LTCGI_BICUBIC_LIGHTMAP
 

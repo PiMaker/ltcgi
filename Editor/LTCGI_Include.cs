@@ -30,6 +30,7 @@ public class LTCGI_Define : IActiveBuildTargetChanged
     static LTCGI_Define()
     {
         AddDefine();
+        pi.LTCGI.LTCGI_Controller.MigratoryBirdsDontMigrateAsMuchAsWeDoButThisFunctionWillTakeCareOfItNonetheless();
     }
 
     public void OnActiveBuildTargetChanged(BuildTarget prev, BuildTarget cur)

@@ -401,7 +401,7 @@ namespace pi.LTCGI
                         }
                         break;
                     case ColorMode.SingleUV:
-                        texSelect();
+                        EditorGUILayout.HelpBox("This will always use LOD0 of the video texture as its input.", MessageType.Info);
                         singleUVProp.vector2Value = EditorGUILayout.Vector2Field("Texture UV", singleUVProp.vector2Value);
                         break;
                     case ColorMode.AudioLink:

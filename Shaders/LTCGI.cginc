@@ -7,6 +7,8 @@
     #undef LTCGI_STATIC_UNIFORMS
     #undef LTCGI_BICUBIC_LIGHTMAP
     #define LTCGI_ALWAYS_LTC_DIFFUSE
+    // for perf and locality don't allow cylinders on avatars for now (it probably would be misdetected anyway)
+    #undef LTCGI_CYLINDER
 #endif
 
 #ifdef LTCGI_TOGGLEABLE_SPEC_DIFF_OFF
@@ -57,9 +59,9 @@ void LTCGI_Evaluate(ltcgi_input input, float3 worldNorm, float3 viewDir, float3x
         // TODO: make more configurable?
         #ifdef LTCGI_VISUALIZE_SAMPLE_UV
             output.color = float3(uv.xy, 0);
-        #else
-            float3 sampled;
-            LTCGI_sample(LTCGI_inset_uv(uv), 1, input.flags.texindex, 0, sampled);
+        #elif !defined(SHADER_TARGET_SURFACE_ANALYSIS)
+            // sample video texture directly for accuracy
+            float3 sampled = _Udon_LTCGI_Texture_LOD0.SampleLevel(LTCGI_SAMPLER, uv.xy, 0).rgb;
             output.color *= sampled;
         #endif
 
@@ -95,13 +97,17 @@ void LTCGI_Evaluate(ltcgi_input input, float3 worldNorm, float3 viewDir, float3x
         float3 sampled;
         [branch]
         if (diffuse) { // static branch
-            float3 sampled1;
-            LTCGI_sample(uv, 3, input.flags.texindex, 10, sampled1);
-            float3 sampled2;
-            LTCGI_sample(uv, 3, input.flags.texindex, 100, sampled2);
-            sampled =
-                sampled1 * 0.75 +
-                sampled2 * 0.25;
+            #ifdef LTCGI_BLENDED_DIFFUSE_SAMPLING
+                float3 sampled1;
+                LTCGI_sample(uv, 3, input.flags.texindex, 10, sampled1);
+                float3 sampled2;
+                LTCGI_sample(uv, 3, input.flags.texindex, 100, sampled2);
+                sampled =
+                    sampled1 * 0.75 +
+                    sampled2 * 0.25;
+            #else
+                LTCGI_sample(uv, 3, input.flags.texindex, 10, sampled);
+            #endif
         } else {
             float d = abs(planeDistxPlaneArea) / planeAreaSquared;
             d *= LTCGI_UV_BLUR_DISTANCE;
@@ -164,6 +170,7 @@ void LTCGI_Contribution(
 ) {
     #ifndef LTCGI_API_V2
         totalSpecularIntensity = 0;
+        totalDiffuseIntensity = 0;
     #endif
     if (_Udon_LTCGI_GlobalEnable == 0.0f) {
         return;
