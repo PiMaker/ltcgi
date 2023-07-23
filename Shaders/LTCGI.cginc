@@ -254,7 +254,7 @@ void LTCGI_Contribution(
 
         // calculate (shifted) world space positions
         float3 Lw[4];
-        float2 uvStart = (float2)0, uvEnd = (float2)0;
+        float4 uvStart = (float4)0, uvEnd = (float4)0;
         bool isTri = false;
         if (flags.lmdOnly) {
             Lw[0] = Lw[1] = Lw[2] = Lw[3] = (float3)0;

@@ -331,7 +331,13 @@ float2 LTCGI_rotateVector(float2 x, float angle)
     return mul(float2x2(c,s,-s,c), x);
 }
 
-float2 LTCGI_calculateUV(uint i, ltcgi_flags flags, float3 L[5], bool isTri, float2 uvStart, float2 uvEnd, out float3 ray)
+/*float LTCGI_remap(float3 from, float3 to, float2 targetFrom, float2 targetTo, float3 value)
+{
+    float rel = (value - from) / (to - from);
+    return lerp(targetFrom, targetTo, rel);
+}*/
+
+float2 LTCGI_calculateUV(uint i, ltcgi_flags flags, float3 L[5], bool isTri, float4 uvStart, float4 uvEnd, out float3 ray)
 {
     // calculate perpendicular vector to plane defined by area light
     float3 E1 = L[1] - L[0];
@@ -345,34 +351,20 @@ float2 LTCGI_calculateUV(uint i, ltcgi_flags flags, float3 L[5], bool isTri, flo
         LTCGI_tri_ray(0, ray, L[0], L[1], L[2], bary);
     }
 
-    float2 uvs[4];
-    #ifdef LTCGI_CYLINDER
-    if (flags.cylinder) {
-        uvs[0] = uvStart;
-        uvs[1] = float2(uvStart.x, uvEnd.y);
-        uvs[2] = float2(uvEnd.x, uvStart.y);
-        uvs[3] = uvEnd;
-    } else
-    #endif
-    {
-        uvs[0] = uvStart; // == _Udon_LTCGI_static_uniforms[uint2(4, i)].xy;
-        uvs[1] = _Udon_LTCGI_static_uniforms[uint2(4, i)].zw;
-        uvs[2] = _Udon_LTCGI_static_uniforms[uint2(5, i)].xy;
-        uvs[3] = uvEnd; // == _Udon_LTCGI_static_uniforms[uint2(5, i)].zw;
-    }
-
-    // map barycentric triangle coordinates to the according object UVs
     float3 bary3 = float3(bary, 1 - bary.x - bary.y);
-    float2 uv = uvs[1 + hit0*2] * bary3.x + uvs[3 - hit0] * bary3.y + uvs[0] * bary3.z;
-
-    return uv;
+    float2 uv;
+    if (hit0)
+        uv = uvEnd.zw * bary3.x + uvEnd.xy * bary3.y;
+    else
+        uv = uvStart.zw * bary3.x + uvEnd.zw * bary3.y;
+    return uv + uvStart.xy * bary3.z;
 }
 
 /*
     EXPERIMENTAL: CYLINDER HELPER
 */
 
-void LTCGI_GetLw(uint i, ltcgi_flags flags, float3 worldPos, out float3 Lw[4], out float2 uvStart, out float2 uvEnd, out bool isTri) {
+void LTCGI_GetLw(uint i, ltcgi_flags flags, float3 worldPos, out float3 Lw[4], out float4 uvStart, out float4 uvEnd, out bool isTri) {
     bool cylinder = false;
     #ifdef LTCGI_CYLINDER
         // statically optimize out branch below in case disabled
@@ -435,8 +427,10 @@ void LTCGI_GetLw(uint i, ltcgi_flags flags, float3 worldPos, out float3 Lw[4], o
         viewAngle = clamp(viewAngle * 0.5f, -in_size, in_size);
         viewAngle = sin(viewAngle);
         // full view UVs, but shifted left/right depending on view angle
-        uvStart = float2(1 - saturate(viewAngle), 0);
-        uvEnd = float2(1 - saturate(viewAngle + 1), 1);
+        float2 uvStart2 = float2(1 - saturate(viewAngle), 0);
+        float2 uvEnd2 = float2(1 - saturate(viewAngle + 1), 1);
+        uvStart = float4(uvStart2.x, uvStart2.y, uvStart2.x, uvEnd2.y);
+        uvEnd = float4(uvEnd2.x, uvStart2.y, uvEnd2.x, uvEnd2.y);
 
     } else {
         // use passed in data, offset around worldPos
@@ -445,11 +439,11 @@ void LTCGI_GetLw(uint i, ltcgi_flags flags, float3 worldPos, out float3 Lw[4], o
         Lw[2] = v2.xyz - worldPos;
         Lw[3] = v3.xyz - worldPos;
         #ifndef SHADER_TARGET_SURFACE_ANALYSIS
-            uvStart = _Udon_LTCGI_static_uniforms[uint2(4, i)].xy;
-            uvEnd = _Udon_LTCGI_static_uniforms[uint2(5, i)].zw;
+            uvStart = _Udon_LTCGI_static_uniforms[uint2(4, i)];
+            uvEnd = _Udon_LTCGI_static_uniforms[uint2(5, i)];
         #else
-            uvStart = float2(0, 0);
-            uvEnd = float2(1, 1);
+            uvStart = float4(0, 0, 1, 0);
+            uvEnd = float4(1, 1, 0, 1);
         #endif
 
         // we only detect triangles for "blender" import configuration, as those are the only

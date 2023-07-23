@@ -25,8 +25,8 @@ struct ltcgi_input
     uint i; // light number
     float3 Lw[4]; // world space area light vertices, Lw[1] == Lw[3] for triangle lights, shifted by input worldPos (i.e. world space position as seen from (0, 0, 0))
     bool isTri; // if this is a triangle light, quad if false
-    float2 uvStart; // vvv
-    float2 uvEnd; // defines the UV layout of the area, top left to bottom right
+    float4 uvStart; // defines the UV layout of the area (xy = top-left, zw=top-right)
+    float4 uvEnd; // defines the UV layout of the area (xy = bottom-left, zw=bottom-right), different use for cylinders
     float3 rawColor; // the raw light color, unaffected by any colormode calculations (i.e. exactly what's given as "color" in editor)
     float3 screenNormal; // world space normal direction of area light
     ltcgi_flags flags; // flags, see above
