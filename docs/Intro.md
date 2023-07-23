@@ -10,7 +10,7 @@ LTCGI is an optimized plug-and-play realtime area light solution using the [line
 
 ![screenshot of standalone demo app](https://raw.githubusercontent.com/PiMaker/ltcgi/main/~Screenshots/demoapp.jpg)
 
-You can [download](https://github.com/PiMaker/ltcgi/raw/main/DemoApp.zip) the standalone demo app pictured above to try it out for yourself.  
+You can [download](https://github.com/PiMaker/ltcgi/raw/main/~DemoApp.zip) the standalone demo app pictured above to try it out for yourself.  
 Alternatively, join the [demo world](https://vrchat.com/home/launch?worldId=wrld_aa2627ec-c63a-4db2-aa3e-9078d41c6d9c) in VRChat.
 
 LTCGI is distributed freely under a mixed-MIT license. For more details, checkout the [LICENSE](https://github.com/PiMaker/ltcgi/blob/main/LICENSE) file.
