@@ -8,7 +8,7 @@ LTCGI is an optimized plug-and-play realtime area light solution using the [line
 
 Consider the [attribution requirements](#Attribution). Check the [Releases](https://github.com/pimaker/ltcgi/releases) tab for downloads.
 
-You can also [download](https://github.com/PiMaker/ltcgi/raw/main/DemoApp.zip) the standalone demo app pictured above to try it out for yourself.  
+You can also [download](https://github.com/PiMaker/ltcgi/raw/main/~DemoApp.zip) the standalone demo app pictured above to try it out for yourself.  
 Alternatively, join the [demo world](https://vrchat.com/home/launch?worldId=wrld_aa2627ec-c63a-4db2-aa3e-9078d41c6d9c) in VRChat.
 
 [Read the FAQ](https://ltcgi.dev/FAQ) before asking for help anywhere! Once you've done that, feel free to join my Discord and ask for help: https://discord.gg/r38vJd2DuJ
