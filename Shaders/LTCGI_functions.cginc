@@ -138,8 +138,9 @@ half3 premul_alpha(half4 i)
     return i.rgb * i.a;
 }
 
-float3 LTCGI_sample(float2 uv, uint lod, uint idx, float blend)
+void LTCGI_sample(float2 uv, uint lod, uint idx, float blend, out float3 result)
 {
+    result = 0;
     #ifndef LTCGI_STATIC_TEXTURES
     idx = 0; // optimize away the branches below
     #endif
@@ -162,19 +163,22 @@ float3 LTCGI_sample(float2 uv, uint lod, uint idx, float blend)
             if (idx == 0)
             {
                 #ifndef SHADER_TARGET_SURFACE_ANALYSIS
-                return premul_alpha(_Udon_LTCGI_Texture_LOD0.SampleLevel(LTCGI_SAMPLER, uv, lod));
+                result = premul_alpha(_Udon_LTCGI_Texture_LOD0.SampleLevel(LTCGI_SAMPLER, uv, lod));
+                return;
                 #else
-                return 0;
+                result = 0;
+                return;
                 #endif
             }
             else
             {
-                return premul_alpha(UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
+                result = premul_alpha(UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
                     _Udon_LTCGI_Texture_LOD0_arr,
                     _LTCGI_trilinear_clamp_sampler,
                     float3(uv, idx - 1),
                     lod
                 ));
+                return;
             }
         }
     }
@@ -188,14 +192,18 @@ float3 LTCGI_sample(float2 uv, uint lod, uint idx, float blend)
         switch (lod)
         {
             case 1:
-                return _Udon_LTCGI_Texture_LOD1.SampleLevel(LTCGI_SAMPLER, ruv, 0).rgb;
+                result = _Udon_LTCGI_Texture_LOD1.SampleLevel(LTCGI_SAMPLER, ruv, 0).rgb;
+                return;
             case 2:
-                return _Udon_LTCGI_Texture_LOD2.SampleLevel(LTCGI_SAMPLER, ruv, 0).rgb;
+                result = _Udon_LTCGI_Texture_LOD2.SampleLevel(LTCGI_SAMPLER, ruv, 0).rgb;
+                return;
             default:
-                return _Udon_LTCGI_Texture_LOD3.SampleLevel(LTCGI_SAMPLER, ruv, blend*0.72).rgb;
+                result = _Udon_LTCGI_Texture_LOD3.SampleLevel(LTCGI_SAMPLER, ruv, blend*0.72).rgb;
+                return;
         }
         #else
-        return 0;
+        result = 0;
+        return;
         #endif
     }
     else
@@ -204,31 +212,34 @@ float3 LTCGI_sample(float2 uv, uint lod, uint idx, float blend)
         switch (lod)
         {
             case 1:
-                return UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
+                result = UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
                     _Udon_LTCGI_Texture_LOD1_arr,
                     _LTCGI_trilinear_clamp_sampler,
                     float3(ruv, idx - 1),
                     0
                 ).rgb;
+                return;
             case 2:
-                return UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
+                result = UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
                     _Udon_LTCGI_Texture_LOD2_arr,
                     _LTCGI_trilinear_clamp_sampler,
                     float3(ruv, idx - 1),
                     0
                 ).rgb;
+                return;
             default:
-                return UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
+                result = UNITY_SAMPLE_TEX2DARRAY_SAMPLER_LOD(
                     _Udon_LTCGI_Texture_LOD3_arr,
                     _LTCGI_trilinear_clamp_sampler,
                     float3(ruv, idx - 1),
                     blend
                 ).rgb;
+                return;
         }
     }
 }
 
-float3 LTCGI_trilinear(float2 uv, float d, uint idx)
+void LTCGI_trilinear(float2 uv, float d, uint idx, out float3 result)
 {
     uint low = (uint)d;
     uint high = low + 1;
@@ -238,14 +249,18 @@ float3 LTCGI_trilinear(float2 uv, float d, uint idx)
 
     if (low >= 3)
     {
-        return LTCGI_sample(uv, 3, idx, d - 3);
+        LTCGI_sample(uv, 3, idx, d - 3, result);
     }
+    else
+    {
+        float amount = saturate(high - d);
+        float3 low_sample;
+        LTCGI_sample(uv, low, idx, amount, low_sample);
+        float3 high_sample;
+        LTCGI_sample(uv, high, idx, 0, high_sample);
 
-    float amount = saturate(high - d);
-    float3 low_sample = LTCGI_sample(uv, low, idx, amount);
-    float3 high_sample = LTCGI_sample(uv, high, idx, 0);
-
-    return lerp(high_sample, low_sample, amount);
+        result = lerp(high_sample, low_sample, amount);
+    }
 }
 
 /*
