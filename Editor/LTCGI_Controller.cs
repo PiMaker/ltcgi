@@ -671,7 +671,7 @@ namespace pi.LTCGI
             float[] ltc_1, ltc_2;
             int n;
 
-            using (var reader = new StreamReader("Assets\\_pi_\\_LTCGI\\Lookup Tables\\ltc_2.inc"))
+            using (var reader = new StreamReader("Packages\\at.pimaker.ltcgi\\Lookup Tables\\ltc_3.inc"))
             {
                 n = int.Parse(reader.ReadLine().Trim());
                 ltc_1 = new float[n*n*4];
@@ -682,10 +682,10 @@ namespace pi.LTCGI
                 while (line != "}")
                 {
                     var s = line.Split(',');
-                    var a = float.Parse(s[0]);
-                    var b = float.Parse(s[1]);
-                    var c = float.Parse(s[2]);
-                    var d = float.Parse(s[3]);
+                    var a = s[0] == "nan" || s[0] == "-nan" ? float.NaN : float.Parse(s[0]);
+                    var b = s[1] == "nan" || s[1] == "-nan" ? float.NaN : float.Parse(s[1]);
+                    var c = s[2] == "nan" || s[2] == "-nan" ? float.NaN : float.Parse(s[2]);
+                    var d = s[3] == "nan" || s[3] == "-nan" ? float.NaN : float.Parse(s[3]);
                     ltc_1[i + 0] = a;
                     ltc_1[i + 1] = b;
                     ltc_1[i + 2] = c;
@@ -694,7 +694,7 @@ namespace pi.LTCGI
                     line = reader.ReadLine().Trim();
                 }
 
-                i = 0;
+                /*i = 0;
                 line = reader.ReadLine().Trim();
                 while (line != "}")
                 {
@@ -709,25 +709,25 @@ namespace pi.LTCGI
                     ltc_2[i + 3] = d;
                     i += 4;
                     line = reader.ReadLine().Trim();
-                }
+                }*/
             }
 
             Debug.Log("LTCGI: Read texture with size " + n);
             return (ltc_1, ltc_2, n);
         }
 
-        //[MenuItem("Tools/LTCGI/Encode Lookup Textures into EXR")]
+        [MenuItem("Tools/LTCGI/Encode Lookup Textures into EXR")]
         public static void EncodeLookups()
         {
             var (g_ltc_mat_f, g_ltc_mag_f, n) = ReadLookupFile();
 
             var tex = new Texture2D(n, n, UnityEngine.Experimental.Rendering.GraphicsFormat.R32G32B32A32_SFloat, 0);
             tex.SetPixelData(g_ltc_mat_f, 0);
-            System.IO.File.WriteAllBytes("Assets\\_pi_\\_LTCGI\\Lookup Tables\\ltc_mat_hdr_2.exr", tex.EncodeToEXR(Texture2D.EXRFlags.OutputAsFloat));
+            System.IO.File.WriteAllBytes("Packages\\at.pimaker.ltcgi\\Lookup Tables\\ltc_mat_hdr_3.exr", tex.EncodeToEXR(Texture2D.EXRFlags.OutputAsFloat));
 
             var tex2 = new Texture2D(n, n, UnityEngine.Experimental.Rendering.GraphicsFormat.R32G32B32A32_SFloat, 0);
             tex2.SetPixelData(g_ltc_mag_f, 0);
-            System.IO.File.WriteAllBytes("Assets\\_pi_\\_LTCGI\\Lookup Tables\\ltc_mag_hdr_2.exr", tex2.EncodeToEXR(Texture2D.EXRFlags.OutputAsFloat));
+            System.IO.File.WriteAllBytes("Packages\\at.pimaker.ltcgi\\Lookup Tables\\ltc_mag_hdr_3.exr", tex2.EncodeToEXR(Texture2D.EXRFlags.OutputAsFloat));
 
             GameObject.DestroyImmediate(tex);
             GameObject.DestroyImmediate(tex2);
