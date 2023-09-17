@@ -134,7 +134,7 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
         GlobalShader.SetGlobalInt(GlobalShader.PropertyToID("_Udon_LTCGI_ScreenCount"), _LTCGI_ScreenCountMaskedAvatars);
         #endif
 
-        GlobalShader.SetGlobalFloat(GlobalShader.PropertyToID("_Udon_LTCGI_GlobalEnable"), 1.0f);
+        _SetGlobalState(true);
 
         if (_LTCGI_static_uniforms != null)
             GlobalShader.SetGlobalTexture(GlobalShader.PropertyToID("_Udon_LTCGI_static_uniforms"), _LTCGI_static_uniforms);
@@ -283,12 +283,14 @@ public class LTCGI_RuntimeAdapter : MonoBehaviour
         if (!this.enabled) Update();
     }
 
+    private bool _globalState = false;
     public void _SetGlobalState(bool enabled)
     {
         float fstate = enabled ? 1.0f : 0.0f;
         GlobalShader.SetGlobalFloat(GlobalShader.PropertyToID("_Udon_LTCGI_GlobalEnable"), fstate);
+        _globalState = enabled;
     }
-
+    public bool _GetGlobalState() => _globalState;
 
     // Below code from: https://github.com/Xytabich/UNet
 
