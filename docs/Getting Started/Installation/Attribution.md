@@ -10,7 +10,7 @@ For your convenience, a prefab called `LTCGI Attribution` is provided in the pac
 
 **You do _not_ need to use this as-is, as long as a link to the [GitHub repository](https://github.com/pimaker/ltcgi) is provided!**
 
-![LTCGI Attribution Prefab](https://github.com/PiMaker/ltcgi/raw/main/Screenshots/attribution.jpg)
+![LTCGI Attribution Prefab](https://github.com/PiMaker/ltcgi/raw/main/~Screenshots/attribution.jpg)
 
 If you don't want to use it, instead display text similar to the following:
 

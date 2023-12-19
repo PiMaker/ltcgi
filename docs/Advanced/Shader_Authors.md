@@ -46,9 +46,9 @@ In general, the steps are:
 
 * Configure the `#include` and custom tag
 
-![Amplify Example 1](https://github.com/PiMaker/ltcgi/raw/main/Screenshots/amplify1.jpg)
+![Amplify Example 1](https://github.com/PiMaker/ltcgi/raw/main/~Screenshots/amplify1.jpg)
 
 * Add a `LTCGI_Contribution` node (under `Functions`) and connect it
 
-![Amplify Example 3](https://github.com/PiMaker/ltcgi/raw/main/Screenshots/amplify3.jpg)  
+![Amplify Example 3](https://github.com/PiMaker/ltcgi/raw/main/~Screenshots/amplify3.jpg)  
 Check the example linked above to see which parameter values are expected.
