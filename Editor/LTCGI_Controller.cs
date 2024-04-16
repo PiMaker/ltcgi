@@ -72,7 +72,7 @@ namespace pi.LTCGI
                 Singleton = this;
                 Undo.undoRedoPerformed += this.UpdateMaterials;
                 EditorApplication.playModeStateChanged += (change) => {
-                    if (change == PlayModeStateChange.ExitingEditMode)
+                    if (change == PlayModeStateChange.EnteredEditMode) //ExitingEditMode
                     {
                         UpdateMaterials();
                     }
