@@ -89,6 +89,7 @@ namespace pi.LTCGI
             MigratoryBirdsDontMigrateAsMuchAsWeDoButThisFunctionWillTakeCareOfItNonetheless();
         }
 
+        [InitializeOnLoadMethod]
         public static void MigratoryBirdsDontMigrateAsMuchAsWeDoButThisFunctionWillTakeCareOfItNonetheless()
         {
             var hasChanges = false;
@@ -111,8 +112,7 @@ namespace pi.LTCGI
 
             if (hasChanges)
             {
-                Debug.Log("LTCGI Migration took place, refreshing asset database");
-                AssetDatabase.Refresh();
+                Debug.Log("LTCGI Migration took place!");
             }
         }
 
