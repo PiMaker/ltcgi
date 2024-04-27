@@ -17,11 +17,8 @@ using GlobalShader = UnityEngine.Shader;
 [UdonBehaviourSyncMode(BehaviourSyncMode.None)]
 public class LTCGI_UdonAdapter : UdonSharpBehaviour
 #else
-// FIXME: This makes the filename mismatch the class name
-// - I think Unity doesn't like that?
-public class LTCGI_RuntimeAdapter : MonoBehaviour
+public class LTCGI_UdonAdapter : MonoBehaviour
 #endif
-
 {
     // perhaps fixes some lightmap issues with static batching?
     public bool DEBUG_ReverseUnityLightmapST = false;

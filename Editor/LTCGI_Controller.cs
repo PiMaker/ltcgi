@@ -457,30 +457,26 @@ namespace pi.LTCGI
             if (this != null && this.gameObject != null)
             {
                 #if UDONSHARP
-                LTCGI_UdonAdapter adapter;
-                #pragma warning disable 618
-                LTCGI_UdonAdapter[] adapters = this.gameObject.GetUdonSharpComponents<LTCGI_UdonAdapter>();
-                #pragma warning restore 618
+                    LTCGI_UdonAdapter adapter;
+                    #pragma warning disable 618
+                        LTCGI_UdonAdapter[] adapters = this.gameObject.GetUdonSharpComponents<LTCGI_UdonAdapter>();
+                    #pragma warning restore 618
                 #else
-                LTCGI_RuntimeAdapter adapter;
-                Component[] adapters = this.gameObject.GetComponents<LTCGI_RuntimeAdapter>();
+                    LTCGI_UdonAdapter adapter;
+                    Component[] adapters = this.gameObject.GetComponents<LTCGI_UdonAdapter>();
                 #endif
 
                 if (adapters == null || adapters.Length == 0)
                 {
                     #if UDONSHARP
-                    adapter = this.gameObject.AddUdonSharpComponent<LTCGI_UdonAdapter>();
+                        adapter = this.gameObject.AddUdonSharpComponent<LTCGI_UdonAdapter>();
                     #else
-                    adapter = this.gameObject.AddComponent<LTCGI_RuntimeAdapter>();
+                        adapter = this.gameObject.AddComponent<LTCGI_UdonAdapter>();
                     #endif
                 }
                 else
                 {
-                    #if UDONSHARP
-                    adapter = (LTCGI_UdonAdapter)adapters[0];
-                    #else
-                    adapter = (LTCGI_RuntimeAdapter)adapters[0];
-                    #endif
+                    adapter = adapters[0];
                     if (adapters.Length > 1)
                     {
                         for (int i = 1; i < adapters.Length; i++)
