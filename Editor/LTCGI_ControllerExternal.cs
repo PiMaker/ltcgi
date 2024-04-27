@@ -386,7 +386,7 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
                         LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAvailability.AvailableAsset ?
                         "#include \"Assets/AudioLink/Shaders/AudioLink.cginc\"" :
                         "#include \"Packages/com.llealloo.audiolink/Runtime/Shaders/AudioLink.cginc\""
-                    ) : "#include \"not-available\"");
+                    ) : "#include \"Packages/at.pimaker.ltcgi/Shaders/LTCGI_AudioLinkNoOp.cginc\"");
                     if (config[i] != newConfig)
                     {
                         config[i] = newConfig;
