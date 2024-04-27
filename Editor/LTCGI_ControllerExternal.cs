@@ -274,7 +274,7 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
 
                         var set = forceSet ?? GUILayout.Toggle(enabled, name, toggleStyle);
                         if (forceSet.HasValue)
-                            GUILayout.Label($"Force Set: {set}");
+                            GUILayout.Label($"{name} - Force Set: {set}");
 
                         EditorGUILayout.HelpBox(description, MessageType.None, true);
                         EditorGUILayout.Space();
