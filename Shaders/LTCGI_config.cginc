@@ -55,7 +55,7 @@
 #define LTCGI_STATIC_TEXTURES
 
 
-// keep in sync with LTCGI_Controller.cs
+// automatically kept in sync with LTCGI_Controller.cs
 #define MAX_SOURCES 16
 
 // set according to the LUT specified on CONTROLLER

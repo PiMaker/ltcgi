@@ -311,7 +311,10 @@ namespace pi.LTCGI
                 EditorGUILayout.PropertyField(sidedProp);
             }
             EditorGUILayout.PropertyField(flipProp);
-            EditorGUILayout.PropertyField(affectAvatarsProp);
+
+            #if UNITY_STANDALONE
+                EditorGUILayout.PropertyField(affectAvatarsProp);
+            #endif
 
             EditorGUILayout.Separator();
             DrawColorModeSelector(true);

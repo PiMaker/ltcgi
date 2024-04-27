@@ -114,12 +114,13 @@ public class LTCGI_UdonAdapter : MonoBehaviour
                 GlobalShader.SetGlobalTexture(GlobalShader.PropertyToID("_Udon_LTCGI_Texture_LOD" + j), _LTCGI_LODs[j]);
 
         if (_LTCGI_Static_LODs_0 != null)
-        {
             GlobalShader.SetGlobalTexture(GlobalShader.PropertyToID("_Udon_LTCGI_Texture_LOD0_arr"), _LTCGI_Static_LODs_0);
+        if (_LTCGI_Static_LODs_1 != null)
             GlobalShader.SetGlobalTexture(GlobalShader.PropertyToID("_Udon_LTCGI_Texture_LOD1_arr"), _LTCGI_Static_LODs_1);
+        if (_LTCGI_Static_LODs_2 != null)
             GlobalShader.SetGlobalTexture(GlobalShader.PropertyToID("_Udon_LTCGI_Texture_LOD2_arr"), _LTCGI_Static_LODs_2);
+        if (_LTCGI_Static_LODs_3 != null)
             GlobalShader.SetGlobalTexture(GlobalShader.PropertyToID("_Udon_LTCGI_Texture_LOD3_arr"), _LTCGI_Static_LODs_3);
-        }
 
         GlobalShader.SetGlobalTexture(GlobalShader.PropertyToID("_Udon_LTCGI_lut1"), _LTCGI_lut1);
         GlobalShader.SetGlobalTexture(GlobalShader.PropertyToID("_Udon_LTCGI_lut2"), _LTCGI_lut2);

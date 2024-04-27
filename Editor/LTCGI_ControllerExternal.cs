@@ -253,6 +253,13 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
 
                     var type = line.Count(char.IsWhiteSpace) > 1 ? ConfigType.Float : ConfigType.Boolean;
 
+                    bool? forceSet = null;
+
+                    #if !UNITY_STANDALONE
+                        if (name == "LTCGI_FAST_SAMPLING")
+                            forceSet = true;
+                    #endif
+
                     if (type == ConfigType.Boolean)
                     {
                         var enabledInConfig = line.StartsWith("#");
@@ -264,7 +271,10 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
                             toggleStyle.normal.textColor = Color.gray;
                             toggleStyle.hover.textColor = Color.gray;
                         }
-                        var set = GUILayout.Toggle(enabled, name, toggleStyle);
+
+                        var set = forceSet ?? GUILayout.Toggle(enabled, name, toggleStyle);
+                        if (forceSet.HasValue)
+                            GUILayout.Label($"Force Set: {set}");
 
                         EditorGUILayout.HelpBox(description, MessageType.None, true);
                         EditorGUILayout.Space();
@@ -414,6 +424,16 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
                         if (enabledInConfig != available)
                         {
                             config[i] = (available ? "" : "//") + "#define LTCGI_CYLINDER";
+                            changed = true;
+                        }
+                    }
+
+                    if (line.StartsWith("#define MAX_SOURCES"))
+                    {
+                        var newConfig = $"#define MAX_SOURCES {LTCGI_Controller.MAX_SOURCES}";
+                        if (config[i] != newConfig)
+                        {
+                            config[i] = newConfig;
                             changed = true;
                         }
                     }

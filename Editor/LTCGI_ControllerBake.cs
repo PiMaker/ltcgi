@@ -357,15 +357,22 @@ namespace pi.LTCGI
             var curscene = EditorSceneManager.GetActiveScene().name;
             AssetDatabase.DeleteAsset("Assets/LTCGI-Generated/Lightmaps-" + curscene);
             AssetDatabase.CreateFolder("Assets/LTCGI-Generated", "Lightmaps-" + curscene);
+            var newLightmapPaths = new List<string>();
             for (int i = 0; i < LightmapSettings.lightmaps.Length; i++)
             {
                 LightmapData lm = LightmapSettings.lightmaps[i];
                 EditorUtility.DisplayProgressBar("Finishing LTCGI bake", "Copying calculated lightmaps", i/((float)LightmapSettings.lightmaps.Length-1.0f));
                 var tex = lm.lightmapColor;
                 var path = AssetDatabase.GetAssetPath(tex);
-                AssetDatabase.CopyAsset(path, "Assets/LTCGI-Generated/Lightmaps-" + curscene + "/" + System.IO.Path.GetFileName(path));
+                var newPath = "Assets/LTCGI-Generated/Lightmaps-" + curscene + "/" + System.IO.Path.GetFileName(path);
+                AssetDatabase.CopyAsset(path, newPath);
+                newLightmapPaths.Add(newPath);
             }
             AssetDatabase.Refresh();
+
+            // configure android overrides
+            foreach (var path in newLightmapPaths)
+                SetTextureToHDRAndroid(path);
 
             EditorUtility.DisplayProgressBar("Finishing LTCGI bake", "Caching lightmaps", 0.0f);
 
@@ -459,6 +466,28 @@ namespace pi.LTCGI
                         Lightmapping.BakeAsync();
                     };
                 }
+            }
+        }
+
+        private static void SetTextureToHDRAndroid(string path)
+        {
+            var asset = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
+            string assetPath = AssetDatabase.GetAssetPath(asset);
+            var importer = AssetImporter.GetAtPath(assetPath) as TextureImporter;
+            if (importer != null)
+            {
+                var androidOverride = new TextureImporterPlatformSettings
+                {
+                    maxTextureSize = 8192,
+                    format = TextureImporterFormat.ASTC_HDR_4x4,
+                    name = "Android",
+                    overridden = true,
+                };
+                importer.SetPlatformTextureSettings(androidOverride);
+
+                #if !UNITY_STANDALONE
+                importer.SaveAndReimport();
+                #endif
             }
         }
 

@@ -23,7 +23,11 @@ namespace pi.LTCGI
     [System.Serializable]
     public partial class LTCGI_Controller : MonoBehaviour
     {
-        internal const int MAX_SOURCES = 16;
+        #if UNITY_STANDALONE
+            internal const int MAX_SOURCES = 16;
+        #else
+            internal const int MAX_SOURCES = 2;
+        #endif
 
         [Tooltip("Intensity is set for each screen. Can be a RenderTexture for realtime updates (video players).")]
         public Texture VideoTexture;
@@ -522,15 +526,27 @@ namespace pi.LTCGI
                 adapter._Screens = screens.Select(x => x?.gameObject).ToArray();
                 adapter._LTCGI_LODs = new Texture[4];
                 adapter._LTCGI_LODs[0] = VideoTexture;
-                adapter._LTCGI_LODs[1] = LOD1;
-                adapter._LTCGI_LODs[2] = LOD2;
-                adapter._LTCGI_LODs[3] = LOD3;
+                #if UNITY_STANDALONE
+                    adapter._LTCGI_LODs[1] = LOD1;
+                    adapter._LTCGI_LODs[2] = LOD2;
+                    adapter._LTCGI_LODs[3] = LOD3;
+                #else
+                    adapter._LTCGI_LODs[1] = null;
+                    adapter._LTCGI_LODs[2] = null;
+                    adapter._LTCGI_LODs[3] = null;
+                #endif
                 if (_LTCGI_LOD_arrays != null)
                 {
                     adapter._LTCGI_Static_LODs_0 = _LTCGI_LOD_arrays[0];
-                    adapter._LTCGI_Static_LODs_1 = _LTCGI_LOD_arrays[1];
-                    adapter._LTCGI_Static_LODs_2 = _LTCGI_LOD_arrays[2];
-                    adapter._LTCGI_Static_LODs_3 = _LTCGI_LOD_arrays[3];
+                    #if UNITY_STANDALONE
+                        adapter._LTCGI_Static_LODs_1 = _LTCGI_LOD_arrays[1];
+                        adapter._LTCGI_Static_LODs_2 = _LTCGI_LOD_arrays[2];
+                        adapter._LTCGI_Static_LODs_3 = _LTCGI_LOD_arrays[3];
+                    #else
+                        adapter._LTCGI_Static_LODs_1 = null;
+                        adapter._LTCGI_Static_LODs_2 = null;
+                        adapter._LTCGI_Static_LODs_3 = null;
+                    #endif
                 }
                 else
                 {
@@ -556,7 +572,11 @@ namespace pi.LTCGI
                         Math.Max(adapter._LTCGI_ScreenCountDynamic,
                             Array.FindLastIndex(mask, m => m == 0.0f) + 1)).ToArray();
                 adapter._LTCGI_ScreenCountMaskedAvatars = Array.FindLastIndex(screens, x => x.AffectAvatars) + 1;
-                adapter.BlurCRTInput = LOD1s;
+                #if UNITY_STANDALONE
+                    adapter.BlurCRTInput = LOD1s;
+                #else
+                    adapter.BlurCRTInput = null;
+                #endif
 
                 #pragma warning disable 618
                 adapter.ApplyProxyModifications();
@@ -658,6 +678,19 @@ namespace pi.LTCGI
                 importer.alphaSource = TextureImporterAlphaSource.FromInput;
                 importer.alphaIsTransparency = true;
                 importer.npotScale = TextureImporterNPOTScale.None;
+
+                var androidOverride = new TextureImporterPlatformSettings
+                {
+                    allowsAlphaSplitting = false,
+                    maxTextureSize = 8192,
+                    crunchedCompression = false,
+                    format = TextureImporterFormat.RGBAHalf,
+                    textureCompression = TextureImporterCompression.Uncompressed,
+                    name = "Android",
+                    overridden = true,
+                };
+                importer.SetPlatformTextureSettings(androidOverride);
+
                 importer.SaveAndReimport();
             }
 
