@@ -152,6 +152,8 @@ namespace pi.LTCGI
 
             EditorUtility.DisplayProgressBar("Preparing LTCGI bake", "Making LTCGI_Screens emissive", 0.5f);
 
+            var foundEnabledScreen = false;
+
             // make screen emissive
             var allScreens = GameObject.FindObjectsOfType<LTCGI_Screen>();
             foreach (var scr in allScreens)
@@ -202,6 +204,8 @@ namespace pi.LTCGI
                         rend.enabled = true;
                         r.DisableRendererComponents = new Renderer[] { rend };
                     }
+
+                    foundEnabledScreen = true;
                 };
 
                 LTCGI_Emitter emitter;
@@ -224,6 +228,14 @@ namespace pi.LTCGI
                         Debug.LogWarning("LTCGI: An object with an LTCGI_Screen component has no mesh renderer, it will not contribute shadows to this bake", scr.gameObject);
                     }
                 }
+            }
+
+            if (!foundEnabledScreen)
+            {
+                ResetConfiguration();
+                EditorUtility.ClearProgressBar();
+                EditorUtility.DisplayDialog("LTCGI", "No LTCGI_Screen components were found that are enabled and have a valid LightmapChannel set. Please configure at least one screen and try again.", "OK");
+                return;
             }
 
             bakeInProgress = true;
@@ -266,7 +278,7 @@ namespace pi.LTCGI
             }
 
             #if BAKERY_INCLUDED
-                if (bakery)
+                else if (bakery)
                 {
                     ftRenderLightmap.OnFinishedFullRender += BakeCompleteEvent;
                     var b = ftRenderLightmap.instance;
