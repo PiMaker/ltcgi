@@ -29,6 +29,10 @@ namespace pi.LTCGI
         [SerializeField] private Vector4[] _LTCGI_LightmapOffsets_val;
         [SerializeField] private int[] _LTCGI_LightmapIndex_val;
 
+        [SerializeField] private AmbientMode previousAmbientMode;
+        [SerializeField] private float previousAmbientIntensity;
+        [SerializeField] private Color previousAmbientColor;
+
         [SerializeField] private bool followupWithRealBake;
         [SerializeField] private bool followupBakery;
 
@@ -149,6 +153,14 @@ namespace pi.LTCGI
                     r.Reenable = true;
                 }
             }
+
+            // configure lighting to exclude skybox/env lighting
+            previousAmbientMode = RenderSettings.ambientMode;
+            previousAmbientIntensity = RenderSettings.ambientIntensity;
+            previousAmbientColor = RenderSettings.ambientSkyColor;
+            RenderSettings.ambientMode = AmbientMode.Flat;
+            RenderSettings.ambientIntensity = 0.0f;
+            RenderSettings.ambientSkyColor = Color.black;
 
             EditorUtility.DisplayProgressBar("Preparing LTCGI bake", "Making LTCGI_Screens emissive", 0.5f);
 
@@ -469,6 +481,10 @@ namespace pi.LTCGI
         public static void ResetConfigurationMenu() => LTCGI_Controller.Singleton.ResetConfiguration();
         public void ResetConfiguration()
         {
+            RenderSettings.ambientIntensity = previousAmbientIntensity;
+            RenderSettings.ambientMode = previousAmbientMode;
+            RenderSettings.ambientSkyColor = previousAmbientColor;
+
             if (bakeMaterialReset_key != null)
             {
                 for (int i = 0; i < bakeMaterialReset_key.Count; i++)

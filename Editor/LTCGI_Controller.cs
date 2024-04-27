@@ -476,7 +476,7 @@ namespace pi.LTCGI
                 }
                 else
                 {
-                    adapter = adapters[0];
+                    adapter = (LTCGI_UdonAdapter)adapters[0];
                     if (adapters.Length > 1)
                     {
                         for (int i = 1; i < adapters.Length; i++)
