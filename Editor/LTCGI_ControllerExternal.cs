@@ -106,11 +106,11 @@ namespace pi.LTCGI
 
             LTCGIDocsHelper.DrawHelpButton("https://ltcgi.dev/Advanced/Shadowmaps", "Shadowmap Baking");
 
-            if (!LTCGI_Controller.Singleton.bakeInProgress && GUILayout.Button("Bake Shadowmap"))
+            if (!LTCGI_Controller.Singleton.bakeInProgress && GUILayout.Button("Bake Debug Shadowmap"))
             {
                 LTCGI_Controller.BakeLightmap();
             }
-            else if (!LTCGI_Controller.Singleton.bakeInProgress && GUILayout.Button("Bake Shadowmap and Normal Lightmap"))
+            else if (!LTCGI_Controller.Singleton.bakeInProgress && GUILayout.Button("Bake LTCGI Shadowmap and Standard Lightmap"))
             {
                 LTCGI_Controller.BakeLightmapFollowup();
             }
