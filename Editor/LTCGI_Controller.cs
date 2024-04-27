@@ -135,7 +135,7 @@ namespace pi.LTCGI
                 return;
             if (Lightmapping.isRunning)
                 return;
-            if (UnityEditor.SceneManagement.EditorSceneManager.loadedSceneCount == 0)
+            if (UnityEngine.SceneManagement.SceneManager.loadedSceneCount == 0)
                 return;
 
             #if DEBUG_LOG
