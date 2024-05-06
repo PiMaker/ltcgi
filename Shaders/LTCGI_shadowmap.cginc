@@ -25,7 +25,7 @@ float4 LTCGI_cubic(float v)
 // Unity's SampleTexture2DBicubic doesn't exist in 2018, which is our target here.
 // So this is a similar function with tweaks to have similar semantics. 
 
-float4 LTCGI_SampleTexture2DBicubicFilter(Texture2D tex, SamplerState smp, float2 coord, float4 texSize)
+float4 LTCGI_SampleTexture2DBicubicFilter(Texture2D tex, SamplerState smp, float2 coord, float4 texSize, bool lightmap = false)
 {
     coord = coord * texSize.xy - 0.5;
     float fx = frac(coord.x);
@@ -44,6 +44,13 @@ float4 LTCGI_SampleTexture2DBicubicFilter(Texture2D tex, SamplerState smp, float
     float4 sample1 = tex.Sample(smp, float2(offset.y, offset.z) * texSize.zw);
     float4 sample2 = tex.Sample(smp, float2(offset.x, offset.w) * texSize.zw);
     float4 sample3 = tex.Sample(smp, float2(offset.y, offset.w) * texSize.zw);
+
+    if (lightmap) {
+        sample0 = float4(DecodeLightmap(sample0), 1.0);
+        sample1 = float4(DecodeLightmap(sample1), 1.0);
+        sample2 = float4(DecodeLightmap(sample2), 1.0);
+        sample3 = float4(DecodeLightmap(sample3), 1.0);
+    }
 
     float sx = s.x / (s.x + s.y);
     float sy = s.z / (s.z + s.w);
@@ -68,10 +75,12 @@ float4 LTCGI_SampleShadowmap(float2 lmuv)
 
             return LTCGI_SampleTexture2DBicubicFilter(
                 _Udon_LTCGI_Lightmap, LTCGI_SAMPLER,
-                lmuv, _Udon_LTCGI_Lightmap_TexelSize
+                lmuv, _Udon_LTCGI_Lightmap_TexelSize,
+                true
             );
         #else
-            return _Udon_LTCGI_Lightmap.Sample(LTCGI_SAMPLER, lmuv);
+            fixed4 sample = _Udon_LTCGI_Lightmap.Sample(LTCGI_SAMPLER, lmuv);
+            return float4(DecodeLightmap(sample), 1.0);
         #endif
     #endif
 }
