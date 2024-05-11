@@ -433,6 +433,17 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
                         }
                     }
 
+                    if (line.EndsWith("#define LTCGI_STATIC_TEXTURES"))
+                    {
+                        var enabledInConfig = !line.StartsWith("//");
+                        var available = controller.HasStaticTextureScreens;
+                        if (enabledInConfig != available)
+                        {
+                            config[i] = (available ? "" : "//") + "#define LTCGI_STATIC_TEXTURES";
+                            changed = true;
+                        }
+                    }
+
                     if (line.EndsWith("#define LTCGI_CYLINDER"))
                     {
                         var enabledInConfig = !line.StartsWith("//");

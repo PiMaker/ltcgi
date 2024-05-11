@@ -24,9 +24,6 @@
 /// Consider using this if your scene looks about the same with this enabled.
 //#define LTCGI_FAST_SAMPLING
 
-/// Allow statically textured lights.
-#define LTCGI_STATIC_TEXTURES
-
 /// Disable extra specular detail LUT, saves a sampler.
 //#define LTCGI_DISABLE_LUT2
 
@@ -79,8 +76,11 @@ const float LUT_BIAS = 0.5/LUT_SIZE;
 // Bake screen data into texture for better performance. Disables moveable screens.
 #define LTCGI_STATIC_UNIFORMS
 
+// Allow statically textured lights.
+//#define LTCGI_STATIC_TEXTURES
+
 // Enable support for cylindrical screens.
-#define LTCGI_CYLINDER
+//#define LTCGI_CYLINDER
 
 // Activate avatar mode, which overrides certain configs from above.
 //#define LTCGI_AVATAR_MODE

@@ -66,6 +66,7 @@ namespace pi.LTCGI
         public bool HasDynamicScreens = false;
         public bool HasAudioLinkScreens = false;
         public bool HasCylinders = false;
+        public bool HasStaticTextureScreens = false;
 
         public void OnEnable()
         {
@@ -172,6 +173,7 @@ namespace pi.LTCGI
             var dynamics = false;
             var cylinders = false;
             var audiolinks = false;
+            var statics = false;
 
             // construct data
             var screens = GameObject
@@ -344,6 +346,12 @@ namespace pi.LTCGI
                     {
                         audiolinks = true;
                     }
+
+                    if (s.ColorMode == ColorMode.Texture || s.ColorMode == ColorMode.SingleUV)
+                    {
+                        if (s.TextureIndex != 0)
+                            statics = true;
+                    }
                 }
 
                 _LTCGI_Vertices_0t[i] = s.transform.TransformPoint(_LTCGI_Vertices_0[i]);
@@ -382,6 +390,7 @@ namespace pi.LTCGI
                 HasCylinders = cylinders;
                 HasDynamicScreens = dynamics;
                 HasAudioLinkScreens = audiolinks;
+                HasStaticTextureScreens = statics;
             }
 
             /*_LTCGI_LightmapMult = new Vector4(
