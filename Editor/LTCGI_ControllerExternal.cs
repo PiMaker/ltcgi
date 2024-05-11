@@ -290,6 +290,9 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
                             {
                                 config[i] = "//" + config[i];
                             }
+
+                            if (forceSet.HasValue)
+                                applyButtonPressed = true; // force-apply
                         }
                         else
                         {
@@ -338,11 +341,11 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
             {
                 File.WriteAllLines(configPath, config);
                 AssetDatabase.Refresh();
-                configChangedValues = new Dictionary<string, object>();
+                configChangedValues.Clear();
             }
             else if (revertButtonPressed)
             {
-                configChangedValues = new Dictionary<string, object>();
+                configChangedValues.Clear();
             }
 
             EditorGUILayout.Space(); EditorGUILayout.Space(); EditorGUILayout.Space();

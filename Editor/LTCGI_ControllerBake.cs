@@ -370,10 +370,6 @@ namespace pi.LTCGI
             }
             AssetDatabase.Refresh();
 
-            // configure android overrides
-            foreach (var path in newLightmapPaths)
-                SetTextureToHDRAndroid(path);
-
             EditorUtility.DisplayProgressBar("Finishing LTCGI bake", "Caching lightmaps", 0.0f);
 
             // Copy data to LTCGI buffer, so that other bakes don't influence it
@@ -466,28 +462,6 @@ namespace pi.LTCGI
                         Lightmapping.BakeAsync();
                     };
                 }
-            }
-        }
-
-        private static void SetTextureToHDRAndroid(string path)
-        {
-            var asset = AssetDatabase.LoadAssetAtPath<Texture2D>(path);
-            string assetPath = AssetDatabase.GetAssetPath(asset);
-            var importer = AssetImporter.GetAtPath(assetPath) as TextureImporter;
-            if (importer != null)
-            {
-                var androidOverride = new TextureImporterPlatformSettings
-                {
-                    maxTextureSize = 8192,
-                    format = TextureImporterFormat.ASTC_HDR_4x4,
-                    name = "Android",
-                    overridden = true,
-                };
-                importer.SetPlatformTextureSettings(androidOverride);
-
-                #if !UNITY_STANDALONE
-                importer.SaveAndReimport();
-                #endif
             }
         }
 

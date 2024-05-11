@@ -520,10 +520,11 @@ namespace pi.LTCGI
                     Enumerable.Range(0, adapter._Renderers.Length)
                     .SelectMany(i => mask2d[i])
                     .ToArray();
-                // mask is reversed! 1 = not visible, 0 = visible
+                // mask is reversed! 1 = not visible, 0 = visible - avatar mask is global and must be of length MAX_SOURCES
                 var avatarMask = screens.Select(x => x.AffectAvatars ? 0.0f : 1.0f);
+                avatarMask = avatarMask.Concat(Enumerable.Repeat(1.0f, MAX_SOURCES - screens.Length));
                 adapter._LTCGI_MaskAvatars = avatarMask.ToArray();
-                adapter._Screens = screens.Select(x => x?.gameObject).ToArray();
+                adapter._Screens = screens.Select(x => x != null ? x.gameObject : null).ToArray();
                 adapter._LTCGI_LODs = new Texture[4];
                 adapter._LTCGI_LODs[0] = VideoTexture;
                 #if UNITY_STANDALONE
