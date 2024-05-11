@@ -63,7 +63,7 @@ const float LUT_BIAS = 0.5/LUT_SIZE;
 #ifdef LTCGI_AUDIOLINK
 #ifndef AUDIOLINK_WIDTH
 #ifndef AUDIOLINK_CGINC_INCLUDED
-#include "Packages/com.llealloo.audiolink/Runtime/Shaders/AudioLink.cginc"
+#include "Packages/at.pimaker.ltcgi/Shaders/LTCGI_AudioLinkNoOp.cginc"
 #define AUDIOLINK_CGINC_INCLUDED
 #endif
 #endif
