@@ -262,6 +262,8 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
                             forceSet = true;
                         if (name == "LTCGI_STATIC_TEXTURES")
                             forceSet = false;
+                        if (name == "LTCGI_DISABLE_LUT2")
+                            forceSet = true;
                     #endif
 
                     if (type == ConfigType.Boolean)

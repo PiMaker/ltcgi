@@ -206,9 +206,12 @@ void LTCGI_Contribution(
     Minv = mul(Minv, identityBrdf);
 
     // specular brightness
+    float spec_amp = 1.0f;
     #ifndef LTCGI_SPECULAR_OFF
+    #ifndef LTCGI_DISABLE_LUT2
     #ifndef SHADER_TARGET_SURFACE_ANALYSIS_MOJOSHADER
-        float spec_amp = _Udon_LTCGI_lut2.SampleLevel(LTCGI_SAMPLER, uv, 0).x;
+        spec_amp = _Udon_LTCGI_lut2.SampleLevel(LTCGI_SAMPLER, uv, 0).x;
+    #endif
     #endif
     #endif
 

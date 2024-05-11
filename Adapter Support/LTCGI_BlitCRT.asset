@@ -29,7 +29,7 @@ CustomRenderTexture:
   m_EnableRandomWrite: 0
   m_TextureSettings:
     serializedVersion: 2
-    m_FilterMode: 1
+    m_FilterMode: 2
     m_Aniso: 0
     m_MipBias: 0
     m_WrapU: 1

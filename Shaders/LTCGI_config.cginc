@@ -27,6 +27,9 @@
 /// Allow statically textured lights.
 #define LTCGI_STATIC_TEXTURES
 
+/// Disable extra specular detail LUT, saves a sampler.
+//#define LTCGI_DISABLE_LUT2
+
 /// Use bicubic filtering for LTCGI lightmap. Recommended on.
 #define LTCGI_BICUBIC_LIGHTMAP
 
