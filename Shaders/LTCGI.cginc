@@ -181,10 +181,6 @@ void LTCGI_Contribution(
     float2 uv = float2(roughness, theta/(0.5*UNITY_PI));
     uv = uv*LUT_SCALE + LUT_BIAS;
 
-    #ifndef UNITY_UV_STARTS_AT_TOP
-        uv.y = 1 - uv.y;
-    #endif
-
     // calculate LTCGI custom lightmap UV and sample
     float3 lms = LTCGI_SampleShadowmap(lmuv);
 
