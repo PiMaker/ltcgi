@@ -22,6 +22,9 @@ namespace pi.LTCGI
         internal static AudioLinkAvailability audioLinkAvailable = AudioLinkAvailability.NeedsCheck;
         public static AudioLinkAvailability AudioLinkAvailable {
             get {
+#if UNITY_ANDROID
+                return AudioLinkAvailability.Unavailable;
+#else
                 if (audioLinkAvailable == AudioLinkAvailability.NeedsCheck)
                 {
                     if (System.IO.File.Exists("Packages/com.llealloo.audiolink/Runtime/Shaders/AudioLink.cginc"))
@@ -38,6 +41,7 @@ namespace pi.LTCGI
                     }
                 }
                 return audioLinkAvailable;
+#endif
             }
         }
 
