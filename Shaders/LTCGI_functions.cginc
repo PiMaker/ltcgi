@@ -138,6 +138,11 @@ half3 premul_alpha(half4 i)
     return i.rgb * i.a;
 }
 
+half max2(half2 v)
+{
+    return max(v.x, v.y);
+}
+
 void LTCGI_sample(float2 uv, uint lod, uint idx, float blend, out float3 result)
 {
 #ifndef LTCGI_STATIC_TEXTURES
@@ -146,7 +151,9 @@ void LTCGI_sample(float2 uv, uint lod, uint idx, float blend, out float3 result)
 
 #ifdef LTCGI_FAST_SAMPLING
     #ifndef SHADER_TARGET_SURFACE_ANALYSIS
-        blend *= 2.5f;
+        float outside = max2(abs(uv - 0.5f) - 0.5f);
+        float outmod = smoothstep(-0.1f, 0.1f, outside) * 2.5f;
+        blend = blend * 2.5f + outmod;
         [branch]
         if (idx == 0)
         {
