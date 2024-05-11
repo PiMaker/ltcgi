@@ -24,6 +24,9 @@
 /// Consider using this if your scene looks about the same with this enabled.
 //#define LTCGI_FAST_SAMPLING
 
+/// Allow statically textured lights.
+#define LTCGI_STATIC_TEXTURES
+
 /// Use bicubic filtering for LTCGI lightmap. Recommended on.
 #define LTCGI_BICUBIC_LIGHTMAP
 
@@ -50,11 +53,6 @@
 ///
 
 
-// Allow statically textured lights.
-// (deprecated: doesn't really cause any improvement when disabled...)
-#define LTCGI_STATIC_TEXTURES
-
-
 // automatically kept in sync with LTCGI_Controller.cs
 #define MAX_SOURCES 16
 
@@ -63,7 +61,7 @@
 static float LUT_SCALE = (LUT_SIZE - 1.0)/LUT_SIZE;
 const float LUT_BIAS = 0.5/LUT_SIZE;
 
-// will be set automatically if audiolink is available
+// will be set automatically if audiolink is available and in use
 //#define LTCGI_AUDIOLINK
 
 #ifdef LTCGI_AUDIOLINK

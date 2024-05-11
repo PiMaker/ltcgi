@@ -64,6 +64,7 @@ namespace pi.LTCGI
         private Texture2DArray[] _LTCGI_LOD_arrays;
 
         public bool HasDynamicScreens = false;
+        public bool HasAudioLinkScreens = false;
         public bool HasCylinders = false;
 
         public void OnEnable()
@@ -170,6 +171,7 @@ namespace pi.LTCGI
 
             var dynamics = false;
             var cylinders = false;
+            var audiolinks = false;
 
             // construct data
             var screens = GameObject
@@ -337,6 +339,11 @@ namespace pi.LTCGI
                     {
                         dynamics = true;
                     }
+
+                    if (s.ColorMode == ColorMode.AudioLink)
+                    {
+                        audiolinks = true;
+                    }
                 }
 
                 _LTCGI_Vertices_0t[i] = s.transform.TransformPoint(_LTCGI_Vertices_0[i]);
@@ -374,6 +381,7 @@ namespace pi.LTCGI
             {
                 HasCylinders = cylinders;
                 HasDynamicScreens = dynamics;
+                HasAudioLinkScreens = audiolinks;
             }
 
             /*_LTCGI_LightmapMult = new Vector4(

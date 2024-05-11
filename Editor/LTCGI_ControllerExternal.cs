@@ -20,7 +20,9 @@ namespace pi.LTCGI
         const string VERSION = "v1.0.2";
 
         private static readonly string[] CONFIGURATION_PROPS = new[] {
+            #if UNITY_STANDALONE
             "StaticTextures",
+            #endif
             "DynamicRenderers",
             "CustomBlurChain",
             "LightmapIntensity",
@@ -258,6 +260,8 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
                     #if !UNITY_STANDALONE
                         if (name == "LTCGI_FAST_SAMPLING")
                             forceSet = true;
+                        if (name == "LTCGI_STATIC_TEXTURES")
+                            forceSet = false;
                     #endif
 
                     if (type == ConfigType.Boolean)
@@ -374,6 +378,13 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
                     return;
                 }
             }
+            
+            var alAvailable = LTCGI_Controller.AudioLinkAvailable;
+            if (alAvailable != LTCGI_Controller.AudioLinkAvailability.Unavailable)
+            {
+                if (!LTCGI_Controller.Singleton.HasAudioLinkScreens)
+                    alAvailable =  LTCGI_Controller.AudioLinkAvailability.Unavailable;
+            }
 
             var config = File.ReadAllLines(configPath);
             var changed = false;
@@ -386,7 +397,7 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
                 if (line.EndsWith("#define LTCGI_AUDIOLINK"))
                 {
                     var enabledInConfig = !line.StartsWith("//");
-                    var available = LTCGI_Controller.AudioLinkAvailable != LTCGI_Controller.AudioLinkAvailability.Unavailable;
+                    var available = alAvailable != LTCGI_Controller.AudioLinkAvailability.Unavailable;
                     if (enabledInConfig != available)
                     {
                         config[i] = (available ? "" : "//") + "#define LTCGI_AUDIOLINK";
@@ -395,8 +406,8 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
                 }
                 if (line.StartsWith("#include")) // cursed, but audiolink is the only include for now
                 {
-                    var newConfig = (LTCGI_Controller.AudioLinkAvailable != LTCGI_Controller.AudioLinkAvailability.Unavailable ? (
-                        LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAvailability.AvailableAsset ?
+                    var newConfig = (alAvailable != LTCGI_Controller.AudioLinkAvailability.Unavailable ? (
+                        alAvailable == LTCGI_Controller.AudioLinkAvailability.AvailableAsset ?
                         "#include \"Assets/AudioLink/Shaders/AudioLink.cginc\"" :
                         "#include \"Packages/com.llealloo.audiolink/Runtime/Shaders/AudioLink.cginc\""
                     ) : "#include \"Packages/at.pimaker.ltcgi/Shaders/LTCGI_AudioLinkNoOp.cginc\"");
