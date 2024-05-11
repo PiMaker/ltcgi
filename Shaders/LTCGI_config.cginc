@@ -20,10 +20,6 @@
 /// a bit more with global screen color data. Slight performance cost.
 //#define LTCGI_BLENDED_DIFFUSE_SAMPLING
 
-/// Slightly simplified and thus faster sampling for reflections at the cost of quality.
-/// Consider using this if your scene looks about the same with this enabled.
-//#define LTCGI_FAST_SAMPLING
-
 /// Disable extra specular detail LUT, saves a sampler.
 //#define LTCGI_DISABLE_LUT2
 
@@ -84,5 +80,8 @@ const float LUT_BIAS = 0.5/LUT_SIZE;
 
 // Activate avatar mode, which overrides certain configs from above.
 //#define LTCGI_AVATAR_MODE
+
+// Slightly simplified and thus faster sampling for reflections at the cost of quality.
+//#define LTCGI_FAST_SAMPLING
 
 #endif

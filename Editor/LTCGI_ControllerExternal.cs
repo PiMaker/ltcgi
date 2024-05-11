@@ -22,6 +22,7 @@ namespace pi.LTCGI
         private static readonly string[] CONFIGURATION_PROPS = new[] {
             #if UNITY_STANDALONE
             "StaticTextures",
+            "FastSampling",
             #endif
             "DynamicRenderers",
             "CustomBlurChain",
@@ -258,12 +259,12 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
                     bool? forceSet = null;
 
                     #if !UNITY_STANDALONE
-                        if (name == "LTCGI_FAST_SAMPLING")
-                            forceSet = true;
                         if (name == "LTCGI_STATIC_TEXTURES")
                             forceSet = false;
                         if (name == "LTCGI_DISABLE_LUT2")
                             forceSet = true;
+                        if (name == "LTCGI_BLENDED_DIFFUSE_SAMPLING")
+                            forceSet = false;
                     #endif
 
                     if (type == ConfigType.Boolean)
@@ -440,6 +441,17 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
                         if (enabledInConfig != available)
                         {
                             config[i] = (available ? "" : "//") + "#define LTCGI_STATIC_TEXTURES";
+                            changed = true;
+                        }
+                    }
+
+                    if (line.EndsWith("#define LTCGI_FAST_SAMPLING"))
+                    {
+                        var enabledInConfig = !line.StartsWith("//");
+                        var available = controller.FastSampling;
+                        if (enabledInConfig != available)
+                        {
+                            config[i] = (available ? "" : "//") + "#define LTCGI_FAST_SAMPLING";
                             changed = true;
                         }
                     }

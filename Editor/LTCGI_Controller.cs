@@ -36,6 +36,13 @@ namespace pi.LTCGI
         [Tooltip("Renderers that may change material during runtime. Otherwise only 'sharedMaterial's are updated for performance reasons.")]
         public Renderer[] DynamicRenderers;
 
+#if UNITY_STANDALONE
+        [Tooltip("When enabled, LTCGI will not use a blur chain but rather just the input texture's mip maps. This is faster and saves samplers, but will not look as good.")]
+        public bool FastSampling = false;
+#else
+        public bool FastSampling => true; // force-enable on Quest, but allow use of toggle in C# code below on Standalone too (to avoid unnecessarily uploading LOD CRT references)
+#endif
+
         [Header("Expert Settings")]
         [Tooltip("Do not automatically set up the blur chain. Use this if you use AVPro to set _MainTex on the LOD1 material for example.")]
         public bool CustomBlurChain = false;
@@ -544,27 +551,33 @@ namespace pi.LTCGI
                 adapter._Screens = screens.Select(x => x != null ? x.gameObject : null).ToArray();
                 adapter._LTCGI_LODs = new Texture[4];
                 adapter._LTCGI_LODs[0] = VideoTexture;
-                #if UNITY_STANDALONE
+                if (!FastSampling)
+                {
                     adapter._LTCGI_LODs[1] = LOD1;
                     adapter._LTCGI_LODs[2] = LOD2;
                     adapter._LTCGI_LODs[3] = LOD3;
-                #else
+                }
+                else
+                {
                     adapter._LTCGI_LODs[1] = null;
                     adapter._LTCGI_LODs[2] = null;
                     adapter._LTCGI_LODs[3] = null;
-                #endif
+                }
                 if (_LTCGI_LOD_arrays != null)
                 {
                     adapter._LTCGI_Static_LODs_0 = _LTCGI_LOD_arrays[0];
-                    #if UNITY_STANDALONE
+                    if (!FastSampling)
+                    {
                         adapter._LTCGI_Static_LODs_1 = _LTCGI_LOD_arrays[1];
                         adapter._LTCGI_Static_LODs_2 = _LTCGI_LOD_arrays[2];
                         adapter._LTCGI_Static_LODs_3 = _LTCGI_LOD_arrays[3];
-                    #else
+                    }
+                    else
+                    {
                         adapter._LTCGI_Static_LODs_1 = null;
                         adapter._LTCGI_Static_LODs_2 = null;
                         adapter._LTCGI_Static_LODs_3 = null;
-                    #endif
+                    }
                 }
                 else
                 {
@@ -590,11 +603,10 @@ namespace pi.LTCGI
                         Math.Max(adapter._LTCGI_ScreenCountDynamic,
                             Array.FindLastIndex(mask, m => m == 0.0f) + 1)).ToArray();
                 adapter._LTCGI_ScreenCountMaskedAvatars = Array.FindLastIndex(screens, x => x.AffectAvatars) + 1;
-                #if UNITY_STANDALONE
-                    adapter.BlurCRTInput = LOD1s;
-                #else
+                if (FastSampling)
                     adapter.BlurCRTInput = null;
-                #endif
+                else
+                    adapter.BlurCRTInput = LOD1s;
 
                 #pragma warning disable 618
                 adapter.ApplyProxyModifications();

@@ -232,6 +232,7 @@ void LTCGI_sample(float2 uv, uint lod, uint idx, float blend, out float3 result)
         return;
         #endif
     }
+    #ifdef LTCGI_STATIC_TEXTURES
     else
     {
         [forcecase]
@@ -263,6 +264,7 @@ void LTCGI_sample(float2 uv, uint lod, uint idx, float blend, out float3 result)
                 return;
         }
     }
+    #endif
 #endif
 }
 
