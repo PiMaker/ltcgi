@@ -41,9 +41,8 @@ void LTCGI_Evaluate(ltcgi_input input, float3 worldNorm, float3 viewDir, float3x
         {
             if (!input.flags.lmdOnly) {
                 // very approximate lol
-                float3 ctr = (input.Lw[0] + input.Lw[1])/2;
-                float dist = length(ctr);
-                if (dist > LTCGI_DISTANCE_FADE_APPROX_MULT)
+                float3 ctr = (input.Lw[0] + input.Lw[1]) * 0.5f;
+                if (dot(ctr, ctr) > LTCGI_DISTANCE_FADE_APPROX_MULT * LTCGI_DISTANCE_FADE_APPROX_MULT)
                 {
                     return;
                 }
@@ -53,6 +52,7 @@ void LTCGI_Evaluate(ltcgi_input input, float3 worldNorm, float3 viewDir, float3x
 
     #define RET1_IF_LMDIFF [branch] if (/*const*/ diffuse && input.flags.diffFromLm) { output.intensity = 1.0f; return; }
 
+    [branch]
     if (input.flags.colormode == LTCGI_COLORMODE_SINGLEUV) {
         float2 uv = input.uvStart;
         if (uv.x < 0) uv.xy = uv.yx;
@@ -69,6 +69,7 @@ void LTCGI_Evaluate(ltcgi_input input, float3 worldNorm, float3 viewDir, float3x
     }
 
     #ifdef LTCGI_AUDIOLINK
+        [branch]
         if (input.flags.colormode == LTCGI_COLORMODE_AUDIOLINK) {
             float al = AudioLinkData(ALPASS_AUDIOLINK + uint2(0, input.flags.alBand)).r;
             output.color *= al;
@@ -133,6 +134,7 @@ void LTCGI_Evaluate(ltcgi_input input, float3 worldNorm, float3 viewDir, float3x
     LTCGI_ClipQuadToHorizon(L, n);
 
     // early out if everything was clipped below horizon
+    [branch]
     if (n == 0)
         return;
 
@@ -140,15 +142,20 @@ void LTCGI_Evaluate(ltcgi_input input, float3 worldNorm, float3 viewDir, float3x
     L[1] = normalize(L[1]);
     L[2] = normalize(L[2]);
     L[3] = normalize(L[3]);
-    L[4] = normalize(L[4]);
 
-    // integrate (and pray that constant folding works well)
+    // integrate
     float sum = 0;
-    [unroll(5)]
-    for (uint v = 0; v < max(3, (uint)n); v++) {
-        float3 a = L[v];
-        float3 b = L[(v + 1) % 5];
-        sum += LTCGI_IntegrateEdge(a, b).z;
+    sum += LTCGI_IntegrateEdge(L[0], L[1]).z;
+    sum += LTCGI_IntegrateEdge(L[1], L[2]).z;
+    sum += LTCGI_IntegrateEdge(L[2], L[3]).z;
+    [branch]
+    if (n >= 4)
+    {
+        L[4] = normalize(L[4]);
+        sum += LTCGI_IntegrateEdge(L[3], L[4]).z;
+        [branch]
+        if (n == 5)
+            sum += LTCGI_IntegrateEdge(L[4], L[0]).z;
     }
 
     // doublesided is accounted for with optimization at the start, so return abs
@@ -172,6 +179,8 @@ void LTCGI_Contribution(
         totalSpecularIntensity = 0;
         totalDiffuseIntensity = 0;
     #endif
+
+    [branch]
     if (_Udon_LTCGI_GlobalEnable == 0.0f) {
         return;
     }
@@ -230,8 +239,14 @@ void LTCGI_Contribution(
     #endif
 
     // loop through all lights and add them to the output
+#if MAX_SOURCES != 1
     uint count = min(_Udon_LTCGI_ScreenCount, MAX_SOURCES);
     [loop]
+#else
+    // mobile config
+    const uint count = 1;
+    [unroll(1)]
+#endif
     for (uint i = 0; i < count; i++) {
         // skip masked and black lights
         if (_Udon_LTCGI_Mask[i]) continue;

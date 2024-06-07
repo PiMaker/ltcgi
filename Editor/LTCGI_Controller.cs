@@ -26,7 +26,7 @@ namespace pi.LTCGI
         #if UNITY_STANDALONE
             internal const int MAX_SOURCES = 16;
         #else
-            internal const int MAX_SOURCES = 2;
+            internal const int MAX_SOURCES = 1;
         #endif
 
         [Tooltip("Intensity is set for each screen. Can be a RenderTexture for realtime updates (video players).")]

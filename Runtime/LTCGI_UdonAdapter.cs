@@ -257,17 +257,13 @@ public class LTCGI_UdonAdapter : MonoBehaviour
     private uint getFlags(int screen)
     {
         var raw = _LTCGI_ExtraData[screen].w;
-        var buffer = new byte[4];
-        WriteSingle(raw, buffer, 0);
-        return ReadUInt32(buffer, 0);
+        return (uint)BitConverter.SingleToInt32Bits(raw);
     }
 
     private void setFlags(int screen, uint flags)
     {
-        var buffer = new byte[4];
-        WriteUInt32(flags, buffer, 0);
-        var raw = ReadSingle(buffer, 0);
-        _LTCGI_ExtraData[screen].w = raw;
+        var converted = BitConverter.Int32BitsToSingle((int)flags);
+        _LTCGI_ExtraData[screen].w = converted;
     }
 
     public void _SetTexture(int screen, uint index)
@@ -289,151 +285,6 @@ public class LTCGI_UdonAdapter : MonoBehaviour
         _globalState = enabled;
     }
     public bool _GetGlobalState() => _globalState;
-
-    // Below code from: https://github.com/Xytabich/UNet
-
-    private const int BIT8 = 8;
-    private const int BIT16 = 16;
-    private const int BIT24 = 24;
-    private const int BIT32 = 32;
-    private const int BIT40 = 40;
-    private const int BIT48 = 48;
-    private const int BIT56 = 56;
-
-    private const uint FLOAT_SIGN_BIT = 0x80000000;
-    private const uint FLOAT_EXP_MASK = 0x7F800000;
-    private const uint FLOAT_FRAC_MASK = 0x007FFFFF;
-
-    /// <summary>
-    /// Writes unsigned 32-bit integer (<see cref="uint"/>)
-    /// </summary>
-    /// <remarks>Takes 4 bytes</remarks>
-    /// <param name="buffer">Target buffer</param>
-    /// <param name="index">Index in the buffer at which to start writing data</param>
-    /// <returns>Size in bytes</returns>
-    public int WriteUInt32(uint value, byte[] buffer, int index)
-    {
-        buffer[index] = (byte)((value >> BIT24) & 255u);
-        index++;
-        buffer[index] = (byte)((value >> BIT16) & 255u);
-        index++;
-        buffer[index] = (byte)((value >> BIT8) & 255u);
-        index++;
-        buffer[index] = (byte)(value & 255u);
-        return 4;
-    }
-
-    /// <summary>
-    /// Reads unsigned 32-bit integer (<see cref="uint"/>)
-    /// </summary>
-    /// <remarks>Takes 4 bytes</remarks>
-    /// <param name="buffer">Target buffer</param>
-    /// <param name="index">Index in the buffer where to start reading data</param>
-    public uint ReadUInt32(byte[] buffer, int index)
-    {
-        uint value = 0;
-        value |= (uint)buffer[index] << BIT24;
-        index++;
-        value |= (uint)buffer[index] << BIT16;
-        index++;
-        value |= (uint)buffer[index] << BIT8;
-        index++;
-        value |= (uint)buffer[index];
-        return value;
-    }
-
-    /// <summary>
-    /// Writes single-precision floating-point number
-    /// </summary>
-    /// <remarks>Takes 4 bytes</remarks>
-    /// <param name="buffer">Target buffer</param>
-    /// <param name="index">Index in the buffer at which to start writing data</param>
-    /// <returns>Size in bytes</returns>
-    public int WriteSingle(float value, byte[] buffer, int index)
-    {
-        uint tmp = 0;
-        if(float.IsNaN(value))
-        {
-            tmp = FLOAT_EXP_MASK | FLOAT_FRAC_MASK;
-        }
-        else if(float.IsInfinity(value))
-        {
-            tmp = FLOAT_EXP_MASK;
-            if(float.IsNegativeInfinity(value)) tmp |= FLOAT_SIGN_BIT;
-        }
-        else if(value != 0f)
-        {
-            if(value < 0f)
-            {
-                value = -value;
-                tmp |= FLOAT_SIGN_BIT;
-            }
-
-            int exp = 0;
-            bool normal = true;
-            while(value >= 2f)
-            {
-                value *= 0.5f;
-                exp++;
-            }
-            while(value < 1f)
-            {
-                if(exp == -126)
-                {
-                    normal = false;
-                    break;
-                }
-                value *= 2f;
-                exp--;
-            }
-
-            if(normal)
-            {
-                value -= 1f;
-                exp += 127;
-            }
-            else exp = 0;
-
-            tmp |= Convert.ToUInt32(exp << 23) & FLOAT_EXP_MASK;
-            tmp |= Convert.ToUInt32(value * (2 << 22)) & FLOAT_FRAC_MASK;
-        }
-        return WriteUInt32(tmp, buffer, index);
-    }
-
-    /// <summary>
-    /// Reads single-precision floating-point number
-    /// </summary>
-    /// <remarks>Takes 4 bytes</remarks>
-    /// <param name="buffer">Target buffer</param>
-    /// <param name="index">Index in the buffer where to start reading data</param>
-    public float ReadSingle(byte[] buffer, int index)
-    {
-        uint value = ReadUInt32(buffer, index);
-        if(value == 0 || value == FLOAT_SIGN_BIT) return 0f;
-
-        int exp = (int)((value & FLOAT_EXP_MASK) >> 23);
-        int frac = (int)(value & FLOAT_FRAC_MASK);
-        bool negate = (value & FLOAT_SIGN_BIT) == FLOAT_SIGN_BIT;
-        if(exp == 0xFF)
-        {
-            if(frac == 0)
-            {
-                return negate ? float.NegativeInfinity : float.PositiveInfinity;
-            }
-            return float.NaN;
-        }
-
-        bool normal = exp != 0x00;
-        if(normal) exp -= 127;
-        else exp = -126;
-
-        float result = frac / (float)(2 << 22);
-        if(normal) result += 1f;
-
-        result *= Mathf.Pow(2, exp);
-        if(negate) result = -result;
-        return result;
-    }
 
     // extremely cursed compat stuff
     #if !UDONSHARP

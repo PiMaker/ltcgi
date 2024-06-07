@@ -265,6 +265,8 @@ AudioLink: {(LTCGI_Controller.AudioLinkAvailable == LTCGI_Controller.AudioLinkAv
                             forceSet = true;
                         if (name == "LTCGI_BLENDED_DIFFUSE_SAMPLING")
                             forceSet = false;
+                        if (name == "LTCGI_BICUBIC_LIGHTMAP")
+                            forceSet = false;
                     #endif
 
                     if (type == ConfigType.Boolean)
