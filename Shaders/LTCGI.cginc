@@ -312,6 +312,7 @@ void LTCGI_Contribution(
                         lmd = smoothstep(0.0, LTCGI_SPECULAR_LIGHTMAP_STEP, saturate(lm - LTCGI_LIGHTMAP_CUTOFF));
                 }
                 ltcgi_output diff;
+                diff.color = 0;
                 LTCGI_Evaluate(input, worldNorm, viewDir, identityBrdf, roughness, true, diff);
                 diff.intensity *= lmd;
 
@@ -331,6 +332,7 @@ void LTCGI_Contribution(
             if (flags.specular)
             {
                 ltcgi_output spec;
+                spec.color = 0;
                 LTCGI_Evaluate(input, worldNorm, viewDir, Minv, roughness, false, spec);
                 spec.intensity *= spec_amp * smoothstep(0.0, LTCGI_SPECULAR_LIGHTMAP_STEP, saturate(lm - LTCGI_LIGHTMAP_CUTOFF));
 
