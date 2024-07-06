@@ -628,7 +628,7 @@ namespace pi.LTCGI
             #if DEBUG_LOG
                 Debug.Log("LTCGI: updating video player adapters");
             #endif
-            LTCGI_Controller.DetectAndEnableAdaptersForAvailableVideoplayers();
+            DetectAndEnableAdaptersForAvailableVideoplayers();
 
             #if DEBUG_LOG
                 Debug.Log("LTCGI: update done!");

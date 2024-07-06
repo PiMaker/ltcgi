@@ -21,6 +21,12 @@ namespace pi.LTCGI
         private const string PROTV_ADAPTER_VERSION = "1.0.0";
         private const string UDONSHARP_ADAPTER_VERSION = "1.0.0";
 
+        [SerializeField] private bool _hasShownProTvOutdatedWarning = false;
+        private struct PackageJson
+        {
+            public string version;
+        }
+
         internal static List<ILTCGI_AutoSetup> wizards;
         internal static List<ILTCGI_AutoSetup> Wizards
         {
@@ -83,7 +89,7 @@ namespace pi.LTCGI
             }
         }
 
-        internal static void DetectAndEnableAdaptersForAvailableVideoplayers()
+        internal void DetectAndEnableAdaptersForAvailableVideoplayers()
         {
 #if UDONSHARP
             if (!AssetDatabase.IsValidFolder("Assets/_pi_"))
@@ -95,28 +101,36 @@ namespace pi.LTCGI
 
             var changed = false;
 
-            // ProTv
-            if (AssetDatabase.IsValidFolder("Assets/ArchiTechAnon/ProTV") && (!System.IO.File.Exists("Assets/_pi_/_LTCGI-Adapters/protv_adapter_version.txt") || System.IO.File.ReadAllText("Assets/_pi_/_LTCGI-Adapters/protv_adapter_version.txt") != PROTV_ADAPTER_VERSION))
+            // ProTv (outdated!)
+            if (System.IO.File.Exists("Packages/dev.architech.protv/package.json") && System.IO.File.Exists("Assets/_pi_/_LTCGI-Adapters/protv_adapter_version.txt"))
             {
-                EditorUtility.DisplayDialog("LTCGI", "ProTv detected, enabling ProTv adapter.", "OK");
+                try
+                {
+                    var parsedJson = JsonUtility.FromJson<PackageJson>(System.IO.File.ReadAllText("Packages/dev.architech.protv/package.json"));
+                    if (int.Parse(parsedJson.version[0].ToString()) >= 3)
+                    {
+                        EditorUtility.DisplayDialog("LTCGI/ProTv", "It looks like you upgraded to ProTv 3 or higher but still have the old LTCGI adapter. I will delete it for you, please use ProTv's native LTCGI integration going forward!", "OK");
+                        System.IO.File.Delete("Assets/_pi_/_LTCGI-Adapters/protv_adapter_version.txt");
+                        System.IO.File.Delete("Assets/_pi_/_LTCGI-Adapters/protv_adapter_version.txt.meta");
+                        System.IO.File.Delete("Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.cs");
+                        System.IO.File.Delete("Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.cs.meta");
+                        System.IO.File.Delete("Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.asset");
+                        System.IO.File.Delete("Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.asset.meta");
+                        System.IO.File.Delete("Assets/_pi_/_LTCGI-Adapters/Editor/LTCGI_ProTvAdapterAutoSetup.cs");
+                        AssetDatabase.Refresh();
+                        changed = true;
+                    }
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError("LTCGI: Error handling ProTv package: " + e.Message);
+                }
+            }
 
-                System.IO.File.WriteAllText("Assets/_pi_/_LTCGI-Adapters/protv_adapter_version.txt", PROTV_ADAPTER_VERSION);
-
-                System.IO.File.Copy("Packages/at.pimaker.ltcgi/Adapters/LTCGI_ProTvAdapter.cs_disabled", "Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.cs", true);
-                System.IO.File.Copy("Packages/at.pimaker.ltcgi/Adapters/LTCGI_ProTvAdapter.cs_disabled.meta", "Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.cs.meta", true);
-                System.IO.File.Copy("Packages/at.pimaker.ltcgi/Adapters/LTCGI_ProTvAdapter.asset_disabled", "Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.asset", true);
-                System.IO.File.Copy("Packages/at.pimaker.ltcgi/Adapters/LTCGI_ProTvAdapter.asset_disabled.meta", "Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.asset.meta", true);
-                System.IO.File.Copy("Packages/at.pimaker.ltcgi/Adapters/Editor/LTCGI_ProTvAdapterAutoSetup.cs_disabled", "Assets/_pi_/_LTCGI-Adapters/Editor/LTCGI_ProTvAdapterAutoSetup.cs", true);
-
-                AssetDatabase.ImportAsset("Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.asset", ImportAssetOptions.ForceSynchronousImport);
-                AssetDatabase.Refresh();
-
-                UdonSharpProgramAsset adapter = AssetDatabase.LoadAssetAtPath<UdonSharpProgramAsset>("Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.asset");
-                adapter.sourceCsScript = AssetDatabase.LoadAssetAtPath<MonoScript>("Assets/_pi_/_LTCGI-Adapters/LTCGI_ProTvAdapter.cs");
-                adapter.ApplyProgram();
-                EditorUtility.SetDirty(adapter);
-
-                changed = true;
+            if (!_hasShownProTvOutdatedWarning && System.IO.File.Exists("Assets/_pi_/_LTCGI-Adapters/protv_adapter_version.txt"))
+            {
+                EditorUtility.DisplayDialog("LTCGI", "An old version of the LTCGI ProTv adapter was detected. It is recommended to upgrade ProTv to version 3 or later, which integrates with LTCGI natively.", "OK");
+                _hasShownProTvOutdatedWarning = true;
             }
 
             // USharpVideo
