@@ -28,7 +28,7 @@
             //#define LTCGI_SPECULAR_OFF
 
             #include "UnityCG.cginc"
-            #include "LTCGI.cginc"
+            #include "Packages/at.pimaker.ltcgi/Shaders/LTCGI.cginc"
 
             struct v2f
             {
