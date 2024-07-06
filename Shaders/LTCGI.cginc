@@ -180,6 +180,13 @@ void LTCGI_Contribution(
         totalDiffuseIntensity = 0;
     #endif
 
+    #ifdef LTCGI_SPECULAR_OFF
+        specular = 0;
+    #endif
+    #ifdef LTCGI_DIFFUSE_OFF
+        diffuse = 0;
+    #endif
+
     [branch]
     if (_Udon_LTCGI_GlobalEnable == 0.0f) {
         return;
@@ -352,14 +359,16 @@ void LTCGI_Contribution(
 
 #ifndef LTCGI_API_V2
 
+// missing totalSpecularIntensity, totalDiffuseIntensity, specular
 void LTCGI_Contribution(
     float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv, inout half3 diffuse
 ) {
-    half3 _u1;
+    half3 _u1 = (half3)0;
     float _u2, _u3;
     LTCGI_Contribution(worldPos, worldNorm, viewDir, roughness, lmuv, diffuse, _u1, _u2, _u3);
 }
 
+// missing totalSpecularIntensity, totalDiffuseIntensity
 void LTCGI_Contribution(
     float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv, inout half3 diffuse, inout half3 specular
 ) {
@@ -367,6 +376,7 @@ void LTCGI_Contribution(
     LTCGI_Contribution(worldPos, worldNorm, viewDir, roughness, lmuv, diffuse, specular, _u1, _u2);
 }
 
+// missing totalDiffuseIntensity
 void LTCGI_Contribution(
     float3 worldPos, float3 worldNorm, float3 viewDir, float roughness, float2 lmuv, inout half3 diffuse, inout half3 specular, out float totalSpecularIntensity
 ) {
