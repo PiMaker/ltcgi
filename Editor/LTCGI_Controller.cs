@@ -343,23 +343,12 @@ namespace pi.LTCGI
                     {
                         DestroyImmediate(mesh);
                     }
-
-                    if (s.Dynamic)
-                    {
-                        dynamics = true;
-                    }
-
-                    if (s.ColorMode == ColorMode.AudioLink)
-                    {
-                        audiolinks = true;
-                    }
-
-                    if (s.ColorMode == ColorMode.Texture || s.ColorMode == ColorMode.SingleUV)
-                    {
-                        if (s.TextureIndex != 0)
-                            statics = true;
-                    }
                 }
+
+                dynamics |= s.Dynamic;
+                audiolinks |= s.ColorMode == ColorMode.AudioLink;
+                if (s.ColorMode == ColorMode.Texture || s.ColorMode == ColorMode.SingleUV)
+                    statics |= s.TextureIndex != 0;
 
                 _LTCGI_Vertices_0t[i] = s.transform.TransformPoint(_LTCGI_Vertices_0[i]);
                 _LTCGI_Vertices_0t[i].w = _LTCGI_Vertices_0[i].w;
