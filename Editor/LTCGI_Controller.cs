@@ -629,6 +629,9 @@ namespace pi.LTCGI
         {
             var curscene = EditorSceneManager.GetActiveScene().name;
             var path = @"Assets\LTCGI-Generated\StaticUniform-" + curscene + ".exr";
+#if UNITY_EDITOR_LINUX
+            path = path.Replace("\\", "/");
+#endif
 
             if (staticUniformTemp == null)
             {
