@@ -148,7 +148,11 @@ namespace pi.LTCGI
                 return;
             if (Lightmapping.isRunning)
                 return;
-            if (UnityEngine.SceneManagement.SceneManager.loadedSceneCount == 0)
+            #if UNITY_2022_1_OR_NEWER
+                if (UnityEngine.SceneManagement.SceneManager.loadedSceneCount == 0)
+            #else
+                if (UnityEditor.SceneManagement.EditorSceneManager.loadedSceneCount == 0)
+            #endif
                 return;
 
             #if DEBUG_LOG
