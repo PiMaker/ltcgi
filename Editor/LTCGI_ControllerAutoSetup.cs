@@ -36,25 +36,30 @@ namespace pi.LTCGI
                 wizards = new List<ILTCGI_AutoSetup>();
 
                 var asms = System.AppDomain.CurrentDomain.GetAssemblies();
-                Assembly asm = Assembly.GetExecutingAssembly();
+                HashSet<Assembly> asmTargets = new HashSet<Assembly>
+                {
+                    Assembly.GetExecutingAssembly()
+                };
+
                 foreach (var a in asms)
                 {
                     if (a.FullName.Contains("Assembly-CSharp-Editor"))
                     {
-                        asm = a;
-                        break;
+                        asmTargets.Add(a);
                     }
                 }
 
-                foreach (var wizard in asm.GetTypes()
-                    .Where(x => x.IsClass && !x.IsAbstract && typeof(ILTCGI_AutoSetup).IsAssignableFrom(x)))
+                foreach (var asm in asmTargets)
                 {
-                    var instance = Activator.CreateInstance(wizard) as ILTCGI_AutoSetup;
-                    if (instance != null)
-                    {
-                        //Debug.Log("LTCGI: Found AutoSetup wizard: " + wizard.Name);
-                        wizards.Add(instance);
-                    }
+                    foreach (var wizard in asm.GetTypes()
+                            .Where(x => x.IsClass && !x.IsAbstract && typeof(ILTCGI_AutoSetup).IsAssignableFrom(x)))
+                        {
+                            var instance = Activator.CreateInstance(wizard) as ILTCGI_AutoSetup;
+                            if (instance != null)
+                            {
+                                wizards.Add(instance);
+                            }
+                        }
                 }
 
                 return wizards;
