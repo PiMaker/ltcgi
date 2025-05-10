@@ -52,7 +52,7 @@ namespace pi.LTCGI
             get
             {
                 #if VRC_SDK_VRCSDK3
-                    if (System.IO.Directory.Exists("Packages\\com.vrchat.avatars"))
+                    if (System.IO.Directory.Exists(System.IO.Path.Combine("Packages", "com.vrchat.avatars")))
                         return LTCGIRuntimeMode.VRChatAvatar;
                     else
                         return LTCGIRuntimeMode.VRChatWorld;

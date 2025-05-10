@@ -632,7 +632,7 @@ namespace pi.LTCGI
         private Texture2D WriteStaticUniform(LTCGI_Screen[] screens, bool fast, LTCGI_Screen fastScreen = null)
         {
             var curscene = EditorSceneManager.GetActiveScene().name;
-            var path = @"Assets\LTCGI-Generated\StaticUniform-" + curscene + ".exr";
+            var path = Path.Combine("Assets", "LTCGI-Generated", "StaticUniform-" + curscene + ".exr");
 
             if (staticUniformTemp == null)
             {
