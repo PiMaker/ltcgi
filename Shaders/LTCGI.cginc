@@ -180,10 +180,10 @@ void LTCGI_Contribution(
         totalDiffuseIntensity = 0;
     #endif
 
-    #ifdef LTCGI_SPECULAR_OFF
+    #if defined(LTCGI_SPECULAR_OFF) && !defined(LTCGI_API_V2)
         specular = 0;
     #endif
-    #ifdef LTCGI_DIFFUSE_OFF
+    #if defined(LTCGI_DIFFUSE_OFF) && !defined(LTCGI_API_V2)
         diffuse = 0;
     #endif
 
