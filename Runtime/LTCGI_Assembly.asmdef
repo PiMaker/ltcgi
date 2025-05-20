@@ -8,6 +8,7 @@
     "includePlatforms": [
         "Android",
         "Editor",
+        "iOS",
         "LinuxStandalone64",
         "WebGL",
         "WindowsStandalone64"
