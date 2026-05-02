@@ -12,7 +12,15 @@ It also makes for cheaper and more realistic Diffuse lighting, if your screens a
 
 ## Set up your scene
 
-Shadowmap baking follows the same rules as lightmap baking, that means any object that should receive lighting (well, shadows) has to be set as "Static" in the editor. "Lightmap scale" is also respected.
+Shadowmap baking follows the same rules as lightmap baking, that means any object that should receive lighting (well, shadows) has to be set as "Static" in the editor. "Lightmap scale" is also respected. All meshes must have valid Lightmap UVs.
+
+### Static Batching
+
+Since version `1.7.0`, the LTCGI Controller has an experimental `Allow Static Batching` option for shadowmap baking. By default, LTCGI disables static batching on LTCGI-enabled receivers during the bake, because Unity can bake `unity_LightmapST` into the mesh UVs and break LTCGI's custom lightmap offsets.
+
+If you enable `Allow Static Batching`, LTCGI will try to preserve static batching and keep the GI atlas layout stable instead. This can improve batching in some scenes, but may lead to desynced lightmap UVs at runtime. Test the scene in play mode after uploading, and disable the option again if LTCGI shadows or diffuse light appear offset or mismatched.
+
+This option will not re-enable static batching on objects that LTCGI changed during an earlier bake. If you want to test it on an existing scene, manually enable the relevant Static flags again before running a new bake.
 
 ## Set up your `LTCGI_Screen` or `LTCGI_Emitter` components
 
@@ -30,7 +38,7 @@ LTCGI v1.0.2 and higher support baking with Bakery "Light Mesh" components. Simp
 
 ## Start the Bake
 
-Use the "Bake Shadowmap" or "Bake Shadowmap and Normal Lightmap" buttons on the Controller to start a bake. The latter will follow the shadowmap bake with a normal one. This is something you need to do anyway, unless you want to visualize the shadowmaps, as they will otherwise be shown instead of your normal lightmaps in the scene.
+Use the "Bake LTCGI Shadowmap only" or "Bake LTCGI Shadowmap and Standard Lightmap" buttons on the Controller to start a bake. The latter will follow the shadowmap bake with a normal one. This is something you need to do anyway, unless you want to visualize the shadowmaps, as they will otherwise be shown instead of your normal lightmaps in the scene.
 
 You can use the "Clear Baked Data" button to undo a shadowmap bake and go back to unshadowed LTC only.
 
@@ -44,7 +52,7 @@ You can use the "Clear Baked Data" button to undo a shadowmap bake and go back t
 
 ## Bakery
 
-If you have [Bakery](https://assetstore.unity.com/packages/tools/level-design/bakery-gpu-lightmapper-122218) installed you will get a pop-up asking you if you want to use it instead of the built-in lightmapper when you hit "Bake Shadowmap". The choice is yours, but I do recommend at least doing one normal bake with Bakery to get the settings right before attempting a shadowmap bake with it enabled.
+If you have [Bakery](https://assetstore.unity.com/packages/tools/level-design/bakery-gpu-lightmapper-122218) installed you will get a pop-up asking you if you want to use it instead of the built-in lightmapper when you start an LTCGI shadowmap bake. The choice is yours, but I do recommend at least doing one normal bake with Bakery to get the settings right before attempting a shadowmap bake with it enabled.
 
 ## Troubleshooting
 
@@ -56,7 +64,7 @@ The LTCGI Controller has a few advanced debug options you can check out as well:
 
 Don't forget to hit "Apply" after changing them, and make sure to reset them after testing.
 
-You can also check the generated lightmaps in `_pi_\_LTCGI-Generated\Lightmaps-{your-scene-name}`. These should look like normal lightmaps casting light outwards from your screens.
+You can also check the generated lightmaps in `Assets/LTCGI-Generated/Lightmaps-{your-scene-name}`. These should look like normal lightmaps casting light outwards from your screens.
 
 During the bake your screens should show up in either Red, Green or Blue, depending on which lightmap channel they are set to.
 

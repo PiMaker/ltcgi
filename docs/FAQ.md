@@ -41,6 +41,10 @@ Shadowmap baking is the root of all evil - try without it. You can use the "Clea
 
 Only when you're sure everything else is working, and (importantly!) _normal, unrelated to LTCGI, lightmap baking_ using whatever you use to bake _actually works_, feel free to let me know. I will add it as another bullet-point for my ever expanding list of why Unity's handling of lighting data sucks.
 
+### ❓ I baked a shadowmap, but the lighting is all offset (bad UVs)?
+
+Check if you have the "Allow Static Batching (EXPERIMENTAL)" flag checked on your [LTCGI Controller](/Getting Started/Setup/Controller). If so, try disabling it and rebaking your shadowmaps. Please report issues with this flag on the LTCGI Discord!
+
 ### ❓ I hooked up a video player (ProTV/U#Video/what-have-you) but it's not reflecting/lighting up?
 
 First off, (discord) support dedicated to the video player itself can *probably not* help you. Try not to bother them too much with LTCGI requests, please!

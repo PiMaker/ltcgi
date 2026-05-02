@@ -8,7 +8,7 @@ For venues or other performance-heavy scenes, it might make sense to allow your 
 
 To do so, the [UdonSharp API](/Advanced/Udon_Sharp_API) has a function `_SetGlobalState(bool)` that you can use to enable or disable LTCGI at will. This function is somewhat heavy and shouldn't be called per-frame, but cheap enough that you can use it directly on user input (e.g. UI toggles or `Interact`).
 
-The LTCGI unitypackage contains an example script (also listed below) that shows how to use this. Note that because the function has a parameter, it can not be called from Udon-Graph at this time.
+The LTCGI package contains an example script (also listed below) that shows how to use this. Note that because the function has a parameter, it can not be called from Udon-Graph at this time.
 
 You can find a **prefab** using this toggle on an interactable cube in the `Packages/LTCGI` folder called `LTCGI Global Toggle Example.prefab`. This can also be used to start LTCGI in disabled state.
 

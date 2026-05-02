@@ -30,7 +30,7 @@ Afterwards, your controller should look like this in the Inspector tab:
 
 | | |
 |-|-|
-| Version Number (here: `v0.9.3.99`) | The version of LTCGI currently installed. Useful for reporting bugs! |
+| Version Number (here: `v1.7.0`) | The version of LTCGI currently installed. Useful for reporting bugs! |
 | Force Update | Updates the state of the scene. Generally, LTCGI tries its best to keep this up-to-date for you automatically, but sometimes materials or objects may get out of sync. If you experience any kind of issue, pressing this button should be your first recourse. Can also be reached via `Tools > LTCGI > Force Material Update` |
 | Precompute Static Textures | See section on [Static Textures](/Advanced/Static_Textures). |
 | Precompute On Build | Runs "Precompute Static Textures" on build. See section on [Static Textures](/Advanced/Static_Textures). |
@@ -41,10 +41,11 @@ Afterwards, your controller should look like this in the Inspector tab:
 
 | | |
 |-|-|
-| Bake Shadowmap | Starts a shadowmap bake using either the built-in lightmapper or Bakery (if installed). See section on [Shadowmaps](/Advanced/Shadowmaps). |
-| Bake Shadowmap and Normal Lightmap | Starts a shadowmap bake using either the built-in lightmapper or Bakery (if installed), then follows it up by a regular light bake. This is _probably_ the button you want. See section on [Shadowmaps](/Advanced/Shadowmaps). |
+| Bake LTCGI Shadowmap only | Starts a shadowmap bake using either the built-in lightmapper or Bakery (if installed). See section on [Shadowmaps](/Advanced/Shadowmaps). |
+| Bake LTCGI Shadowmap and Standard Lightmap | Starts a shadowmap bake using either the built-in lightmapper or Bakery (if installed), then follows it up by a regular light bake. This is _probably_ the button you want. See section on [Shadowmaps](/Advanced/Shadowmaps). |
 | DEBUG: Force Settings Reset after Bake | Sometimes a bake will fail and leave your project in an inconsistent state. This button _may_ fix it. If no bake is happening, it should be safe to press this button anyway. |
 | Clear Baked Data | Clear all shadowmap data. This will remove any existing shadowmap bakes and reset to unshadowed behaviour. |
+| Allow Static Batching (EXPERIMENTAL) | Keeps static batching enabled for LTCGI-enabled objects. Test this in play mode before shipping; desynced lightmap UVs are possible. Check the [Shadowmaps](/Advanced/Shadowmaps) page. |
 
 ---
 
@@ -63,7 +64,8 @@ Also shows information about [AudioLink](/Advanced/Audiolink), if it is detected
 | | |
 |-|-|
 | Video Texture | If you want to make use of real-time video reflections and lighting, you need to put a (Custom) Render Texture in this field. Note that by virtue of this being a single field, you can only ever have a single video input into LTCGI. For more flexibility, you can use UV Maps on your `LTCGI_Screen` components or use the [U# API](/Advanced/Udon_Sharp_API) to change the video texture at runtime. |
-| Static Textures | In addition to the one realtime video, you can have multiple static images reflecting as well. **These must be the same size**. See [Static Textures](/Advanced/Static_Textures). |
+| Static Textures | In addition to the one realtime video, you can have multiple static images reflecting as well. See [Static Textures](/Advanced/Static_Textures). |
+| Fast Sampling | Uses the input texture's mips instead of the full blur chain. This is faster and uses fewer samplers, but looks worse. It is forced on for non-standalone targets such as Quest. |
 | Dynamic Renderers | Objects that receive LTCGI lighting but can change materials at runtime (via material swap animations or scripts) need to be listed here. This is a performance optimization, as other objects can be updated at once by setting properties on their shared materials. |
 
 ---

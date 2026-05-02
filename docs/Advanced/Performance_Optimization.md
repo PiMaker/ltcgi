@@ -63,3 +63,13 @@ On the LTCGI Controller there are some advanced settings under the "Global Shade
 Don't forget to hit "Apply"!
 
 ![Hit Apply](../img/ltcgi_controller_apply_revert.jpg)
+
+---
+
+## Quest and Mobile Targets
+
+On mobile targets such as Quest, LTCGI forces several faster shader settings. This includes fast sampling, disabling LUT2, disabling bicubic lightmap filtering and disabling blended diffuse sampling. Static texture shader support is also disabled.
+
+Additionally, **only one screen is supported on Mobile**.
+
+This means Desktop and Quest builds may not look identical - test for visuals and performance _on-device_ before publishing a world for mobile!

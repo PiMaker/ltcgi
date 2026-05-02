@@ -6,6 +6,17 @@ sidebar_position: 5
 
 For any object to receive lighting and reflections from LTCGI-enabled screens or emitters, it **must** use a supported shader. The list of currently supported shaders can be found [on GitHub](https://github.com/PiMaker/ltcgi#supported-shaders).
 
+Currently listed integrations include:
+
+* [ORL Shader Family](https://shaders.orels.sh/) by [@orels1](https://github.com/orels1)
+* [Silent's Filamented](https://gitlab.com/s-ilent/filamented)
+* [Mochie's Unity Shaders](https://github.com/MochiesCode/Mochies-Unity-Shaders)
+* [Hekky Shaders](https://github.com/hyblocker/hekky-shaders)
+* [z3y's Shaders](https://github.com/z3y/shaders)
+* [Poiyomi Shaders](https://www.poiyomi.com/shading/ltcgi)
+* Basic "Unlit" Test Shader (included)
+* Surface Shader (included)
+
 Objects that use a different material **will not** receive any lighting. Note that you _can_ mix and match, if you only want some objects to receive lighting for performance or aesthetic reasons.
 
 > ⚠️ Some of the supported shaders need to use a specific variant to support LTCGI, or have a toggle (sometimes in "advanced" sections) that you need to enable for it to work! Check the documentation for the shader you are using on how to enable LTCGI.

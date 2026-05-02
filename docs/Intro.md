@@ -6,7 +6,9 @@ sidebar_position: 1
 
 # ✨ About LTCGI
 
-LTCGI is an optimized plug-and-play realtime area light solution using the [linearly transformed cosine algorithm](#LTC) for standalone Unity and VRChat. Free to use with [attribution](#Attribution). It can utilize the Unity build-in lightmapper or [Bakery](https://assetstore.unity.com/packages/tools/level-design/bakery-gpu-lightmapper-122218) for realistic shadows on static objects.
+LTCGI is an optimized plug-and-play realtime area light solution using the [linearly transformed cosine algorithm](/Getting%20Started/Installation/Attribution#ltc) for standalone Unity and VRChat. Free to use with [attribution](/Getting%20Started/Installation/Attribution). It can utilize the Unity build-in lightmapper or [Bakery](https://assetstore.unity.com/packages/tools/level-design/bakery-gpu-lightmapper-122218) for realistic shadows on static objects.
+
+Since version 1.7.0, LTCGI supports [VRCLightVolumes](https://github.com/REDSIM/VRCLightVolumes). Check the [setup guide](/Advanced/VRC_Light_Volumes) for more!
 
 ![screenshot of standalone demo app](https://raw.githubusercontent.com/PiMaker/ltcgi/main/~Screenshots/demoapp.jpg)
 
@@ -21,6 +23,8 @@ The 'Getting Started' row on the left is a good place to start reading. Follow t
 
 I also recommend reading _at least_ the [Performance Optimization](/Advanced/Performance_Optimization) section from the Advanced row.
 
+For VRChat video player lighting, I recommend pairing LTCGI with [ArchiTechAnon's ProTV](https://architechvr.gumroad.com/l/protv) version 3 or newer. Other video players are also supported, check the [Realtime Video](/Getting Started/Setup/Realtime_Video) page.
+
 ## **Download**
 
 Make sure you grab a **[compatible shader](https://github.com/PiMaker/ltcgi#supported-shaders)** first! The built-in shaders can be used for testing, but should not be used in production.
@@ -29,7 +33,7 @@ For VRChat, you can install LTCGI via the [Creator Companion](https://vcc.docs.v
 
 ## ⬇️ **[Creator Companion/VPM Repository](https://vpm.pimaker.at/)**
 
-(LTCGI works in avatar and world projects! But you _will_ need a supported shader in either case.)
+For a list of releases and manual download options, check the [Releases](https://github.com/pimaker/ltcgi/releases) page on GitHub.
 
 For **standalone Unity**, you can import LTCGI as a [git package](https://docs.unity3d.com/2019.4/Documentation/Manual/upm-ui-giturl.html) with the URL: `https://github.com/PiMaker/ltcgi.git`
 

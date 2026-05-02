@@ -13,3 +13,11 @@ Before anything else, make sure your color space is set to linear:
 For **standalone Unity**, you can import LTCGI as a [git package](https://docs.unity3d.com/2019.4/Documentation/Manual/upm-ui-giturl.html) with the URL: `https://github.com/PiMaker/ltcgi.git`
 
 > ⚠️ If you are importing LTCGI into an existing project, make sure you have a backup first!
+
+The package currently declares Unity `2022.3` support. Standalone projects do not need the VRChat SDK or UdonSharp; the runtime adapter will compile as a normal Unity `MonoBehaviour`.
+
+If you are writing shader includes manually, use the package path:
+
+```c
+#include "Packages/at.pimaker.ltcgi/Shaders/LTCGI.cginc"
+```

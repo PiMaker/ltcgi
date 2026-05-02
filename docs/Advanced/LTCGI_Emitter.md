@@ -10,6 +10,7 @@ This is very similar to the [LTCGI_Screen](</Getting Started/Setup/LTCGI_Screen>
 * It does _not_ support textured mode (and thus no mesh UVs will be taken into consideration for the emissive color)
 * It _does_ however support arbitrary geometry!
 * It is _very_ cheap compared to the performance of a Screen component
+* It still supports [VRCLightVolumes](/Advanced/VRC_Light_Volumes)
 
 The intended use case is for static geometry that you want to make emissive, but still have some control over color and intensity of. It also combines very well with AudioLink color mode, where you can have static geometry pulse to AudioLink channels (e.g. for trim lighting in clubs, etc.).
 

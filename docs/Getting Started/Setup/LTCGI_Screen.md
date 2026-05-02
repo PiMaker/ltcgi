@@ -55,7 +55,8 @@ You need to ensure that the mesh itself looks the same as the light it emits you
 | Dynamic | Marks this screen as dynamic. Comes with slight performance overhead, but allows moving the screen and changing its color at runtime. |
 | Double Sided | If this screen emits light on both sides of the mesh. |
 | Flip UV | Workaround. Some models imported from Blender or other 3D software can have flipped reflections. If you notice this, you can set this flag to un-flip them. (If anyone can tell me why this happens and has a more permanent fix, please let me know!) |
-| Affect Avatars | If this screen should affect avatars that use an LTCGI-compatible shader. Note that distance or renderer masking does not apply to avatars, so use this setting to keep performance-impact on avatars to a minimum. |
+| Affect Avatars | If this screen should affect avatars that use an LTCGI-compatible shader. Note that distance or renderer masking does not apply to avatars, so use this setting to keep performance-impact on avatars to a minimum. ⚠️ It's recommended to use Light Volumes instead! |
+| Affect Light Volumes | If this screen should be rendered into [VRC Light Volumes](/Advanced/VRC_Light_Volumes). This only applies when `Lightmap Diffuse` is enabled and a lightmap channel is selected. |
 
 ### Color Mode
 
@@ -66,11 +67,11 @@ The `Color Mode` property describes where the color for the light is coming from
 | Static | The entire screen is lit up in the color set on the component. |
 | Texture | The screen takes it's color values from a texture. This texture can be specified with the slider labeled `Texture Index`, which will select either the live video texture (0) or any one of the [Static Textures](/Advanced/Static_Textures) you previously added to the Controller. |
 | Single UV | Like `Texture`, but will light up the screen in a single color taken from the texture at the exact UV coordinate you specify below. |
-| Audio Link | See [AudioLink](/Advanced/Audiolink). |
+| Audio Link | See [AudioLink](/Advanced/Audiolink). Selects an AudioLink band and optional delay for audio-reactive light. |
 
 ### Affected Renderers
 
-Selects which Renderers in your scene should receive light from this screen. See the section on [Performance Optimization](/Advanced/Performance_Optimization) for more.
+Selects which Renderers in your scene should receive light from this screen. This can include `MeshRenderer` and `SkinnedMeshRenderer` components using compatible materials. See the section on [Performance Optimization](/Advanced/Performance_Optimization) for more.
 
 ### Lightmap Channel
 
