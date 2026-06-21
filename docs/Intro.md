@@ -25,6 +25,10 @@ I also recommend reading _at least_ the [Performance Optimization](/Advanced/Per
 
 For VRChat video player lighting, I recommend pairing LTCGI with [ArchiTechAnon's ProTV](https://architechvr.gumroad.com/l/protv) version 3 or newer. Other video players are also supported, check the [Realtime Video](/Getting Started/Setup/Realtime_Video) page.
 
+You can also watch my full guided [walkthrough tutorial](https://www.youtube.com/watch?v=B-jC7QBGRxk), if that's more your thing:
+
+<iframe src="https://www.youtube.com/embed/B-jC7QBGRxk?rel=0" allowfullscreen scrolling="no" allow="accelerometer *; clipboard-write *; encrypted-media *; gyroscope *; picture-in-picture *; web-share *;" referrerpolicy="strict-origin" width="800" height="450"></iframe>
+
 ## **Download**
 
 Make sure you grab a **[compatible shader](https://github.com/PiMaker/ltcgi#supported-shaders)** first! The built-in shaders can be used for testing, but should not be used in production.
