@@ -10,6 +10,25 @@ This integration only exists when VRCLightVolumes is installed and the `VRC_LIGH
 
 To install Light Volumes, follow the regular installation instructions on [GitHub](https://github.com/REDSIM/VRCLightVolumes). ⚠️ **Familiarity with non-LTCGI Light Volumes is required!**
 
+:::warning
+
+You will need at least VRCLV version `v.3.0.0-dev.1`, for which you may need to enable "Prerelease Packages" in VCC. The effect will show on avatars and dynamic objects using older VRCLV versions too, once built.
+
+:::
+
+## Comparison to VRCLV Area Lights
+
+VRC Light Volumes also supports area lights, including with a color texture. There are pros and cons to using it vs LTCGI.
+
+- VRCLV only provides diffuse lighting, including on static world objects. LTCGI can provide specular, i.e. mirror-like or watery surfaces, on anything bakeable.
+- LTCGI supports Light Volume compatible shaders on versions older than `v.3.0.0`. You need VRCLV 3 to build your world, but the effect will work on older, already uploaded content such as avatars.
+- VRCLV area lights may be marginally faster.
+- VRCLV area lights operate diffuse per-pixel, while LTCGI's LV integration operates per-voxel, meaning the detail quality of lighting will be higher on VRCLV's version. On static objects in the world (bakeable), the per-pixel LTC algorithm will still look the same or better, however.
+
+Either approach will perform well and can look great. The right choice will be down to your scene's requirements, or existing setup.
+
+For advanced setups, you may be able to mix and match LTCGI and VRCLV area lights, but care needs to be taken to not double-up lighting on any objects.
+
 ## Setup
 
 First, set up LTCGI and VRCLightVolumes normally in the same scene. You need a `LightVolumeManager` in the scene. You can add as many static or non-LTCGI additive LVs as you wish.
