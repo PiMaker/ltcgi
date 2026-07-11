@@ -468,4 +468,8 @@ namespace pi.LTCGI.LVAdapter
 #endif
 }
 
+#elif UDON
+
+public class LV_LTCGI_Adapter : UdonSharp.UdonSharpBehaviour {} // placeholder so UdonSharp doesn't complain
+
 #endif
