@@ -211,15 +211,12 @@ namespace pi.LTCGI.LVAdapter
                 if (!difference)
                 {
                     var found = false;
-                    if (refLightVolumeManager.TryGetComponent<LightVolumeSetup>(out var lvSetup))
+                    foreach (var pp in refLightVolumeManager.AtlasPostProcessors)
                     {
-                        foreach (var pp in lvSetup.AtlasPostProcessors)
+                        if (pp.RT == refPostProcessorRT && pp.Mat == refPostProcessorMat)
                         {
-                            if (pp.RT == refPostProcessorRT && pp.Mat == refPostProcessorMat)
-                            {
-                                found = true;
-                                break;
-                            }
+                            found = true;
+                            break;
                         }
                     }
                     if (found != (tmpLTCGIEnabledLightVolumeIDs.Count > 0))
@@ -233,24 +230,21 @@ namespace pi.LTCGI.LVAdapter
                     Debug.Log($"LV_LTCGI_Adapter: Found and set {refLTCGIEnabledLightVolumeIDs.Length} LTCGI enabled light volumes.");
 
                     // register the CRT as a post processor
-                    if (refLightVolumeManager.TryGetComponent<LightVolumeSetup>(out var lvSetup))
+                    if (refLTCGIEnabledLightVolumeIDs.Length == 0)
                     {
-                        if (refLTCGIEnabledLightVolumeIDs.Length == 0)
+                        refLightVolumeManager.UnregisterPostProcessor(refPostProcessorRT);
+                    }
+                    else
+                    {
+                        RenderTexture rtCopy = refPostProcessorRT;
+                        Material matCopy = refPostProcessorMat;
+                        refLightVolumeManager.RegisterPostProcessor(new LightVolumeManager.PostProcessor()
                         {
-                            lvSetup.UnregisterPostProcessor(refPostProcessorRT);
-                        }
-                        else
-                        {
-                            RenderTexture rtCopy = refPostProcessorRT;
-                            Material matCopy = refPostProcessorMat;
-                            lvSetup.RegisterPostProcessor(new LightVolumeSetup.PostProcessor()
-                            {
-                                RT = rtCopy,
-                                Mat = matCopy,
-                                TextureName = "_LV_Volume",
-                                Update = null, // EditorUpdator will handle it
-                            });
-                        }
+                            RT = rtCopy,
+                            Mat = matCopy,
+                            TextureName = "_LV_Volume",
+                            Update = null, // EditorUpdator will handle it
+                        });
                     }
                 }
             }
@@ -405,7 +399,7 @@ namespace pi.LTCGI.LVAdapter
 
         // Bake handlers
 
-        private static void OnPreAtlasCreate(LightVolume[] obj)
+        private static void OnPreAtlasCreate(LightVolumeInstance[] obj)
         {
             if (LTCGI_Controller.Singleton == null || LTCGI_Controller.Singleton.bakeInProgress)
                 return;

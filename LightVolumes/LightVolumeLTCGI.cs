@@ -8,12 +8,16 @@ using UnityEngine.UI;
 
 namespace pi.LTCGI.LVAdapter
 {
-    [ExecuteAlways]
-    public class LightVolumeLTCGI : LightVolume
+    [AddComponentMenu("LTCGI Light Volume (U# Script)")]
+    [DisallowMultipleComponent]
+#if UDONSHARP
+    [UdonSharp.UdonBehaviourSyncMode(UdonSharp.BehaviourSyncMode.None)]
+#endif
+    public class LightVolumeLTCGI : LightVolumeInstance
     {
     }
 
-#if UNITY_EDITOR
+#if UNITY_EDITOR && !COMPILER_UDONSHARP
     [CustomEditor(typeof(LightVolumeLTCGI))]
     public class LightVolumeLTCGIEditor : LightVolumeEditor
     {
@@ -41,7 +45,7 @@ namespace pi.LTCGI.LVAdapter
                 MessageType.Info
             );
 
-            if (serializedObject.FindProperty("Dynamic").boolValue == false && (target as LightVolumeLTCGI).isActiveAndEnabled == false)
+            if (serializedObject.FindProperty("IsDynamic").boolValue == false && (target as LightVolumeLTCGI).isActiveAndEnabled == false)
             {
                 EditorGUILayout.HelpBox(
                     "This Light Volume is not Dynamic and is disabled. It will never turn on if you don't set Dynamic.",
@@ -52,7 +56,7 @@ namespace pi.LTCGI.LVAdapter
             base.OnInspectorGUI();
 
             serializedObject.Update();
-            serializedObject.FindProperty("Additive").boolValue = true;
+            serializedObject.FindProperty("IsAdditive").boolValue = true;
             serializedObject.FindProperty("Bake").boolValue = true;
             serializedObject.ApplyModifiedPropertiesWithoutUndo();
         }
