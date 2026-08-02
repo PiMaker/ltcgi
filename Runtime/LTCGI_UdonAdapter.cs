@@ -127,8 +127,8 @@ public class LTCGI_UdonAdapter : MonoBehaviour
         GlobalShader.SetGlobalInteger(GlobalShader.PropertyToID("_Udon_LTCGI_ScreenCount"), _LTCGI_ScreenCountMaskedAvatars);
         GlobalShader.SetGlobalInteger(GlobalShader.PropertyToID("_Udon_LTCGI_ScreenCount_LVs"), _LTCGI_ScreenCountMaskedLVs);
         #else
-        GlobalShader.SetGlobalFloat(GlobalShader.PropertyToID("_Udon_LTCGI_ScreenCount"), _LTCGI_ScreenCountMaskedAvatars);
-        GlobalShader.SetGlobalFloat(GlobalShader.PropertyToID("_Udon_LTCGI_ScreenCount_LVs"), _LTCGI_ScreenCountMaskedLVs);
+        GlobalShader.SetGlobalInteger(GlobalShader.PropertyToID("_Udon_LTCGI_ScreenCount"), _LTCGI_ScreenCountMaskedAvatars);
+        GlobalShader.SetGlobalInteger(GlobalShader.PropertyToID("_Udon_LTCGI_ScreenCount_LVs"), _LTCGI_ScreenCountMaskedLVs);
         #endif
 
         _SetGlobalState(true);
@@ -150,7 +150,7 @@ public class LTCGI_UdonAdapter : MonoBehaviour
 
             Array.Copy(_LTCGI_Mask, i * maxScreens, maskSubset, 0, maxScreens);
             block.SetFloatArray("_Udon_LTCGI_Mask", maskSubset);
-            block.SetInt("_Udon_LTCGI_ScreenCount", _LTCGI_ScreenCountMasked[i]);
+            block.SetInteger("_Udon_LTCGI_ScreenCount", _LTCGI_ScreenCountMasked[i]);
 
             if (_LTCGI_Lightmaps[i] != null)
                 block.SetTexture("_Udon_LTCGI_Lightmap", _LTCGI_Lightmaps[i]);
