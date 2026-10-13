@@ -61,9 +61,7 @@ namespace pi.LTCGI.LVAdapter
             serializedObject.ApplyModifiedPropertiesWithoutUndo();
         }
 
-        new protected void OnSceneGUI() {
-            base.OnSceneGUI(); // forward call
-        }
+        // Scene GUI is handled by the base LightVolumeEditor via SceneView.duringSceneGui (VRCLV 3.0+)
     }
 #endif
 }
