@@ -1,4 +1,4 @@
-﻿#if LTCGI_VRC_LIGHT_VOLUMES && UDON
+#if LTCGI_VRC_LIGHT_VOLUMES && UDON
 
 using System;
 using System.Collections.Generic;
@@ -295,6 +295,7 @@ namespace pi.LTCGI.LVAdapter
             {
                 var newUdon = LTCGI_Controller.Singleton.gameObject.AddUdonSharpComponent<LV_LTCGI_Adapter>();
                 LV_LTCGI_Adapter.SetupDependencies(ref lightVolumeManager, ref newUdon.PostProcessorRT, ref newUdon.PostProcessorMat, ref newUdon.DummyTextureArray, ref newUdon.LTCGIEnabledLightVolumeIDs, isUI: false);
+                newUdon.LightVolumeManager = lightVolumeManager;
                 EditorUtility.SetDirty(newUdon);
                 UdonSharpEditorUtility.CopyProxyToUdon(newUdon);
                 RefreshUpdator();
