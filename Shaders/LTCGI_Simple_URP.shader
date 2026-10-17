@@ -10,6 +10,11 @@ Shader "LTCGI/Simple URP"
 
     SubShader
     {
+        PackageRequirements
+        {
+            "com.unity.render-pipelines.universal": "17.7.0"
+        }
+
         Tags
         {
             "RenderType" = "Opaque"
