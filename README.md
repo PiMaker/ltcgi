@@ -36,6 +36,9 @@ To use LTCGI, all objects that should receive lighting must use a compatible sha
 * [VixForge Toon](https://vixenlicous.gumroad.com/l/vixforge-toon) by [@VixenCreations](https://github.com/VixenCreations)
 * Basic "Unlit" Test Shader (included)
 * Surface Shader (included)
+* URP (17.7+, Unity 6000.7), with single-pass instanced VR (included):
+  * `LTCGI/Lit URP`: URP's Lit shader with LTCGI added. It has the same properties and inspector as `Universal Render Pipeline/Lit`, so an existing Lit material can switch to it and keep its settings.
+  * `LTCGI/Simple URP`: the "Unlit" test shader for URP.
 
 LTCGI supports [VRC Light Volumes](https://github.com/REDSIM/VRCLightVolumes/) by RED_SIM.
 
